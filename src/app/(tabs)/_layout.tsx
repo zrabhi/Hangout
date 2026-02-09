@@ -2,21 +2,18 @@ import { Tabs } from "expo-router";
 import React from "react";
 
 import { HapticTab } from "@components/haptic-tab";
-import { Colors } from "@constants/theme";
-import { useColorScheme } from "@hooks/use-color-scheme";
 import { ContactsIcon } from "@icons/Contacts";
 import { AnimatedTabBar } from "@components/AnimatedTabBar";
-import { MessageIcon } from "@/icons/Message";
-import { CallIcon } from "@/icons/Call";
+import { MessageIcon } from "@icons/Message";
+import { CallIcon } from "@icons/Call";
+import { ScreenHeader } from "@components/ui/ScreenHeader";
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
   return (
     <Tabs
       tabBar={(props) => <AnimatedTabBar {...props} />}
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
+        header: (props) => <ScreenHeader {...props} />,
         headerShown: false,
         tabBarButton: HapticTab,
       }}
@@ -25,6 +22,8 @@ export default function TabLayout() {
         name="index"
         options={{
           title: "Contacts",
+          headerShown: true,
+          headerTitle: "Contacts",
           tabBarIcon: ({ color }) => (
             <ContactsIcon fill={color} height={18} width={18} />
           ),
@@ -34,6 +33,7 @@ export default function TabLayout() {
         name="messages"
         options={{
           title: "Messages",
+          headerShown: true,
           tabBarIcon: ({ color }) => (
             <MessageIcon fill={color} height={18} width={18} />
           ),
@@ -42,6 +42,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="calls"
         options={{
+          headerShown: true,
           title: "Calls",
           tabBarIcon: ({ color }) => (
             <CallIcon fill={color} height={18} width={18} />
