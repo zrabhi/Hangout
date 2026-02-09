@@ -11,6 +11,7 @@ export default {
         }
     },
     background:{
+        card:'#fcfcfc',
         screen:'#f5f7fa'
     },
     black:'#000000',
