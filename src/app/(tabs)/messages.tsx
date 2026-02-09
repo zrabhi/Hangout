@@ -1,13 +1,12 @@
 import { View, StyleSheet, Text } from "react-native";
 
-export default function ConatctsScreen() {
+export default function MessagesScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Contacts</Text>
+      <Text style={styles.text}>Messages</Text>
     </View>
   );
 }
-
 
 const styles = StyleSheet.create({
   container: {
@@ -18,6 +17,5 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 20,
     fontFamily: "Baloo2-SemiBold",
-
   },
 });

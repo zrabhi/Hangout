@@ -1,33 +1,51 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
+import { Tabs } from "expo-router";
+import React from "react";
 
-import { HapticTab } from '@components/haptic-tab';
-import { IconSymbol } from '@components/ui/icon-symbol';
-import { Colors } from '@constants/theme';
-import { useColorScheme } from '@hooks/use-color-scheme';
+import { HapticTab } from "@components/haptic-tab";
+import { Colors } from "@constants/theme";
+import { useColorScheme } from "@hooks/use-color-scheme";
+import { ContactsIcon } from "@icons/Contacts";
+import { AnimatedTabBar } from "@components/AnimatedTabBar";
+import { MessageIcon } from "@/icons/Message";
+import { CallIcon } from "@/icons/Call";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
   return (
     <Tabs
+      tabBar={(props) => <AnimatedTabBar {...props} />}
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
         headerShown: false,
         tabBarButton: HapticTab,
-      }}>
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          title: "Contacts",
+          tabBarIcon: ({ color }) => (
+            <ContactsIcon fill={color} height={18} width={18} />
+          ),
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="messages"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: "Messages",
+          tabBarIcon: ({ color }) => (
+            <MessageIcon fill={color} height={18} width={18} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="calls"
+        options={{
+          title: "Calls",
+          tabBarIcon: ({ color }) => (
+            <CallIcon fill={color} height={18} width={18} />
+          ),
         }}
       />
     </Tabs>

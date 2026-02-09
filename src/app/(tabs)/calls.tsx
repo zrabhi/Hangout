@@ -1,9 +1,9 @@
 import { View, StyleSheet, Text } from "react-native";
 
-export default function ConatctsScreen() {
+export default function CallsScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Contacts</Text>
+      <Text style={styles.text}>Calls</Text>
     </View>
   );
 }
