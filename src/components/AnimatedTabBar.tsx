@@ -63,7 +63,7 @@ const tabBarStyle = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 32,
-    borderWidth: 1,
+    borderWidth: 1.2,
     borderStyle: "dashed",
     justifyContent: "center",
     alignItems: "center",
@@ -75,10 +75,10 @@ const tabBarStyle = StyleSheet.create({
   },
   focusedTab: {
     backgroundColor: Colors.white,
-    paddingVertical: 8,
+    paddingVertical: 4,
     paddingHorizontal: 12,
     borderRadius: 6,
-    borderWidth: 1,
+    borderWidth: 1.2,
   },
   activeTab: {
     position: "absolute",
