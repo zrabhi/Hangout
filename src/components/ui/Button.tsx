@@ -12,7 +12,10 @@ interface ButtonProps {
 
 export const Button = ({ onClick, title, variant }: ButtonProps) => {
   return (
-    <Pressable style={[styles.button, styles[`${variant}Button`]]} onPress={onClick}>
+    <Pressable
+      style={[styles.button, styles[`${variant}Button`]]}
+      onPress={onClick}
+    >
       <Text style={[styles.buttonText, styles[`${variant}Text`]]}>{title}</Text>
     </Pressable>
   );

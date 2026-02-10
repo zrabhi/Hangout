@@ -1,53 +1,16 @@
 import { memo } from "react";
 import type { BottomTabBarProps } from "@react-navigation/bottom-tabs";
-import {
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import Colors from "@utils/Colors";
 import { AddIcon } from "@/icons/Add";
 
-//const { width } = Dimensions.get("window");
-//const TAB_BAR_WIDTH = width * 0.6;
-
 export const AnimatedTabBar = memo(
   ({ state, descriptors, navigation }: BottomTabBarProps) => {
- //   const tabCount = state.routes.length;
-  //  const tabWidth = TAB_BAR_WIDTH / tabCount;
-
     // TODO: Add animation to the active tab indicator Spring
-
-    // console.log(
-    //   "🚀 ~ file: AnimatedTabBar.tsx:17 ~ tabWidth:",
-    //   tabWidth,
-    //   TAB_BAR_WIDTH,
-    // );
-    // const translateX = useRef(new Animated.Value(state.index)).current;
-
-    // useEffect(() => {
-    //   Animated.spring(translateX, {
-    //    toValue: 30 + state.index * tabWidth,
-    //     tension: 220,
-    //     friction: 15,
-    //     useNativeDriver: true,
-    //   }).start();
-    // }, [state.index]);
 
     return (
       <View style={tabBarStyle.container}>
         <View style={tabBarStyle.tabBarContainer}>
-          {/* <Animated.View
-            style={[
-              tabBarStyle.activeTab,
-              {
-                width: tabWidth ,
-                transform: [{ translateX }],
-              },
-            ]}
-          /> */}
-
           {state.routes.map((route, index) => {
             const { options } = descriptors[route.key];
             const isFocused = state.index === index;
