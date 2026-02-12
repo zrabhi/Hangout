@@ -1,11 +1,11 @@
-import { Pressable, Text, StyleSheet } from "react-native";
+import { Pressable, Text, StyleSheet, type PressableProps } from "react-native";
 import Colors from "@utils/Colors";
 
-type SelectorProps = {
+interface SelectorProps extends PressableProps {
   label: string;
   selected?: boolean;
   onPress?: () => void;
-};
+}
 
 export default function Selector({
   label,
@@ -15,17 +15,9 @@ export default function Selector({
   return (
     <Pressable
       onPress={onPress}
-      style={[
-        styles.container,
-        selected && styles.selectedContainer,
-      ]}
+      style={[styles.container, selected && styles.selectedContainer]}
     >
-      <Text
-        style={[
-          styles.text,
-          !selected && styles.unselectedText,
-        ]}
-      >
+      <Text style={[styles.text, !selected && styles.unselectedText]}>
         {label}
       </Text>
     </Pressable>
@@ -34,11 +26,10 @@ export default function Selector({
 
 const styles = StyleSheet.create({
   container: {
-    padding: 4,
     alignItems: "center",
-    justifyContent :'center',
-    width: 90,
-    height: 30,
+    justifyContent: "center",
+    padding: 4,
+    paddingHorizontal: 12,
     borderRadius: 8,
     borderWidth: 1,
     backgroundColor: Colors.white,

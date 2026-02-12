@@ -3,47 +3,53 @@ import type { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import Colors from "@utils/Colors";
 import { AddIcon } from "@/icons/Add";
+import { router } from "expo-router";
 
 export const AnimatedTabBar = memo(
   ({ state, descriptors, navigation }: BottomTabBarProps) => {
     // TODO: Add animation to the active tab indicator Spring
 
     return (
-      <View style={tabBarStyle.container}>
-        <View style={tabBarStyle.tabBarContainer}>
-          {state.routes.map((route, index) => {
-            const { options } = descriptors[route.key];
-            const isFocused = state.index === index;
+      <>
+        <View style={tabBarStyle.container}>
+          <View style={tabBarStyle.tabBarContainer}>
+            {state.routes.map((route, index) => {
+              const { options } = descriptors[route.key];
+              const isFocused = state.index === index;
 
-            return (
-              <Pressable
-                key={route.key}
-                style={[tabBarStyle.tab, isFocused && tabBarStyle.focusedTab]}
-                onPress={() => navigation.navigate(route.name)}
-              >
-                {options.tabBarIcon &&
-                  options.tabBarIcon?.({
-                    focused: isFocused,
-                    size: 16,
-                    color: isFocused ? Colors.black : Colors.white,
-                  })}
+              return (
+                <Pressable
+                  key={route.key}
+                  style={[tabBarStyle.tab, isFocused && tabBarStyle.focusedTab]}
+                  onPress={() => navigation.navigate(route.name)}
+                >
+                  {options.tabBarIcon &&
+                    options.tabBarIcon?.({
+                      focused: isFocused,
+                      size: 16,
+                      color: isFocused ? Colors.black : Colors.white,
+                    })}
 
-                {isFocused && (
-                  <Text style={tabBarStyle.tabName}>{route.name}</Text>
-                )}
-              </Pressable>
-            );
-          })}
+                  {isFocused && (
+                    <Text style={tabBarStyle.tabName}>{route.name}</Text>
+                  )}
+                </Pressable>
+              );
+            })}
+          </View>
+          <Pressable
+            style={tabBarStyle.addContactButton}
+            onPress={ () =>router.navigate('/contact')}
+          >
+            <AddIcon
+              fill={Colors.white}
+              color={Colors.white}
+              height={24}
+              width={24}
+            />
+          </Pressable>
         </View>
-        <Pressable style={tabBarStyle.addContactButton}>
-          <AddIcon
-            fill={Colors.white}
-            color={Colors.white}
-            height={24}
-            width={24}
-          />
-        </Pressable>
-      </View>
+      </>
     );
   },
 );

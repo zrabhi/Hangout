@@ -9,6 +9,9 @@ import {
   Platform,
 } from "react-native";
 import { Button } from "./Button";
+import Selector from "./Selector";
+import { useLanguage } from "@/context/TranlsationContext";
+import { useState } from "react";
 
 interface MenuModalProps {
   isMenuVisible: boolean;
@@ -16,6 +19,14 @@ interface MenuModalProps {
 }
 
 export const MenuModal = ({ isMenuVisible, onClose }: MenuModalProps) => {
+  const { lang, setLanguage, t } = useLanguage();
+  const [selectedLang, setSelectedLang] = useState(lang);
+
+  const handleOnApply = () => {
+    setLanguage(selectedLang);
+    onClose();
+  };
+
   return (
     <Modal
       style={styles.modal}
@@ -25,8 +36,41 @@ export const MenuModal = ({ isMenuVisible, onClose }: MenuModalProps) => {
     >
       <BlurView style={styles.blurContainer}>
         <View style={styles.menuContiner}>
-          <Text style={styles.text}>Menu</Text>
-          <Button variant="secondary" onClick={() => {}} title="Apply" />
+          <Text style={styles.title}>Menu</Text>
+          <View style={styles.menuOptionConatiner}>
+            <Text style={styles.text}>{t("language")}</Text>
+            <View style={styles.selectorConatiner}>
+              <Selector
+                label="En"
+                selected={selectedLang === "en"}
+                onPress={() => setSelectedLang("en")}
+              />
+              <Selector
+                label="Fr"
+                selected={selectedLang === "fr"}
+                onPress={() => setSelectedLang("fr")}
+              />
+            </View>
+          </View>
+          <View style={styles.menuOptionConatiner}>
+            <Text style={styles.text}>{t("headerColor")}</Text>
+            <View style={styles.selectorConatiner}>
+              <View
+                style={styles.color}
+              />
+              <View
+                style={styles.color}
+              />
+            </View>
+          </View>
+          <View style={styles.buttonContainer}>
+            <Button
+              style={styles.button}
+              variant="primary"
+              onClick={handleOnApply}
+              title="Apply"
+            />
+          </View>
         </View>
         <Pressable onPress={onClose} style={styles.closeButton}>
           <View style={styles.closeOverlay}>
@@ -41,6 +85,28 @@ export const MenuModal = ({ isMenuVisible, onClose }: MenuModalProps) => {
 const styles = StyleSheet.create({
   modal: {
     flex: 1,
+  },
+  button:{
+ width: "100%" 
+  },
+  menuOptionConatiner: {
+    gap: 12,
+    alignItems: "flex-start",
+  },color:{
+                  padding: 14,
+                  backgroundColor: "green",
+                  borderRadius: 10,
+  },
+  selectorConatiner: {
+    paddingLeft: 2,
+    flexDirection: "row",
+    gap: 10,
+  },
+  buttonContainer: {
+    flex: 1,
+    width: "100%",
+    justifyContent: "flex-end",
+    alignItems: "flex-end",
   },
   closeButton: {
     padding: 12,
@@ -57,6 +123,7 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontFamily: "Baloo2-Bold",
   },
+
   closeOverlay: {
     width: 21,
     height: 21,
@@ -75,10 +142,8 @@ const styles = StyleSheet.create({
     paddingLeft: 34,
   },
   menuContiner: {
-    alignItems: "center",
     borderWidth: 1.5,
     zIndex: 100,
-    justifyContent: "space-between",
     backgroundColor:
       Platform.OS === "ios" ? "transparent" : Colors.background.card,
     height: Platform.OS === "ios" ? "50%" : "70%",
@@ -90,8 +155,12 @@ const styles = StyleSheet.create({
   },
   text: {
     fontFamily: "Baloo2-Medium",
+    fontSize: 14,
+  },
+  title: {
+    textAlign: "center",
+    fontFamily: "Baloo2-SemiBold",
     fontSize: 18,
-    fontWeight: "bold",
     marginBottom: 10,
   },
 });

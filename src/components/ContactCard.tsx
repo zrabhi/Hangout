@@ -1,39 +1,33 @@
-import { StarIcon } from "@/icons/Star";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Image } from "expo-image";
 import Colors from "@/utils/Colors";
+import { type Contact } from "@/types/Contacts";
+import { router } from "expo-router";
 
 interface ContactCardProps {
-  isFavorite: boolean;
-  firstName: string;
-  lastName: string;
-  imageAvailable: boolean;
-  image: { uri: string } | null;
-  phoneNumber: string;
-  id: string;
+
+  contact: Contact;
 }
 
-export const ContactCard = ({
-  isFavorite,
-  firstName,
-  id,
-  lastName,
-  phoneNumber,
-}: ContactCardProps) => {
-  const cdnRandomImage = `https://api.dicebear.com/7.x/personas/png?seed=${id}`;
+export const ContactCard = ({ contact }: ContactCardProps) => {
+  const cdnRandomImage = `https://api.dicebear.com/7.x/personas/png?seed=${contact.id}`;
   return (
     <Pressable
-      onPress={() => console.log("card pressed")}
+      onPress={() =>
+        router.navigate({ pathname: "/contact", params: { id: contact.id } })
+      }
       style={styles.button}
     >
       <View style={styles.contactDetails}>
-        <Image source={{ uri: cdnRandomImage }} style={styles.contactImage} />
+        <Image source={{ uri: contact.image ?? cdnRandomImage }} style={styles.contactImage} />
         <View>
-          <Text style={styles.contactName}>{firstName + " " + lastName}</Text>
-          <Text style={styles.phineNumber}>{phoneNumber}</Text>
+          <Text style={styles.contactName}>
+            {contact.firstName + " " + contact.lastName}
+          </Text>
+          <Text style={styles.phoneNumber}>{contact.phoneNumber}</Text>
         </View>
       </View>
-      {isFavorite && (
+      {/* {contact.isFavorite && (
         <Pressable
           style={styles.cardActions}
           onPress={() => console.log("pressed")}
@@ -46,7 +40,7 @@ export const ContactCard = ({
             fill={"none"}
           />
         </Pressable>
-      )}
+      )} */}
     </Pressable>
   );
 };
@@ -64,9 +58,6 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     backgroundColor: Colors.white,
   },
-  cardActions:{
-     alignItems: "flex-start" 
-  },
   contactDetails: {
     flexDirection: "row",
     alignItems: "center",
@@ -79,13 +70,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   contactName: {
+    fontFamily: "Baloo2-SemiBold",
     fontSize: 14,
-    fontFamily: "Baloo2-Regular",
-    color: "gray",
+    color: Colors.black,
   },
-  phineNumber: {
+  phoneNumber: {
     fontSize: 14,
-    fontFamily: "Baloo2-Regular",
+    fontFamily: "Baloo2-Medium",
     color: "gray",
   },
 });
