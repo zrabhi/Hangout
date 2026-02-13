@@ -4,16 +4,44 @@ import { useState } from "react";
 import { View, Text, Pressable, StyleSheet } from "react-native";
 import { MenuModal } from "./MenuModal";
 import Colors from "@/utils/Colors";
+import { router } from "expo-router";
+import { type NativeStackHeaderProps } from "@react-navigation/native-stack";
+import { LeftArrownIcon } from "@/icons/LeftArrow";
 
-export const ScreenHeader = ({ options }: BottomTabHeaderProps) => {
+interface ScreenHeaderProps {
+  options: BottomTabHeaderProps | NativeStackHeaderProps;
+  isTab?: boolean;
+}
+
+export const ScreenHeader = ({ options, isTab = true }: ScreenHeaderProps) => {
   const [visible, setVisible] = useState(false);
 
   return (
     <>
       <View style={styles.container}>
-        <Text style={styles.title}>{options?.title}</Text>
+        {!isTab && (
+          <Pressable
+            style={styles.menuButton}
+            onPress={() => {
+              router.back();
+            }}
+          >
+            <LeftArrownIcon
+              color={Colors.white}
+              strokeWidth={2}
+              height={16}
+              width={16}
+            />
+          </Pressable>
+        )}
+        <Text style={styles.title}>{options.options.title}</Text>
         <Pressable style={styles.menuButton} onPress={() => setVisible(true)}>
-          <MenuIcon color={Colors.white} height={18} width={18} />
+          <MenuIcon
+            color={Colors.white}
+            strokeWidth={2}
+            height={16}
+            width={16}
+          />
         </Pressable>
       </View>
       <MenuModal isMenuVisible={visible} onClose={() => setVisible(false)} />
@@ -23,8 +51,8 @@ export const ScreenHeader = ({ options }: BottomTabHeaderProps) => {
 
 const styles = StyleSheet.create({
   menuButton: {
-    padding: 12,
-    borderRadius: 12,
+    padding: 8,
+    borderRadius: 8,
     borderWidth: 1.5,
     backgroundColor: Colors.primary.green[100],
   },
@@ -37,7 +65,7 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
   title: {
+    fontFamily: "Baloo2-SemiBold",
     fontSize: 18,
-    fontWeight: "600",
   },
 });

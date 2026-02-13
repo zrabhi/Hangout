@@ -1,86 +1,55 @@
 import { memo } from "react";
 import type { BottomTabBarProps } from "@react-navigation/bottom-tabs";
-import {
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import Colors from "@utils/Colors";
 import { AddIcon } from "@/icons/Add";
-
-//const { width } = Dimensions.get("window");
-//const TAB_BAR_WIDTH = width * 0.6;
+import { router } from "expo-router";
 
 export const AnimatedTabBar = memo(
   ({ state, descriptors, navigation }: BottomTabBarProps) => {
- //   const tabCount = state.routes.length;
-  //  const tabWidth = TAB_BAR_WIDTH / tabCount;
-
     // TODO: Add animation to the active tab indicator Spring
 
-    // console.log(
-    //   "🚀 ~ file: AnimatedTabBar.tsx:17 ~ tabWidth:",
-    //   tabWidth,
-    //   TAB_BAR_WIDTH,
-    // );
-    // const translateX = useRef(new Animated.Value(state.index)).current;
-
-    // useEffect(() => {
-    //   Animated.spring(translateX, {
-    //    toValue: 30 + state.index * tabWidth,
-    //     tension: 220,
-    //     friction: 15,
-    //     useNativeDriver: true,
-    //   }).start();
-    // }, [state.index]);
-
     return (
-      <View style={tabBarStyle.container}>
-        <View style={tabBarStyle.tabBarContainer}>
-          {/* <Animated.View
-            style={[
-              tabBarStyle.activeTab,
-              {
-                width: tabWidth ,
-                transform: [{ translateX }],
-              },
-            ]}
-          /> */}
+      <>
+        <View style={tabBarStyle.container}>
+          <View style={tabBarStyle.tabBarContainer}>
+            {state.routes.map((route, index) => {
+              const { options } = descriptors[route.key];
+              const isFocused = state.index === index;
 
-          {state.routes.map((route, index) => {
-            const { options } = descriptors[route.key];
-            const isFocused = state.index === index;
+              return (
+                <Pressable
+                  key={route.key}
+                  style={[tabBarStyle.tab, isFocused && tabBarStyle.focusedTab]}
+                  onPress={() => navigation.navigate(route.name)}
+                >
+                  {options.tabBarIcon &&
+                    options.tabBarIcon?.({
+                      focused: isFocused,
+                      size: 16,
+                      color: isFocused ? Colors.black : Colors.white,
+                    })}
 
-            return (
-              <Pressable
-                key={route.key}
-                style={[tabBarStyle.tab, isFocused && tabBarStyle.focusedTab]}
-                onPress={() => navigation.navigate(route.name)}
-              >
-                {options.tabBarIcon &&
-                  options.tabBarIcon?.({
-                    focused: isFocused,
-                    size: 16,
-                    color: isFocused ? Colors.black : Colors.white,
-                  })}
-
-                {isFocused && (
-                  <Text style={tabBarStyle.tabName}>{route.name}</Text>
-                )}
-              </Pressable>
-            );
-          })}
+                  {isFocused && (
+                    <Text style={tabBarStyle.tabName}>{route.name}</Text>
+                  )}
+                </Pressable>
+              );
+            })}
+          </View>
+          <Pressable
+            style={tabBarStyle.addContactButton}
+            onPress={ () =>router.navigate('/contact')}
+          >
+            <AddIcon
+              fill={Colors.white}
+              color={Colors.white}
+              height={24}
+              width={24}
+            />
+          </Pressable>
         </View>
-        <Pressable style={tabBarStyle.addContactButton}>
-          <AddIcon
-            fill={Colors.white}
-            color={Colors.white}
-            height={24}
-            width={24}
-          />
-        </Pressable>
-      </View>
+      </>
     );
   },
 );
@@ -100,7 +69,7 @@ const tabBarStyle = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 32,
-    borderWidth: 1,
+    borderWidth: 1.2,
     borderStyle: "dashed",
     justifyContent: "center",
     alignItems: "center",
@@ -112,10 +81,10 @@ const tabBarStyle = StyleSheet.create({
   },
   focusedTab: {
     backgroundColor: Colors.white,
-    paddingVertical: 8,
+    paddingVertical: 4,
     paddingHorizontal: 12,
     borderRadius: 6,
-    borderWidth: 1,
+    borderWidth: 1.2,
   },
   activeTab: {
     position: "absolute",

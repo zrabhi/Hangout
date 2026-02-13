@@ -13,7 +13,7 @@ export default function TabLayout() {
     <Tabs
       tabBar={(props) => <AnimatedTabBar {...props} />}
       screenOptions={{
-        header: (props) => <ScreenHeader {...props} />,
+        header: (props) => <ScreenHeader options={props} />,
         headerShown: false,
         tabBarButton: HapticTab,
       }}
