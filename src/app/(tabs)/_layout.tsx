@@ -1,18 +1,21 @@
 import { Tabs } from "expo-router";
 import React from "react";
 
-import { HapticTab } from "@components/haptic-tab";
-import { ContactsIcon } from "@icons/Contacts";
 import { AnimatedTabBar } from "@components/AnimatedTabBar";
-import { MessageIcon } from "@icons/Message";
-import { CallIcon } from "@icons/Call";
+import { HapticTab } from "@components/haptic-tab";
 import { ScreenHeader } from "@components/ui/ScreenHeader";
+import { CallIcon } from "@icons/Call";
+import { ContactsIcon } from "@icons/Contacts";
+import { MessageIcon } from "@icons/Message";
 
 export default function TabLayout() {
+ // const {t, headerColor} = useAppSettings();
   return (
     <Tabs
       tabBar={(props) => <AnimatedTabBar {...props} />}
+      
       screenOptions={{
+        
         header: (props) => <ScreenHeader options={props} />,
         headerShown: false,
         tabBarButton: HapticTab,

@@ -21,6 +21,9 @@ export const translations = {
     language: "Language",
     headerColor: "Header Color",
 
+
+    // permissions
+    photoPermission: "Sadly, we don’t have access to your photos. To upload an image, please go to settings and allow permission.",
     // Errors
     firstNameRequired: "First name is required",
     firstNameTooShort: "First name must be at least 2 characters",

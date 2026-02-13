@@ -1,69 +1,111 @@
+import { useAppSettings } from "@/context/AppSettingsContext";
+import { AppColors } from "@/utils/AppColors";
 import Colors from "@/utils/Colors";
 import { BlurView } from "expo-blur";
+import { useState } from "react";
 import {
+  Modal,
+  type ModalProps,
+  Platform,
   Pressable,
+  ScrollView,
+  StyleSheet,
   Text,
   View,
-  Modal,
-  StyleSheet,
-  Platform,
 } from "react-native";
 import { Button } from "./Button";
 import Selector from "./Selector";
-import { useLanguage } from "@/context/TranlsationContext";
-import { useState } from "react";
 
-interface MenuModalProps {
+interface MenuModalProps extends ModalProps {
   isMenuVisible: boolean;
   onClose: VoidFunction;
 }
 
-export const MenuModal = ({ isMenuVisible, onClose }: MenuModalProps) => {
-  const { lang, setLanguage, t } = useLanguage();
+export const MenuModal = ({
+  isMenuVisible,
+  onClose,
+  ...rest
+}: MenuModalProps) => {
+
+  const { lang, isLandscape, setLanguage, t, headerColor, setHeaderColor } =
+    useAppSettings();
+
   const [selectedLang, setSelectedLang] = useState(lang);
+  const [selectedColor, setSelectedColor] = useState<string>(headerColor);
 
   const handleOnApply = () => {
+    // ineed to check if something changes before 
     setLanguage(selectedLang);
+    setHeaderColor(selectedColor);
     onClose();
   };
 
   return (
     <Modal
+      supportedOrientations={["landscape", "portrait","portrait-upside-down"]}
       style={styles.modal}
       visible={isMenuVisible}
       animationType="slide"
       transparent
+      {...rest}
     >
       <BlurView style={styles.blurContainer}>
-        <View style={styles.menuContiner}>
+        <View
+          style={[
+            styles.menuContiner,
+            isLandscape && styles.menuContinerLandscape,
+          ]}
+        >
           <Text style={styles.title}>Menu</Text>
-          <View style={styles.menuOptionConatiner}>
-            <Text style={styles.text}>{t("language")}</Text>
-            <View style={styles.selectorConatiner}>
-              <Selector
-                label="En"
-                selected={selectedLang === "en"}
-                onPress={() => setSelectedLang("en")}
-              />
-              <Selector
-                label="Fr"
-                selected={selectedLang === "fr"}
-                onPress={() => setSelectedLang("fr")}
-              />
+          <ScrollView
+            showsVerticalScrollIndicator={isLandscape}
+            style={{ flex: 1 }}
+            contentContainerStyle={{
+              gap: 24,
+            }}
+          >
+            <View style={styles.menuOptionConatiner}>
+              <Text style={styles.text}>{t("language")}</Text>
+              <View style={styles.selectorConatiner}>
+                <Selector
+                  label="En"
+                  selected={selectedLang === "en"}
+                  onPress={() => setSelectedLang("en")}
+                />
+                <Selector
+                  label="Fr"
+                  selected={selectedLang === "fr"}
+                  onPress={() => setSelectedLang("fr")}
+                />
+              </View>
             </View>
-          </View>
-          <View style={styles.menuOptionConatiner}>
-            <Text style={styles.text}>{t("headerColor")}</Text>
-            <View style={styles.selectorConatiner}>
-              <View
-                style={styles.color}
-              />
-              <View
-                style={styles.color}
-              />
+            <View style={styles.menuOptionConatiner}>
+              <Text style={styles.text}>{t("headerColor")}</Text>
+              <View style={styles.selectorConatiner}>
+                {[
+                  AppColors.GREEN,
+                  AppColors.ORANGE,
+                  AppColors.BLUE,
+                  AppColors.WHITE,
+                ].map((color) => (
+                  <Pressable
+                    key={color}
+                    onPress={() => setSelectedColor(color)}
+                    style={[
+                      styles.color,
+                      {
+                        backgroundColor: color,
+                        borderWidth: selectedColor === color ? 3 : 1.5,
+                      },
+                    ]}
+                  />
+                ))}
+              </View>
             </View>
-          </View>
-          <View style={styles.buttonContainer}>
+          </ScrollView>
+          <View
+            style={[styles.buttonContainer, isLandscape && { paddingTop: 20 }]}
+          >
             <Button
               style={styles.button}
               variant="primary"
@@ -83,19 +125,36 @@ export const MenuModal = ({ isMenuVisible, onClose }: MenuModalProps) => {
 };
 
 const styles = StyleSheet.create({
+  menuContiner: {
+    borderWidth: 1.5,
+    zIndex: 100,
+    height: "70%",
+    backgroundColor:
+      Platform.OS === "ios" ? "transparent" : Colors.background.card,
+    padding: 20,
+    borderRadius: 16,
+    width: "65%",
+  },
+
+  menuContinerLandscape: {
+    width: "60%",
+    height: "90%",
+  },
   modal: {
     flex: 1,
   },
-  button:{
- width: "100%" 
+  button: {
+    width: "100%",
   },
   menuOptionConatiner: {
     gap: 12,
     alignItems: "flex-start",
-  },color:{
-                  padding: 14,
-                  backgroundColor: "green",
-                  borderRadius: 10,
+  },
+  color: {
+    padding: 12,
+    paddingLeft:16,
+    backgroundColor: "green",
+    borderRadius: 10,
   },
   selectorConatiner: {
     paddingLeft: 2,
@@ -103,7 +162,6 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   buttonContainer: {
-    flex: 1,
     width: "100%",
     justifyContent: "flex-end",
     alignItems: "flex-end",
@@ -140,18 +198,6 @@ const styles = StyleSheet.create({
     gap: 20,
     paddingTop: 64,
     paddingLeft: 34,
-  },
-  menuContiner: {
-    borderWidth: 1.5,
-    zIndex: 100,
-    backgroundColor:
-      Platform.OS === "ios" ? "transparent" : Colors.background.card,
-    height: Platform.OS === "ios" ? "50%" : "70%",
-    width: "60%",
-    padding: 20,
-
-    borderRadius: 16,
-    paddingLeft: 20,
   },
   text: {
     fontFamily: "Baloo2-Medium",

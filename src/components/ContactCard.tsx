@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
     borderWidth: 1.3,
     paddingLeft: 8,
     borderRadius: 14,
-    backgroundColor: Colors.white,
+    backgroundColor: 'rgb(242, 242, 242)',
   },
   contactDetails: {
     flexDirection: "row",
