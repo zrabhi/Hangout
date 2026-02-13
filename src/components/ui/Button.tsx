@@ -9,7 +9,7 @@ import {
   ViewStyle,
 } from "react-native";
 
-type ButtonVariant = "primary" | "secondary";
+type ButtonVariant = "primary" | "secondary" |"danger";
 
 interface ButtonProps extends PressableProps {
   onClick: VoidFunction;
@@ -52,6 +52,12 @@ const styles = StyleSheet.create({
     color: Colors.white,
   },
   secondaryText: {
+    color: Colors.black,
+  },
+  dangerButton:{
+    backgroundColor:'#d9534f',
+  },
+  dangerText: {
     color: Colors.black,
   },
   button: {

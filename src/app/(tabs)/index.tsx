@@ -1,16 +1,19 @@
-import { SearchInput } from "@/components/ui/SearchInput";
-import React, { useEffect, useState } from "react";
-import { FlashList } from "@shopify/flash-list";
-import { View, StyleSheet } from "react-native";
 import { ContactCard } from "@/components/ContactCard";
-import Selector from "@/components/ui/Selector";
+import { EmptyListMessage } from "@/components/ui/EmptyList";
+import { SearchInput } from "@/components/ui/SearchInput";
+import { useAppSettings } from "@/context/AppSettingsContext";
 import { useDataBaseContext } from "@/context/DatabaseContext";
-import { useLanguage } from "@/context/TranlsationContext";
+import { useContactsSearch } from "@/hooks/useContactSearch";
+import { AquaticRetroIllustration } from "@/icons/RetroAquatic";
+import { FlashList } from "@shopify/flash-list";
+import React, { useEffect } from "react";
+import { StyleSheet, View } from "react-native";
 export default function ConatctsScreen() {
-  const { t } = useLanguage();
+  const { t } = useAppSettings();
   const { getConatctsList, contacts } = useDataBaseContext();
 
-  const [searchValue, setSearchValue] = useState("");
+  const { searchValue, setSearchValue, filteredContacts } =
+    useContactsSearch(contacts);
 
   useEffect(() => {
     getConatctsList();
@@ -25,13 +28,22 @@ export default function ConatctsScreen() {
           onChange={setSearchValue}
         />
         <View style={styles.filters}>
-          <Selector label={t("allContacts")} selected />
-          <Selector label={t("favorites")} selected={false} />
+          {/* <Selector label={t("allContacts")} selected />
+          <Selector label={t("favorites")} selected={false} /> */}
         </View>
         <View style={styles.container}>
           <FlashList
             extraData={contacts}
-            data={contacts}
+            contentContainerStyle={[ styles.listContentConatiner, {
+              margin: contacts.length === 0 ? "auto" : undefined,
+            }]}
+            ListEmptyComponent={
+              <EmptyListMessage
+                message="Sadly, your contact list is empty . Add a new contact or sync with your phone to get started!"
+                illustartion={AquaticRetroIllustration}
+              />
+            }
+            data={filteredContacts}
             showsVerticalScrollIndicator
             renderItem={({ item }) => <ContactCard contact={item} />}
           />
@@ -49,10 +61,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 12,
   },
+  listContentConatiner:{
+              paddingHorizontal: 10,
+  },
   contentContainer: {
     padding: 24,
-    gap: 20,
-    justifyContent: "space-between",
+    gap: 16,
     flex: 1,
   },
 });

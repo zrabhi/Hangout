@@ -15,7 +15,6 @@ export const SearchInput = ({
   isEditable = true,
   onChange,
 }: SearchInputProps) => {
-
   return (
     <View style={styles.container}>
       <SearchIcon height={20} width={20} strokeWidth={2.5} />
@@ -41,9 +40,9 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     paddingHorizontal: 16,
     height: 52,
-    backgroundColor: Colors.white,
+    backgroundColor: "rgb(242, 242, 242)",
     borderWidth: 1.5,
-    borderRadius: 14,
+    borderRadius: 12,
   },
   input: {
     width: "90%",

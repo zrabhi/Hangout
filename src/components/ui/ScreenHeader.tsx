@@ -1,12 +1,13 @@
+import { useAppSettings } from "@/context/AppSettingsContext";
+import { LeftArrownIcon } from "@/icons/LeftArrow";
+import Colors from "@/utils/Colors";
 import { MenuIcon } from "@icons/Menu";
 import { type BottomTabHeaderProps } from "@react-navigation/bottom-tabs";
-import { useState } from "react";
-import { View, Text, Pressable, StyleSheet } from "react-native";
-import { MenuModal } from "./MenuModal";
-import Colors from "@/utils/Colors";
-import { router } from "expo-router";
 import { type NativeStackHeaderProps } from "@react-navigation/native-stack";
-import { LeftArrownIcon } from "@/icons/LeftArrow";
+import { router } from "expo-router";
+import { useState } from "react";
+import { Pressable, StyleSheet, Text, View } from "react-native";
+import { MenuModal } from "./MenuModal";
 
 interface ScreenHeaderProps {
   options: BottomTabHeaderProps | NativeStackHeaderProps;
@@ -15,10 +16,17 @@ interface ScreenHeaderProps {
 
 export const ScreenHeader = ({ options, isTab = true }: ScreenHeaderProps) => {
   const [visible, setVisible] = useState(false);
+  const { headerColor, isLandscape } = useAppSettings();
 
   return (
     <>
-      <View style={styles.container}>
+      <View
+        style={[
+          styles.container,
+          { backgroundColor: headerColor },
+          isLandscape && { paddingTop: 40 },
+        ]}
+      >
         {!isTab && (
           <Pressable
             style={styles.menuButton}
@@ -58,11 +66,10 @@ const styles = StyleSheet.create({
   },
   container: {
     paddingTop: 80,
-    paddingHorizontal: 24,
+    paddingHorizontal: 26,
     justifyContent: "space-between",
     alignItems: "center",
     flexDirection: "row",
-    backgroundColor: "transparent",
   },
   title: {
     fontFamily: "Baloo2-SemiBold",

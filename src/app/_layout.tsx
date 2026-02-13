@@ -3,17 +3,16 @@ import {
   DefaultTheme,
   ThemeProvider,
 } from "@react-navigation/native";
-import { Stack } from "expo-router";
 import { useFonts } from "expo-font";
+import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
 
 import { useColorScheme } from "@hooks/use-color-scheme";
 
-
+import { AppSettingsProvider } from "@/context/AppSettingsContext";
 import { DataBaseProvider } from "@/context/DatabaseContext";
 import { deleteDatabaseAsync, SQLiteProvider } from "expo-sqlite";
-import { LanguageProvider } from "@/context/TranlsationContext";
 
 export const unstable_settings = {
   anchor: "(tabs)",
@@ -69,12 +68,16 @@ export default function RootLayout() {
         onError={async () => await deleteDatabaseAsync("hangouts.db")}
       >
         <DataBaseProvider>
-          <LanguageProvider>
-            <Stack>
+          <AppSettingsProvider>
+            <Stack
+              screenOptions={{
+                orientation: "all",
+              }}
+            >
               <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
               <Stack.Screen name="contact" />
             </Stack>
-          </LanguageProvider>
+          </AppSettingsProvider>
         </DataBaseProvider>
       </SQLiteProvider>
       <StatusBar style="auto" />

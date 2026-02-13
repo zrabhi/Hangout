@@ -1,9 +1,14 @@
-import { View, StyleSheet, Text } from "react-native";
+import { EmptyListMessage } from "@/components/ui/EmptyList";
+import { AquaticRetroIllustration } from "@/icons/RetroAquatic";
+import { View, StyleSheet } from "react-native";
 
 export default function MessagesScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Messages</Text>
+      <EmptyListMessage
+        message="Sadly, your contact list is empty . Add a new contact or sync with your phone to get started!"
+        illustartion={AquaticRetroIllustration}
+      />
     </View>
   );
 }
@@ -14,8 +19,5 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  text: {
-    fontSize: 20,
-    fontFamily: "Baloo2-SemiBold",
-  },
+ 
 });

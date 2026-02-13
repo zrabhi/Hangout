@@ -1,7 +1,7 @@
 import { Input } from "@/components/ui/Input";
 import { SquarePenIcon } from "@/icons/SquarePen";
 import { type Contact } from "@/types/Contacts";
-import { type Dispatch, type SetStateAction } from "react";
+import { useState, type Dispatch, type SetStateAction } from "react";
 import * as ImagePicker from "expo-image-picker";
 import {
   View,
@@ -10,11 +10,13 @@ import {
   StyleSheet,
   Image,
   ScrollView,
+  Linking,
 } from "react-native";
 
 import Colors from "@/utils/Colors";
-import { useLanguage } from "@/context/TranlsationContext";
 import { type Errors } from "@/types/ContactsError";
+import { useAppSettings } from "@/context/AppSettingsContext";
+import { PermissionModal } from "@/components/ui/PermissionsMessageModal";
 
 interface ConatctFromProps {
   contact: Contact;
@@ -27,13 +29,15 @@ export const ContactForm = ({
   onChange,
   errors,
 }: ConatctFromProps) => {
-  const { t } = useLanguage();
+  const [isPermissionModalVisible, setPermissionModal] =
+    useState<boolean>(false);
+  const { t } = useAppSettings();
 
   const handlePickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
     if (status !== "granted") {
-      alert("Permission denied!");
+      setPermissionModal(true);
       return;
     }
 
@@ -46,84 +50,104 @@ export const ContactForm = ({
     }
   };
 
+  const handlePressSettingButton = () => {
+    Linking.openSettings();
+    setPermissionModal(false);
+  };
+
+  const handleCloseModal = () => {
+    setPermissionModal(false);
+  };
   return (
-    <View style={styles.container}>
-      <Pressable style={styles.photoContainer} onPress={handlePickImage}>
-        <View style={styles.labelConatiner}>
-          <Text style={styles.photoLabel}>{t("photo")}</Text>
-        </View>
-        {contact.image && (
-          <Image source={{ uri: contact.image }} style={styles.photo} />
-        )}
+    <>
+      <View style={styles.container}>
+        <Pressable style={styles.photoContainer} onPress={handlePickImage}>
+          <View style={styles.labelConatiner}>
+            <Text style={styles.photoLabel}>{t("photo")}</Text>
+          </View>
+          {contact.image && (
+            <Image source={{ uri: contact.image }} style={styles.photo} />
+          )}
 
-        <Pressable style={styles.uploadImageButton} onPress={handlePickImage}>
-          <SquarePenIcon
-            color={Colors.white}
-            strokeWidth={2.5}
-            height={14}
-            width={14}
-          />
-          <Text style={styles.photoPlaceholder}>
-            {contact.image !== null ? t("changePhoto") : t("photoUpload")}
-          </Text>
+          <Pressable style={styles.uploadImageButton} onPress={handlePickImage}>
+            <SquarePenIcon
+              color={Colors.white}
+              strokeWidth={2.5}
+              height={14}
+              width={14}
+            />
+            <Text style={styles.photoPlaceholder}>
+              {contact.image !== null ? t("changePhoto") : t("photoUpload")}
+            </Text>
+          </Pressable>
         </Pressable>
-      </Pressable>
 
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.contentContainer}
-        style={styles.scrollView}
-      >
-        <Input
-          label={t("firstName")}
-          placeHolder={
-            t("inputPlaceHolder") + " " + t("firstName").toLowerCase()
-          }
-          value={contact.firstName}
-          error={errors["firstName"]}
-          onChange={(text: string) => onChange({ ...contact, firstName: text })}
-        />
-        <Input
-          label={t("lastName")}
-          error={errors["lastName"]}
-          placeHolder={
-            t("inputPlaceHolder") + " " + t("lastName").toLowerCase()
-          }
-          value={contact.lastName}
-          onChange={(text: string) => onChange({ ...contact, lastName: text })}
-        />
-        <Input
-          label={t("email")}
-          placeHolder={t("inputPlaceHolder") + " " + t("email").toLowerCase()}
-          value={contact.email}
-          error={errors["email"]}
-          onChange={(text: string) => onChange({ ...contact, email: text })}
-        />
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.contentContainer}
+          style={styles.scrollView}
+        >
+          <Input
+            label={t("firstName")}
+            placeHolder={
+              t("inputPlaceHolder") + " " + t("firstName").toLowerCase()
+            }
+            value={contact.firstName}
+            error={errors["firstName"]}
+            onChange={(text: string) =>
+              onChange({ ...contact, firstName: text })
+            }
+          />
+          <Input
+            label={t("lastName")}
+            error={errors["lastName"]}
+            placeHolder={
+              t("inputPlaceHolder") + " " + t("lastName").toLowerCase()
+            }
+            value={contact.lastName}
+            onChange={(text: string) =>
+              onChange({ ...contact, lastName: text })
+            }
+          />
+          <Input
+            label={t("email")}
+            placeHolder={t("inputPlaceHolder") + " " + t("email").toLowerCase()}
+            value={contact.email}
+            error={errors["email"]}
+            onChange={(text: string) => onChange({ ...contact, email: text })}
+          />
 
-        <Input
-          error={errors["phoneNumber"]}
-          label={t("phoneNumber")}
-          placeHolder={
-            t("inputPlaceHolder") + " " + t("phoneNumber").toLowerCase()
-          }
-          value={contact.phoneNumber}
-          onChange={(text: string) =>
-            onChange({ ...contact, phoneNumber: text })
-          }
-        />
-        <Input
-          label={t("postalCode")}
-          error={errors["postalCode"]}
-          value={contact.postalCode}
-          placeHolder={
-            t("inputPlaceHolder") + " " + t("postalCode").toLowerCase()
-          }
-          onChange={(text: string) =>
-            onChange({ ...contact, postalCode: text })
-          }
-        />
-      </ScrollView>
-    </View>
+          <Input
+            error={errors["phoneNumber"]}
+            label={t("phoneNumber")}
+            placeHolder={
+              t("inputPlaceHolder") + " " + t("phoneNumber").toLowerCase()
+            }
+            value={contact.phoneNumber}
+            onChange={(text: string) =>
+              onChange({ ...contact, phoneNumber: text })
+            }
+          />
+          <Input
+            label={t("postalCode")}
+            error={errors["postalCode"]}
+            value={contact.postalCode}
+            placeHolder={
+              t("inputPlaceHolder") + " " + t("postalCode").toLowerCase()
+            }
+            onChange={(text: string) =>
+              onChange({ ...contact, postalCode: text })
+            }
+          />
+        </ScrollView>
+      </View>
+      <PermissionModal
+        onClose={handleCloseModal}
+        onPress={handlePressSettingButton}
+        isModalVisible={isPermissionModalVisible}
+        message={t("photoPermission")}
+      />
+    </>
   );
 };
 
@@ -191,5 +215,4 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: Colors.white,
   },
-  
 });
