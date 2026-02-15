@@ -7,6 +7,7 @@ import {
   useState,
 } from "react";
 import { useSQLiteContext } from "expo-sqlite";
+import { Message } from "@/types/Message";
 interface DataBaseContextType {
   contacts: Contact[];
   isLoading: boolean;
@@ -42,6 +43,17 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
           image TEXT
           );
           `);
+
+      await db.execAsync(`
+        CREATE TABLE IF NOT EXISTS messages (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          contactId INTEGER,
+          body TEXT,
+          date INTEGER,
+          FOREIGN KEY(contactId) REFERENCES contacts(id)
+        );
+        
+        `);
     } catch (err) {
       throw new Error(`ERROR occured while Init DB ${err}`);
     } finally {
@@ -49,6 +61,23 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const addMessage = async (message: Message) => {
+    setIsloading(true);
+    try {
+      const { contactId, type, date, body } = message;
+      await db.runAsync(
+        `
+          INSERT INTO  messages (contactId, body, date, type)
+          VALUES (?, ?, ?, ?);
+        `,
+        [contactId, body, date, type],
+      );
+    } catch (err) {
+      throw new Error(`ERROR occured while adding message ${err}`);
+    } finally {
+      setIsloading(false);
+    }
+  };
   useEffect(() => {
     handleInitDataBase();
   }, []);
@@ -60,7 +89,7 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
   //       `);
   //   } catch (err) {}
   // };
-  
+
   const handleGetContactsList = async () => {
     setIsloading(true);
     try {
@@ -74,6 +103,20 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
     } finally {
       setIsloading(false);
     }
+  };
+
+  const getContactsWithMessages = async () => {
+    const result = await db.execAsync(`
+    SELECT c.id as contactId, c.firstName, c.lastName, c.phoneNumber, c.image,
+           m.body, m.date
+    FROM contacts c
+    INNER JOIN messages m ON c.id = m.contactId
+    WHERE m.date = (
+        SELECT MAX(date) FROM messages WHERE contactId = c.id
+    )
+    ORDER BY m.date DESC;
+  `);
+    return result[0].rows._array;
   };
 
   const getContactById = async (id: string): Promise<Contact | null> => {

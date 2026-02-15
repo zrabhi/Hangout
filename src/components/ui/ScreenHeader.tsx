@@ -5,16 +5,21 @@ import { MenuIcon } from "@icons/Menu";
 import { type BottomTabHeaderProps } from "@react-navigation/bottom-tabs";
 import { type NativeStackHeaderProps } from "@react-navigation/native-stack";
 import { router } from "expo-router";
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { MenuModal } from "./MenuModal";
 
 interface ScreenHeaderProps {
   options: BottomTabHeaderProps | NativeStackHeaderProps;
   isTab?: boolean;
+  children?: ReactNode;
 }
 
-export const ScreenHeader = ({ options, isTab = true }: ScreenHeaderProps) => {
+export const ScreenHeader = ({
+  options,
+  isTab = true,
+  children,
+}: ScreenHeaderProps) => {
   const [visible, setVisible] = useState(false);
   const { headerColor, isLandscape } = useAppSettings();
 
@@ -42,7 +47,11 @@ export const ScreenHeader = ({ options, isTab = true }: ScreenHeaderProps) => {
             />
           </Pressable>
         )}
-        <Text style={styles.title}>{options.options.title}</Text>
+        {children ? (
+          children
+        ) : (
+          <Text style={styles.title}>{options.options.title}</Text>
+        )}
         <Pressable style={styles.menuButton} onPress={() => setVisible(true)}>
           <MenuIcon
             color={Colors.white}

@@ -93,17 +93,7 @@ export default function ContactScreen() {
         }}
       />
       <View style={styles.contentConatainer}>
-        {isEditing && (
-          <Pressable
-            //onPress={handleDelete}
-            style={({ pressed }) => [
-              styles.trashIcon,
-              { opacity: pressed ? 0.6 : 1 },
-            ]}
-          >
-            <MenuIcon color={Colors.primary.red[100]} />
-          </Pressable>
-        )}
+       
         <ContactForm
           errors={errors}
           contact={contactInfo}

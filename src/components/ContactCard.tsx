@@ -1,16 +1,20 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Linking, Pressable, StyleSheet, Text, View } from "react-native";
 import { Image } from "expo-image";
+import { Ionicons } from "@expo/vector-icons";
 import Colors from "@/utils/Colors";
 import { type Contact } from "@/types/Contacts";
 import { router } from "expo-router";
+import { CallIcon } from "@/icons/Call";
+import { MessageIcon } from "@/icons/Message";
 
 interface ContactCardProps {
-
   contact: Contact;
 }
 
 export const ContactCard = ({ contact }: ContactCardProps) => {
   const cdnRandomImage = `https://api.dicebear.com/7.x/personas/png?seed=${contact.id}`;
+
+  const fullName = contact.firstName + " " + contact.lastName;
   return (
     <Pressable
       onPress={() =>
@@ -19,28 +23,43 @@ export const ContactCard = ({ contact }: ContactCardProps) => {
       style={styles.button}
     >
       <View style={styles.contactDetails}>
-        <Image source={{ uri: contact.image ?? cdnRandomImage }} style={styles.contactImage} />
+        <Image
+          source={{ uri: contact.image ?? cdnRandomImage }}
+          style={styles.contactImage}
+        />
         <View>
-          <Text style={styles.contactName}>
-            {contact.firstName + " " + contact.lastName}
-          </Text>
+          <Text style={styles.contactName}>{fullName}</Text>
           <Text style={styles.phoneNumber}>{contact.phoneNumber}</Text>
         </View>
       </View>
-      {/* {contact.isFavorite && (
+      <View style={styles.actionButtons}>
         <Pressable
-          style={styles.cardActions}
-          onPress={() => console.log("pressed")}
+          style={styles.actionButton}
+          onPress={(e) => {
+            e.stopPropagation();
+            router.navigate({
+              pathname: "/conv",
+              params: {
+                fullName,
+                id: contact.id,
+                image: contact.image,
+                phoneNumber: contact.phoneNumber,
+              },
+            });
+          }}
         >
-          <StarIcon
-            width={16}
-            height={16}
-            strokeWidth={2.5}
-            color={"none"}
-            fill={"none"}
-          />
+          <MessageIcon strokeWidth={2} fill={Colors.white} />
         </Pressable>
-      )} */}
+        <Pressable
+          style={styles.actionButton}
+          onPress={(e) => {
+            e.stopPropagation();
+            Linking.openURL(`tel:${contact.phoneNumber}`);
+          }}
+        >
+          <CallIcon strokeWidth={2} fill={Colors.white} />
+        </Pressable>
+      </View>
     </Pressable>
   );
 };
@@ -56,7 +75,7 @@ const styles = StyleSheet.create({
     borderWidth: 1.3,
     paddingLeft: 8,
     borderRadius: 14,
-    backgroundColor: 'rgb(242, 242, 242)',
+    backgroundColor: "rgb(242, 242, 242)",
   },
   contactDetails: {
     flexDirection: "row",
@@ -78,5 +97,21 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: "Baloo2-Medium",
     color: "gray",
+  },
+  actionButtons: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    paddingRight: 12,
+  },
+  actionButton: {
+    width: 40,
+    height: 40,
+    borderStyle: "dashed",
+    borderWidth: 1,
+    borderRadius: 20,
+    backgroundColor: Colors.primary.orange[100],
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
