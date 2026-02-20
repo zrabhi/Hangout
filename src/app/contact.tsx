@@ -3,13 +3,11 @@ import { ScreenHeader } from "@/components/ui/ScreenHeader";
 import { ContactForm } from "@/containers/CreateContactForms";
 import { useAppSettings } from "@/context/AppSettingsContext";
 import { useDataBaseContext } from "@/context/DatabaseContext";
-import { MenuIcon } from "@/icons/Menu";
 import { type Contact, contactCreationInit } from "@/types/Contacts";
 import { type Errors } from "@/types/ContactsError";
-import Colors from "@/utils/Colors";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 // fake fetch
 
@@ -43,9 +41,9 @@ export default function ContactScreen() {
       newErrors.email = t("emailInvalid");
     }
 
-    if (!contactInfo.phoneNumber?.trim()) {
+    if (!contactInfo.address?.trim()) {
       newErrors.phoneNumber = t("phoneNumberRequired");
-    } else if (!/^\+?[0-9\s\-]{7,15}$/.test(contactInfo.phoneNumber)) {
+    } else if (!/^\+?[0-9\s\-]{7,15}$/.test(contactInfo.address)) {
       newErrors.phoneNumber = t("phoneNumberInvalid");
     }
 
@@ -65,7 +63,7 @@ export default function ContactScreen() {
         (data) => data && setContactInfo(data),
       );
     }
-  }, [id]);
+  }, [id,isEditing]);
 
   const handleOnPress = async () => {
     const result = validate();
@@ -129,13 +127,13 @@ const styles = StyleSheet.create({
   button: {
     flex: 1,
   },
-  trashIcon: {
-    position: "absolute",
-    top: 0,
-    right: 60,
-    padding: 8,
-    zIndex: 10,
-  },
+  // trashIcon: {
+  //   position: "absolute",
+  //   top: 0,
+  //   right: 60,
+  //   padding: 8,
+  //   zIndex: 10,
+  // },
   buttonsContainer: {
     flexDirection: "row",
     justifyContent: "center",

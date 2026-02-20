@@ -1,6 +1,8 @@
 import { View, StyleSheet, Text } from "react-native";
 
 export default function CallsScreen() {
+  // const {handleGetCallsList} = useDataBaseContext()
+ 
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Calls</Text>

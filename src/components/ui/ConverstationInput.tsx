@@ -2,7 +2,6 @@ import { SendIcon } from "@/icons/Send";
 import Colors from "@/utils/Colors";
 import {
   StyleSheet,
-  Text,
   TextInput,
   TouchableOpacity,
   View,

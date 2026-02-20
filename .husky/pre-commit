@@ -3,5 +3,4 @@
 echo ">>                Running pre-commit hooks..."
 echo ">> Linting your files and fixing them if needed..."
 
-
 git update-index --again

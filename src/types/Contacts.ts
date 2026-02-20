@@ -2,7 +2,7 @@ export interface Contact {
   id?:string
   firstName: string | null;
   lastName: string | null;
-  phoneNumber: string | null;
+  address: string | null;
   postalCode: string | null;
   email: string | null;
   image: string | null;
@@ -11,7 +11,7 @@ export interface Contact {
 export const contactCreationInit: Contact = {
   firstName: null,
   lastName: null,
-  phoneNumber: null,
+  address: null,
   postalCode: null,
   email: null,
   image: null,

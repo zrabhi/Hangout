@@ -5,7 +5,7 @@ import { MenuIcon } from "@icons/Menu";
 import { type BottomTabHeaderProps } from "@react-navigation/bottom-tabs";
 import { type NativeStackHeaderProps } from "@react-navigation/native-stack";
 import { router } from "expo-router";
-import { ReactNode, useState } from "react";
+import { type ReactNode, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { MenuModal } from "./MenuModal";
 
@@ -74,14 +74,16 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary.green[100],
   },
   container: {
-    paddingTop: 80,
-    paddingHorizontal: 26,
+    marginVertical: 26,
+    paddingHorizontal: 18,
+    borderBottomWidth: 1.5,
+    paddingVertical: 40,
     justifyContent: "space-between",
     alignItems: "center",
     flexDirection: "row",
   },
   title: {
-    fontFamily: "Baloo2-SemiBold",
+    fontFamily: "Baloo2-Bold",
     fontSize: 18,
   },
 });

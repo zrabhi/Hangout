@@ -123,9 +123,9 @@ export const ContactForm = ({
             placeHolder={
               t("inputPlaceHolder") + " " + t("phoneNumber").toLowerCase()
             }
-            value={contact.phoneNumber}
+            value={contact.address}
             onChange={(text: string) =>
-              onChange({ ...contact, phoneNumber: text })
+              onChange({ ...contact, address: text })
             }
           />
           <Input

@@ -26,9 +26,7 @@ export const AppSettingsProvider = ({ children }: { children: ReactNode }) => {
   const [language, setLanguage] = useState<Language>("en");
   const [headerColor, setHeaderColor] = useState<string>(AppColors.WHITE);
 
-  const t = (key: keyof typeof translations.en) => {
-    return translations[language][key];
-  };
+  const t = (key: keyof typeof translations.en) => translations[language][key];
 
   return (
     <AppSettingContext.Provider

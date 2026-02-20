@@ -12,7 +12,8 @@ import { useColorScheme } from "@hooks/use-color-scheme";
 
 import { AppSettingsProvider } from "@/context/AppSettingsContext";
 import { DataBaseProvider } from "@/context/DatabaseContext";
-import { deleteDatabaseAsync, SQLiteProvider } from "expo-sqlite";
+import { SQLiteProvider } from "expo-sqlite";
+import { useAppBackgroundToast } from "@/hooks/UseLastBackground";
 
 export const unstable_settings = {
   anchor: "(tabs)",
@@ -20,6 +21,7 @@ export const unstable_settings = {
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+
   const [loaded] = useFonts({
     "Baloo2-Regular": require("@assets/font/Baloo2-Regular.ttf"),
     "Baloo2-Medium": require("@assets/font/Baloo2-Medium.ttf"),
@@ -29,43 +31,16 @@ export default function RootLayout() {
   });
 
   // NOTE: just a tempo return.
+
+  useAppBackgroundToast();
+  // r
   if (!loaded) return null;
-
-  // useEffect(() => {
-  //   const handleAppStateChange = (nextAppState: any) => {
-  //     if (nextAppState === 'background') {
-  //       setBackgroundTime(new Date());
-  //     } else if (nextAppState === 'active' && backgroundTime) {
-  //       ToastAndroid.show({
-  //         type: 'success',
-  //         position: 'bottom',
-  //         text1: t('menu.backgrounded'),
-  //         text2: `${backgroundTime.toLocaleTimeString()}`,
-  //         visibilityTime: 2000,
-  //         autoHide: true,
-  //         topOffset: 30,
-  //         bottomOffset: 40,
-  //       });
-  //     }
-  //   };
-
-  //   const subscription = AppState.addEventListener(
-  //     'change',
-  //     handleAppStateChange,
-  //   );
-
-  //   return () => {
-  //     subscription.remove();
-  //   };
-  // }, [backgroundTime]);
-
-  // Drop a table
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <SQLiteProvider
         databaseName="hangouts.db"
-        onError={async () => await deleteDatabaseAsync("hangouts.db")}
+       // onError={async () => await deleteDatabaseAsync("hangouts.db")}
       >
         <DataBaseProvider>
           <AppSettingsProvider>

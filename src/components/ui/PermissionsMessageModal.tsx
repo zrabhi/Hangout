@@ -93,10 +93,10 @@ const styles = StyleSheet.create({
   modal: {
     flex: 1,
   },
-  permissionImage: {
-    width: 150,
-    height: 120,
-  },
+  // permissionImage: {
+  //   width: 150,
+  //   height: 120,
+  // },
   permissionText: {
     textAlign: "center",
     fontFamily: "Baloo2-Medium",

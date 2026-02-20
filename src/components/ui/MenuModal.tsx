@@ -43,13 +43,13 @@ export const MenuModal = ({
   return (
     <Modal
       supportedOrientations={["landscape", "portrait","portrait-upside-down"]}
-      style={styles.modal}
+      style={styles.container}
       visible={isMenuVisible}
       animationType="slide"
       transparent
       {...rest}
     >
-      <BlurView style={styles.blurContainer}>
+      <BlurView  experimentalBlurMethod="dimezisBlurView"  style={styles.blurContainer}>
         <View
           style={[
             styles.menuContiner,
@@ -59,10 +59,8 @@ export const MenuModal = ({
           <Text style={styles.title}>Menu</Text>
           <ScrollView
             showsVerticalScrollIndicator={isLandscape}
-            style={{ flex: 1 }}
-            contentContainerStyle={{
-              gap: 24,
-            }}
+            style={styles.container}
+            contentContainerStyle={styles.scrollViewContent}
           >
             <View style={styles.menuOptionConatiner}>
               <Text style={styles.text}>{t("language")}</Text>
@@ -133,14 +131,16 @@ const styles = StyleSheet.create({
       Platform.OS === "ios" ? "transparent" : Colors.background.card,
     padding: 20,
     borderRadius: 16,
-    width: "65%",
+    width: "80%",
   },
-
+  scrollViewContent:{
+    gap:24
+  },
   menuContinerLandscape: {
     width: "60%",
     height: "90%",
   },
-  modal: {
+  container: {
     flex: 1,
   },
   button: {
@@ -200,12 +200,12 @@ const styles = StyleSheet.create({
     paddingLeft: 34,
   },
   text: {
-    fontFamily: "Baloo2-Medium",
+    fontFamily: "Baloo2-SemiBold",
     fontSize: 14,
   },
   title: {
     textAlign: "center",
-    fontFamily: "Baloo2-SemiBold",
+    fontFamily: "Baloo2-Bold",
     fontSize: 18,
     marginBottom: 10,
   },

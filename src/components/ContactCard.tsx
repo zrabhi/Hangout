@@ -1,6 +1,5 @@
-import { Linking, Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Image } from "expo-image";
-import { Ionicons } from "@expo/vector-icons";
 import Colors from "@/utils/Colors";
 import { type Contact } from "@/types/Contacts";
 import { router } from "expo-router";
@@ -9,10 +8,11 @@ import { MessageIcon } from "@/icons/Message";
 
 interface ContactCardProps {
   contact: Contact;
+  onPressCall:  (address: string, contactName: string)  => Promise<void>
 }
 
-export const ContactCard = ({ contact }: ContactCardProps) => {
-  const cdnRandomImage = `https://api.dicebear.com/7.x/personas/png?seed=${contact.id}`;
+export const ContactCard = ({ contact,onPressCall }: ContactCardProps) => {
+  const cdnRandomImage = `https://api.dicebear.com/9.x/toon-head/svg?seed=r${contact.firstName}`;
 
   const fullName = contact.firstName + " " + contact.lastName;
   return (
@@ -29,7 +29,7 @@ export const ContactCard = ({ contact }: ContactCardProps) => {
         />
         <View>
           <Text style={styles.contactName}>{fullName}</Text>
-          <Text style={styles.phoneNumber}>{contact.phoneNumber}</Text>
+          <Text style={styles.phoneNumber}>{contact?.address}</Text>
         </View>
       </View>
       <View style={styles.actionButtons}>
@@ -43,7 +43,7 @@ export const ContactCard = ({ contact }: ContactCardProps) => {
                 fullName,
                 id: contact.id,
                 image: contact.image,
-                phoneNumber: contact.phoneNumber,
+                address: contact?.address,
               },
             });
           }}
@@ -54,7 +54,7 @@ export const ContactCard = ({ contact }: ContactCardProps) => {
           style={styles.actionButton}
           onPress={(e) => {
             e.stopPropagation();
-            Linking.openURL(`tel:${contact.phoneNumber}`);
+           onPressCall(contact?.address, fullName);
           }}
         >
           <CallIcon strokeWidth={2} fill={Colors.white} />
@@ -70,12 +70,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    height: 100,
     gap: 12,
+    padding:15,
     borderWidth: 1.3,
-    paddingLeft: 8,
-    borderRadius: 14,
-    backgroundColor: "rgb(242, 242, 242)",
+    borderRadius: 15,
+    backgroundColor: Colors.background.card,
   },
   contactDetails: {
     flexDirection: "row",
@@ -83,8 +82,8 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   contactImage: {
-    width: 80,
-    height: 80,
+    width: 50,
+    height: 50,
     borderRadius: 10,
     borderWidth: 1,
   },

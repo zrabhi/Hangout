@@ -7,15 +7,18 @@ import { ScreenHeader } from "@components/ui/ScreenHeader";
 import { CallIcon } from "@icons/Call";
 import { ContactsIcon } from "@icons/Contacts";
 import { MessageIcon } from "@icons/Message";
+import Colors from "@/utils/Colors";
 
 export default function TabLayout() {
  // const {t, headerColor} = useAppSettings();
   return (
     <Tabs
       tabBar={(props) => <AnimatedTabBar {...props} />}
-      
-      screenOptions={{
         
+      screenOptions={{
+        sceneStyle:{
+          backgroundColor:Colors.background.screen,
+        },
         header: (props) => <ScreenHeader options={props} />,
         headerShown: false,
         tabBarButton: HapticTab,
@@ -23,7 +26,9 @@ export default function TabLayout() {
     >
       <Tabs.Screen
         name="index"
+        
         options={{
+          
           title: "Contacts",
           headerShown: true,
           headerTitle: "Contacts",
