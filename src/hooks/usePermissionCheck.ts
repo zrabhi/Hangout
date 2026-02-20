@@ -1,4 +1,4 @@
-import { PermissionsAndroid ,Permission} from "react-native";
+import { PermissionsAndroid ,type Permission} from "react-native";
 
 export const usePermissionCheck = (permission: Permission) => {
   const requestPermission = async () => {

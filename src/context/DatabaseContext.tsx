@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { type Contact } from "@/types/Contacts";
 import {
   createContext,
@@ -7,14 +8,21 @@ import {
   useState,
 } from "react";
 import { useSQLiteContext } from "expo-sqlite";
-import { Message } from "@/types/Message";
+import { type Message } from "@/types/Message";
+import { type Calls } from "@/types/Calls";
 interface DataBaseContextType {
   contacts: Contact[];
+
   isLoading: boolean;
   createContact: (contact: Contact) => Promise<void>;
   deleteContact: (id: string) => Promise<void>;
   getConatctsList: () => Promise<Contact[]>;
   getContactById: (id: string) => Promise<Contact | null>;
+  getConversationByaddress: (address: number) => Promise<Message[]>;
+  addMessage: (message: Message) => Promise<void>;
+  handleGetCallsList: () => Promise<Calls[]>;
+  getLatestMessages: () => Promise<Message[]>;
+  handleAddCall: (call: Calls) => Promise<void>;
   updateContact: (
     id: string,
     fields: Partial<Omit<Contact, "id">>,
@@ -32,12 +40,13 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
   const handleInitDataBase = async () => {
     setIsloading(true);
     try {
+      await db.execAsync(`PRAGMA foreign_keys = ON;`);
       await db.execAsync(`
         CREATE TABLE IF NOT EXISTS contacts  (
-         id INTEGER PRIMARY KEY AUTOINCREMENT,
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
           firstName TEXT NOT null,
           lastName TEXT NOT null,
-          phoneNumber TEXT,
+          address TEXT,
           postalCode TEXT,
           email TEXT,
           image TEXT
@@ -47,13 +56,26 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
       await db.execAsync(`
         CREATE TABLE IF NOT EXISTS messages (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
+          address TEXT,
           contactId INTEGER,
           body TEXT,
           date INTEGER,
+          type TEXT,
+          deleviryState TEXT,
+          FOREIGN KEY (contactId) REFERENCES contacts(id)
+          );
+          `);
+
+      await db.execAsync(`
+          CREATE TABLE IF NOT EXISTS calls (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          address TEXT NOT NULL,
+          contactId INTEGER,
+          contactName TEXT,
+          timestamp TEXT NOT NULL,
           FOREIGN KEY(contactId) REFERENCES contacts(id)
-        );
-        
-        `);
+          );
+          `);
     } catch (err) {
       throw new Error(`ERROR occured while Init DB ${err}`);
     } finally {
@@ -61,34 +83,75 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const addMessage = async (message: Message) => {
-    setIsloading(true);
-    try {
-      const { contactId, type, date, body } = message;
-      await db.runAsync(
-        `
-          INSERT INTO  messages (contactId, body, date, type)
-          VALUES (?, ?, ?, ?);
-        `,
-        [contactId, body, date, type],
-      );
-    } catch (err) {
-      throw new Error(`ERROR occured while adding message ${err}`);
-    } finally {
-      setIsloading(false);
-    }
-  };
   useEffect(() => {
     handleInitDataBase();
   }, []);
 
-  // const handleDropTables = async () => {
-  //   try {
-  //     await db.runAsync(`
-  //         DROP TABLE IF EXISTS
-  //       `);
-  //   } catch (err) {}
-  // };
+  const getConversationByaddress = async (
+    contactId: number,
+  ): Promise<Message[]> => {
+    try {
+      const result = await db.getAllAsync<Message[]>(
+        `
+            SELECT id, contactId, address, body, date, type, deleviryState
+            FROM messages
+            WHERE contactId = ?
+            ORDER BY date ASC
+          `,
+        [contactId],
+      );
+      return result ?? [];
+    } catch (err) {
+      console.log("err jj", err);
+      return [];
+    }
+  };
+  const addMessage = async (message: Message) => {
+    try {
+      const { address, type, date, body, deleviryState, contactId } = message;
+
+      await db.runAsync(
+        `
+      INSERT INTO messages (contactId, address, body, date, type, deleviryState)
+      VALUES (?, ?, ?, ?, ?, ?)
+      `,
+        [contactId, address, body, date, type, deleviryState],
+      );
+    } catch (err) {
+      console.error("Add message error:", err);
+    }
+  };
+
+  const handleAddCall = async (call: Calls) => {
+    try {
+      const { address, contactName, timestamp } = call;
+
+      await db.runAsync(
+        `
+      INSERT INTO calls (address, contactName, timestamp)
+      VALUES (?, ?, ?)
+      `,
+        [address, contactName, timestamp],
+      );
+    } catch (err) {
+      console.error("Add call error:", err);
+    }
+  };
+
+  const handleGetCallsList = async (): Promise<Calls[]> => {
+    setIsloading(true);
+    try {
+      const result = await db.getAllAsync<Calls>(`
+          SELECT * FROM calls ORDER BY id DESC
+        `);
+      console.log(result);
+      return result;
+    } catch (err) {
+      throw new Error(`ERROR occured while fetching calls table${err}`);
+    } finally {
+      setIsloading(false);
+    }
+  };
 
   const handleGetContactsList = async () => {
     setIsloading(true);
@@ -105,18 +168,24 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const getContactsWithMessages = async () => {
-    const result = await db.execAsync(`
-    SELECT c.id as contactId, c.firstName, c.lastName, c.phoneNumber, c.image,
-           m.body, m.date
-    FROM contacts c
-    INNER JOIN messages m ON c.id = m.contactId
-    WHERE m.date = (
-        SELECT MAX(date) FROM messages WHERE contactId = c.id
-    )
-    ORDER BY m.date DESC;
-  `);
-    return result[0].rows._array;
+  const getLatestMessages = async () => {
+    try {
+      const result = await db.getAllAsync(`
+        SELECT m1.*
+        FROM messages m1
+        INNER JOIN (
+          SELECT address, MAX(date) as maxDate
+          FROM messages
+          GROUP BY address
+          ) m2
+          ON m1.address = m2.address
+          AND m1.date = m2.maxDate
+          ORDER BY m1.date DESC
+          `);
+      return result ?? [];
+    } catch (err) {
+      console.log("err jj", err);
+    }
   };
 
   const getContactById = async (id: string): Promise<Contact | null> => {
@@ -139,14 +208,14 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
     setIsloading(true);
     try {
       console.log("contact to be created", contact);
-      const { firstName, lastName, phoneNumber, postalCode, email, image } =
+      const { firstName, lastName, address, postalCode, email, image } =
         contact;
       const result = await db.runAsync(
         `
-  INSERT INTO contacts (firstName, lastName, phoneNumber, postalCode, email, image)
+  INSERT INTO contacts (firstName, lastName, address, postalCode, email, image)
   VALUES (?, ?, ?, ?, ?, ?)
   `,
-        [firstName, lastName, phoneNumber, postalCode, email, image],
+        [firstName, lastName, address, postalCode, email, image],
       );
 
       setContacts((prev) => [
@@ -209,6 +278,11 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
     contacts: contacts,
     isLoading,
     getContactById,
+    addMessage,
+    getLatestMessages,
+    handleAddCall,
+    handleGetCallsList,
+    getConversationByaddress,
     getConatctsList: handleGetContactsList,
     createContact: handleCreateContact,
     deleteContact: handleDeleteConatct,

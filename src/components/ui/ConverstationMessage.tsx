@@ -1,14 +1,15 @@
+import { DeleviryStateType } from "@/types/Message";
+import { MessageType } from "@/types/MessageTYpe";
 import { formatTime } from "@/utils/Helpers";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
-enum MessageType {
-  SENT = "2",
-  RECIEVED = "1",
-}
+
 interface ConverstationMessageProps {
   type: MessageType;
   message: string;
+  deleviryState: DeleviryStateType,
   senderName: string;
+  onRetry: () => Promise<void>
   time: string;
 }
 
@@ -17,7 +18,34 @@ export const ConversationMessage = ({
   message,
   time,
   senderName,
+  onRetry,
+  deleviryState
 }: ConverstationMessageProps) => {
+
+
+  const isSent = type === MessageType.SENT;
+  console.log("type", deleviryState, isSent)
+
+  const renderStatus = () => {
+    console.log(deleviryState)
+    if (!isSent) return null;
+
+
+    if (deleviryState === DeleviryStateType.SENT) {
+      return <Text style={styles.statusText}>✓ Sent</Text>;
+    }
+
+    if (deleviryState === DeleviryStateType.FAILED) {
+      return (
+        <TouchableOpacity onPress={onRetry}>
+          <Text style={styles.retryText}>Failed • Tap to retry</Text>
+        </TouchableOpacity>
+      );
+    }
+
+    return null;
+  };
+
   return (
     <View
       style={[
@@ -31,7 +59,10 @@ export const ConversationMessage = ({
       <View style={styles.textBubble}>
         <Text style={styles.messageText}>{message}</Text>
       </View>
-      <Text style={styles.timeText}>{formatTime(time)}</Text>
+     <View style={styles.footerRow}>
+        <Text style={styles.timeText}>{formatTime(time)}</Text>
+        {renderStatus()}
+      </View>
     </View>
   );
 };
@@ -40,6 +71,21 @@ const styles = StyleSheet.create({
   messageContainer: {
     marginHorizontal: 10,
   },
+  statusText: {
+  fontSize: 10,
+  color: "gray",
+},
+footerRow: {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "flex-end",
+  gap: 6,
+},
+retryText: {
+  fontSize: 10,
+  color: "red",
+  fontWeight: "600",
+},
   textBubble: {
     backgroundColor: "#edf1f7",
     padding: 10,

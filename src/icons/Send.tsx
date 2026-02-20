@@ -1,5 +1,5 @@
 import React, { memo } from "react";
-import { Circle, Path, Svg, type SvgProps } from "react-native-svg";
+import { Path, Svg, type SvgProps } from "react-native-svg";
 
 export const SendIcon = memo(({ color = "#000000", ...rest }: SvgProps) => {;
   return (

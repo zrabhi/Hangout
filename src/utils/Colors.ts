@@ -14,9 +14,10 @@ export default {
     },
     },
     background:{
-        card:'#fcfcfc',
-        screen:'#f5f7fa'
+        card:'#ffffff',
+        header:"#fafafa",
+        screen:'#ffffff'
     },
     black:'#000000',
-    white:'#faffff',
+    white:'#fcfcfc',
 }
