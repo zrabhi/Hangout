@@ -1,25 +1,24 @@
+import { LastMessageCard } from "@/components/LastMessageCard";
+import { Loader } from "@/components/ui/Loader";
+import { useDataBaseContext } from "@/context/DatabaseContext";
+import { usePermissionCheck } from "@/hooks/usePermissionCheck";
+import { Inbox } from "@/types/Message";
+import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import {
-  View,
-  Text,
   FlatList,
-  StyleSheet,
-  TouchableOpacity,
   PermissionsAndroid,
+  StyleSheet,
+  View
 } from "react-native";
-import { usePermissionCheck } from "@/hooks/usePermissionCheck";
-import { router } from "expo-router";
-import { useDataBaseContext } from "@/context/DatabaseContext";
-import { type Message } from "@/types/Message";
-
 
 export default function Conversations() {
   const { requestPermission } = usePermissionCheck(
     PermissionsAndroid.PERMISSIONS.READ_SMS,
   );
 
-  const { getLatestMessages } = useDataBaseContext();
-  const [conversations, setConversations] = useState<Message[]>([]);
+  const { getInbox: getLatestMessages, isLoading } = useDataBaseContext();
+  const [conversations, setConversations] = useState<Inbox[]>([]);
 
   const loadConversations = async () => {
     const result = await getLatestMessages();
@@ -39,18 +38,19 @@ export default function Conversations() {
   const handleOnPress = (contactId: number) =>
     router.navigate({ pathname: "/conv", params: { id: contactId } });
 
+
+   if (isLoading) return <Loader />;
+   
   return (
     <View style={styles.container}>
       <FlatList
         data={conversations}
         renderItem={({ item }) => (
-          <TouchableOpacity
-            style={styles.messageItem}
+          <LastMessageCard
             onPress={() => handleOnPress(item.contactId)}
-          >
-            <Text style={styles.address}>{item.address}</Text>
-            <Text style={styles.body}>{item.body}</Text>
-          </TouchableOpacity>
+            
+            {...item}
+          />
         )}
       />
     </View>

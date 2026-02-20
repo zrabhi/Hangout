@@ -63,7 +63,7 @@ export default function ContactScreen() {
         (data) => data && setContactInfo(data),
       );
     }
-  }, [id,isEditing]);
+  }, [id, isEditing]);
 
   const handleOnPress = async () => {
     const result = validate();
@@ -82,6 +82,7 @@ export default function ContactScreen() {
     deleteContact(contactInfo.id);
     router.back();
   };
+  
   return (
     <>
       <Stack.Screen
@@ -91,7 +92,6 @@ export default function ContactScreen() {
         }}
       />
       <View style={styles.contentConatainer}>
-       
         <ContactForm
           errors={errors}
           contact={contactInfo}

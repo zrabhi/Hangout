@@ -8,11 +8,11 @@ import { MessageIcon } from "@/icons/Message";
 
 interface ContactCardProps {
   contact: Contact;
-  onPressCall:  (address: string, contactName: string)  => Promise<void>
+  onPressCall: (address: string, contactName: string) => Promise<void>;
 }
 
-export const ContactCard = ({ contact,onPressCall }: ContactCardProps) => {
-  const cdnRandomImage = `https://api.dicebear.com/9.x/toon-head/svg?seed=r${contact.firstName}`;
+export const ContactCard = ({ contact, onPressCall }: ContactCardProps) => {
+  const cdnRandomImage = `https://api.dicebear.com/9.x/toon-head/svg?seed=${contact.firstName}`;
 
   const fullName = contact.firstName + " " + contact.lastName;
   return (
@@ -54,7 +54,7 @@ export const ContactCard = ({ contact,onPressCall }: ContactCardProps) => {
           style={styles.actionButton}
           onPress={(e) => {
             e.stopPropagation();
-           onPressCall(contact?.address, fullName);
+            onPressCall(contact?.address, fullName);
           }}
         >
           <CallIcon strokeWidth={2} fill={Colors.white} />
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     gap: 12,
-    padding:15,
+    padding: 15,
     borderWidth: 1.3,
     borderRadius: 15,
     backgroundColor: Colors.background.card,

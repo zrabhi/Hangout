@@ -26,7 +26,7 @@ export default function ConversationDetail() {
   const { id } = useLocalSearchParams();
   const contactId = Number(id);
 
-  const { getConversationByaddress, addMessage, getContactById } =
+  const { getConversationByContactId, addMessage, getContactById } =
     useDataBaseContext();
 
   const { requestPermission } = usePermissionCheck(
@@ -48,7 +48,7 @@ export default function ConversationDetail() {
 
     const [contactData, convo] = await Promise.all([
       getContactById(contactId.toString()),
-      getConversationByaddress(contactId),
+      getConversationByContactId(contactId),
     ]);
 
     setContact(contactData);
