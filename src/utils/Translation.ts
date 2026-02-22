@@ -20,10 +20,27 @@ export const translations = {
     favorites: "Favorites",
     language: "Language",
     headerColor: "Header Color",
-
+    emptyContactsMessage:
+      "Sadly, your contact list is empty. Add a new contact or sync with your phone to get started!",
 
     // permissions
-    photoPermission: "Sadly, we don’t have access to your photos. To upload an image, please go to settings and allow permission.",
+    photoPermission:
+      "Sadly, we don’t have access to your photos. To upload an image, please go to settings and allow permission.",
+    smsReadPermission:
+  "Hangouts needs permission to read your SMS messages to detect and process relevant conversations inside the app.",
+
+  smsSendPermission:
+    "Hangouts requires permission to send SMS messages so you can communicate with your contacts directly from the app.",
+
+  callPhonePermission:
+    "Hangouts needs phone call permission to allow you to initiate calls directly from the app.",
+
+  smsReceivePermission:
+    "Hangouts requires permission to receive SMS messages to stay updated with incoming conversations.",
+
+
+
+
     // Errors
     firstNameRequired: "First name is required",
     firstNameTooShort: "First name must be at least 2 characters",
@@ -35,6 +52,9 @@ export const translations = {
     phoneNumberInvalid: "Please enter a valid phone number",
     postalCodeRequired: "Postal code is required",
     postalCodeInvalid: "Please enter a valid postal code",
+
+    inbox: "Inbox",
+    calls: "Calls",
   },
 
   fr: {
@@ -59,6 +79,9 @@ export const translations = {
     language: "Langue",
     headerColor: "Couleur de l'en-tête",
     // errors
+
+    emptyContactsMessage:
+      "Malheureusement, votre liste de contacts est vide. Ajoutez un nouveau contact ou synchronisez avec votre téléphone pour commencer !",
     firstNameRequired: "Le prénom est obligatoire",
     firstNameTooShort: "Le prénom doit contenir au moins 2 caractères",
     lastNameRequired: "Le nom est obligatoire",
@@ -69,6 +92,21 @@ export const translations = {
     phoneNumberInvalid: "Veuillez saisir un numéro de téléphone valide",
     postalCodeRequired: "Le code postal est obligatoire",
     postalCodeInvalid: "Veuillez saisir un code postal valide",
+    inbox: "Boîte de réception",
+    calls: "Appels",
+
+
+    smsReadPermission:
+  "Hangouts a besoin de l'autorisation de lire vos SMS afin de détecter et traiter les conversations pertinentes dans l'application.",
+
+smsSendPermission:
+  "Hangouts nécessite l'autorisation d'envoyer des SMS afin que vous puissiez communiquer avec vos contacts directement depuis l'application.",
+
+callPhonePermission:
+  "Hangouts a besoin de l'autorisation d'effectuer des appels téléphoniques afin de vous permettre d'initier des appels directement depuis l'application.",
+
+smsReceivePermission:
+  "Hangouts nécessite l'autorisation de recevoir des SMS afin de rester informé des conversations entrantes.",
   },
 };
 

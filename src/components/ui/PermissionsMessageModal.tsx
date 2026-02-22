@@ -34,7 +34,7 @@ export const PermissionModal = ({
       animationType="slide"
       {...rest}
     >
-      <BlurView style={styles.permissionWarning}>
+      <BlurView experimentalBlurMethod="dimezisBlurView" style={styles.permissionWarning}>
         <AquaticRetroIllustration width={78} height={78} />
         <Text style={styles.permissionText}>{message}</Text>
         <Button

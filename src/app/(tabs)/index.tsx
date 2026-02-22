@@ -8,20 +8,37 @@ import { useDataBaseContext } from "@/context/DatabaseContext";
 import { useCallContact } from "@/hooks/usecCallContact";
 import { useContactsSearch } from "@/hooks/useContactSearch";
 import { AquaticRetroIllustration } from "@/icons/RetroAquatic";
+import { Contact } from "@/types/Contacts";
 import { FlashList } from "@shopify/flash-list";
 import React, { useEffect } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, ToastAndroid, View } from "react-native";
+
 export default function ConatctsScreen() {
   const { t } = useAppSettings();
-  const { getConatctsList, contacts, handleAddCall, isLoading } =
-    useDataBaseContext();
+
+  const { getConatctsList, contacts, isLoading } = useDataBaseContext();
   const { handleCallContact } = useCallContact();
+
   const { searchValue, setSearchValue, filteredContacts } =
     useContactsSearch(contacts);
 
   useEffect(() => {
     getConatctsList();
   }, []);
+
+  const handleOnPressCall = async (contact: Contact) => {
+    console.log("im here", contact)
+    const fullName = contact.firstName + " " + contact.lastName;
+    const result = await handleCallContact(
+      contact?.address,
+      fullName,
+      contact.id,
+    );
+    if (!result.success) {
+      ToastAndroid.show(`Error while calling ${fullName}`, ToastAndroid.TOP);
+      return;
+    }
+  };
 
   if (isLoading) return <Loader />;
 
@@ -48,7 +65,7 @@ export default function ConatctsScreen() {
             ]}
             ListEmptyComponent={
               <EmptyListMessage
-                message="Sadly, your contact list is empty . Add a new contact or sync with your phone to get started!"
+                message={t("emptyContactsMessage")}
                 illustartion={AquaticRetroIllustration}
               />
             }
@@ -56,13 +73,7 @@ export default function ConatctsScreen() {
             showsVerticalScrollIndicator
             renderItem={({ item }) => (
               <ContactCard
-                onPressCall={() =>
-                  handleCallContact(
-                    item.address,
-                    item.firstName + " " + item.lastName,
-                    item.id,
-                  )
-                }
+                onPressCall={() => handleOnPressCall(item)}
                 contact={item}
               />
             )}

@@ -22,7 +22,7 @@ interface DataBaseContextType {
   addMessage: (message: Message) => Promise<void>;
   getCallList: () => Promise<Calls[]>;
   getInbox: () => Promise<Inbox[]>;
-  handleAddCall: (call: Calls) => Promise<void>;
+  handleAddCall: (call: Calls) => Promise<number>;
   updateContact: (
     id: string,
     fields: Partial<Omit<Contact, "id">>,
@@ -133,20 +133,22 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const handleAddCall = async (call: Calls) => {
+  const handleAddCall = async (call: Calls): Promise<number> => {
     console.log("im hereeee");
     try {
       const { address, contactName, timestamp, contactId } = call;
 
-      await db.runAsync(
+      const result = await db.runAsync(
         `
         INSERT INTO calls (address, contactName, timestamp, contactId)
         VALUES (?, ?, ?, ?)
         `,
         [address, contactName, timestamp, contactId],
       );
+      return result.lastInsertRowId;
     } catch (err) {
       console.error("Add call error:", err);
+      return 0;
     }
   };
 
@@ -197,27 +199,13 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
       return [];
     }
   };
+
+
   const getCallList = async (): Promise<Calls[]> => {
     setIsloading(true);
     try {
       const result = await db.getAllAsync<Calls>(`
-              SELECT 
-              ca.id,
-              ca.address,
-              ca.timestamp,
-              ca.contactName,
-              co.image
-              FROM calls ca
-              INNER JOIN (
-              SELECT contactId, MAX(timestamp) as maxTime
-              FROM calls
-              GROUP BY contactId
-              ) grouped
-              ON ca.contactId = grouped.contactId
-              AND ca.timestamp = grouped.maxTime
-              INNER JOIN contacts co
-              ON ca.contactId = co.id
-              ORDER BY ca.timestamp DESC
+              SELECT * FROM calls ORDER BY id DESC
               `);
       console.log("res ", result);
       return result;

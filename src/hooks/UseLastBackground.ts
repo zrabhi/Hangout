@@ -17,7 +17,7 @@ export const useAppBackgroundToast = () => {
 
         ToastAndroid.show(
           `Last backgrounded at: ${formattedTime}`,
-          ToastAndroid.LONG
+          ToastAndroid.CENTER,
         );
 
         lastBackgroundTime.current = null;
@@ -26,7 +26,7 @@ export const useAppBackgroundToast = () => {
 
     const subscription = AppState.addEventListener(
       "change",
-      handleAppStateChange
+      handleAppStateChange,
     );
 
     return () => subscription.remove();

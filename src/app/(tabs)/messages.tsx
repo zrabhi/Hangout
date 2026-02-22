@@ -3,6 +3,7 @@ import { Loader } from "@/components/ui/Loader";
 import { useDataBaseContext } from "@/context/DatabaseContext";
 import { usePermissionCheck } from "@/hooks/usePermissionCheck";
 import { Inbox } from "@/types/Message";
+import { appRoutes } from "@/utils/appRoutes";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import {
@@ -17,27 +18,23 @@ export default function Conversations() {
     PermissionsAndroid.PERMISSIONS.READ_SMS,
   );
 
-  const { getInbox: getLatestMessages, isLoading } = useDataBaseContext();
+  const { getInbox, isLoading } = useDataBaseContext();
   const [conversations, setConversations] = useState<Inbox[]>([]);
 
   const loadConversations = async () => {
-    const result = await getLatestMessages();
-    console.log("latest", result);
+    const result = await getInbox();
     setConversations(result);
   };
 
   useEffect(() => {
     (async () => {
       const granted = await requestPermission();
-      console.log(granted);
-      console.log(granted);
       if (granted) loadConversations();
     })();
   }, []);
 
   const handleOnPress = (contactId: number) =>
-    router.navigate({ pathname: "/conv", params: { id: contactId } });
-
+    router.navigate({ pathname: appRoutes.conversation, params: { id: contactId } });
 
    if (isLoading) return <Loader />;
    
@@ -56,6 +53,7 @@ export default function Conversations() {
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 16, backgroundColor: "#fff" },

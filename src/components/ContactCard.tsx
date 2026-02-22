@@ -8,7 +8,7 @@ import { MessageIcon } from "@/icons/Message";
 
 interface ContactCardProps {
   contact: Contact;
-  onPressCall: (address: string, contactName: string) => Promise<void>;
+  onPressCall: (contact: Contact) => Promise<void>;
 }
 
 export const ContactCard = ({ contact, onPressCall }: ContactCardProps) => {
@@ -54,7 +54,7 @@ export const ContactCard = ({ contact, onPressCall }: ContactCardProps) => {
           style={styles.actionButton}
           onPress={(e) => {
             e.stopPropagation();
-            onPressCall(contact?.address, fullName);
+            onPressCall(contact);
           }}
         >
           <CallIcon strokeWidth={2} fill={Colors.white} />

@@ -14,7 +14,7 @@
       "bundleIdentifier": "com.anonymous.Hangout"
     },
     "android": {
-       "permissions": ["READ_SMS","SEND_SMS", "CALL_PHONE"],
+       "permissions": ["READ_SMS","SEND_SMS", "CALL_PHONE", "SMS_RECEIVE"],
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",

@@ -124,9 +124,7 @@ export const ContactForm = ({
               t("inputPlaceHolder") + " " + t("phoneNumber").toLowerCase()
             }
             value={contact.address}
-            onChange={(text: string) =>
-              onChange({ ...contact, address: text })
-            }
+            onChange={(text: string) => onChange({ ...contact, address: text })}
           />
           <Input
             label={t("postalCode")}

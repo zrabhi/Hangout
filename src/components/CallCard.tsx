@@ -8,7 +8,7 @@ import { formatTime } from "@/utils/Helpers";
 
 interface CallCardProps {
   call: Calls; // only outgoing calls
-  onPressCall:  (address: string, contactName: string, contactId: number) => Promise<void>
+  onPressCall:  (call:Calls) => Promise<void>
 }
 
 export const CallCard = memo(({ call, onPressCall }: CallCardProps) => {
@@ -18,7 +18,7 @@ export const CallCard = memo(({ call, onPressCall }: CallCardProps) => {
   return (
     <Pressable
       style={styles.button}
-      onPress={() => onPressCall(call.address, fullName, call.contactId)}
+      onPress={() => onPressCall(call)}
     >
       {/* Avatar */}
       <Image

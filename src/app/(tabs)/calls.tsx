@@ -4,50 +4,59 @@ import { useDataBaseContext } from "@/context/DatabaseContext";
 import { useCallContact } from "@/hooks/usecCallContact";
 import { Calls } from "@/types/Calls";
 import { useEffect, useState } from "react";
-import { View, StyleSheet, Text, FlatList } from "react-native";
+import { FlatList, StyleSheet, ToastAndroid, View } from "react-native";
 
 export default function CallsScreen() {
-  const {getCallList, isLoading} = useDataBaseContext()
-  const [calls, setCalls] = useState<Calls[]>([])
- 
-  const {handleCallContact} = useCallContact()
+  const { getCallList, isLoading } = useDataBaseContext();
 
+  const [calls, setCalls] = useState<Calls[]>([]);
+  const { handleCallContact } = useCallContact();
 
- const handleGetCallsList = async () => {
-  const result = await getCallList();
-  setCalls(result);
- }
+  const handleOnPressCallContact = async (call: Calls) => {
+    const result = await handleCallContact(
+      call.address,
+      call.contactName,
+      call.contactId,
+    );
 
- useEffect(()=>{
-  handleGetCallsList();
- }, [])
+    if (!result.success) {
+      ToastAndroid.show(
+        `Error while calling ${call.contactName}`,
+        ToastAndroid.TOP,
+      );
+      return;
+    }
+
+    setCalls((prev) => [{ ...call, id: result.id }, ...prev]);
+  };
+
+  const handleGetCallsList = async () => {
+    const result = await getCallList();
+    setCalls(result);
+  };
+
+  useEffect(() => {
+    handleGetCallsList();
+  }, []);
 
   if (isLoading) return <Loader />;
+
   return (
-   <View style={styles.container}>
-         <FlatList
-           data={calls}
-           extraData={calls}
-           renderItem={({ item }) => (
-             <CallCard
-               onPressCall={handleCallContact}
-               call={item}
-             />
-           )}
-         />
-       </View>
+    <View style={styles.container}>
+      <FlatList
+        keyExtractor={(item) => item.id?.toString() ?? ""}
+        data={calls}
+        extraData={calls}
+        renderItem={({ item }) => (
+          <CallCard onPressCall={handleOnPressCallContact} call={item} />
+        )}
+      />
+    </View>
   );
 }
-
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  
-  },
-  text: {
-    fontSize: 20,
-    fontFamily: "Baloo2-SemiBold",
-
   },
 });
