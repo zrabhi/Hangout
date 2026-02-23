@@ -2,9 +2,9 @@ import { CallCard } from "@/components/CallCard";
 import { Loader } from "@/components/ui/Loader";
 import { useDataBaseContext } from "@/context/DatabaseContext";
 import { useCallContact } from "@/hooks/usecCallContact";
-import { Calls } from "@/types/Calls";
+import { type Calls } from "@/types/Calls";
 import { useEffect, useState } from "react";
-import { FlatList, StyleSheet, ToastAndroid, View } from "react-native";
+import { FlatList, StyleSheet, View } from "react-native";
 
 export default function CallsScreen() {
   const { getCallList, isLoading } = useDataBaseContext();
@@ -19,13 +19,7 @@ export default function CallsScreen() {
       call.contactId,
     );
 
-    if (!result.success) {
-      ToastAndroid.show(
-        `Error while calling ${call.contactName}`,
-        ToastAndroid.TOP,
-      );
-      return;
-    }
+    if (!result.success) return;
 
     setCalls((prev) => [{ ...call, id: result.id }, ...prev]);
   };

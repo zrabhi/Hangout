@@ -13,8 +13,11 @@ import { PermissionModal } from "@/components/ui/PermissionsMessageModal";
 import { PermissionsDialog } from "@/utils/PermissionsDialog";
 
 export default function TabLayout() {
+
   const { t, permissionPrompt, handleCloseModal, handlePressSettingButton } =
     useAppSettings();
+
+
   return (
     <>
       <Tabs
@@ -39,7 +42,7 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
-          name="messages"
+          name="inbox"
           options={{
             title: t("inbox"),
             headerShown: true,

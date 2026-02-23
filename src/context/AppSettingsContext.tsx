@@ -1,5 +1,5 @@
 import { useOrientation } from "@/hooks/useOrientation";
-import { PermissionType } from "@/types/Permissions";
+import { type PermissionType } from "@/types/Permissions";
 import { AppColors } from "@/utils/AppColors";
 import { type Language, translations } from "@/utils/Translation";
 import {
@@ -21,12 +21,12 @@ interface PermissionPromptState {
 interface LanguageContextType {
   lang: Language;
   setLanguage: (lang: Language) => void;
-  handleSetPermissionPrompt: (permission: PermissionType | null) => void,
+  handleSetPermissionPrompt: (permission: PermissionType | null) => void;
   headerColor: string;
   isLandscape: boolean;
-  handleCloseModal: () => void
-  permissionPrompt: PermissionPromptState,
-  handlePressSettingButton: () => void,
+  handleCloseModal: () => void;
+  permissionPrompt: PermissionPromptState;
+  handlePressSettingButton: () => void;
   setHeaderColor: Dispatch<SetStateAction<string>>;
   t: (key: tranlsationKeyType) => string;
 }
@@ -51,19 +51,17 @@ export const AppSettingsProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
-  const handleSetPermissionPrompt = (permission: PermissionType  | null) =>{
+  const handleSetPermissionPrompt = (permission: PermissionType | null) => {
     setPermissionPrompt({
-      visible:true,
-      permission
-    })
-  }
+      visible: true,
+      permission,
+    });
+  };
 
   const handlePressSettingButton = () => {
-      Linking.openSettings();
-      handleCloseModal();
-    };
-
-
+    Linking.openSettings();
+    handleCloseModal();
+  };
 
   const t = (key: tranlsationKeyType) => translations[language][key];
 

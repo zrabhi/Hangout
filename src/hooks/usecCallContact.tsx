@@ -2,12 +2,11 @@ import { useAppSettings } from "@/context/AppSettingsContext";
 import { useDataBaseContext } from "@/context/DatabaseContext";
 import { callContact } from "@/nativeModule/sms/smsService";
 import { PermissionType } from "@/types/Permissions";
-import { PermissionsAndroid } from "react-native";
+import { type TableCreationReturn } from "@/utils/TableCreationReturn";
+import { PermissionsAndroid, ToastAndroid } from "react-native";
 
-interface AddCallReturnType {
-  success: boolean;
-  id: number;
-}
+
+
 export const useCallContact = () => {
   const { handleAddCall } = useDataBaseContext();
   const { handleSetPermissionPrompt } = useAppSettings();
@@ -15,7 +14,7 @@ export const useCallContact = () => {
     address: string,
     contactName: string,
     contactId: number,
-  ): Promise<AddCallReturnType> => {
+  ): Promise<TableCreationReturn> => {
     const granted = await PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.CALL_PHONE,
     );
@@ -26,10 +25,12 @@ export const useCallContact = () => {
         id: 0,
       };
     }
-    
+
     const result = await callContact(address);
-    console.log("no permission")
-    if (!result.success) return { success: false, id: 0 };
+    if (!result.success) {
+      ToastAndroid.show(`Error while calling ${contactName}`, ToastAndroid.TOP);
+      return { success: false, id: 0 };
+    }
 
     const id = await handleAddCall({
       address,

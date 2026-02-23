@@ -1,4 +1,4 @@
-import { tranlsationKeyType } from "@/context/AppSettingsContext";
+import { type tranlsationKeyType } from "@/context/AppSettingsContext";
 import { PermissionType } from "@/types/Permissions";
 
 export const PermissionsDialog: Record<PermissionType, tranlsationKeyType> = {

@@ -10,9 +10,10 @@ import {
   useEffect,
   useState,
 } from "react";
+
 interface DataBaseContextType {
   contacts: Contact[];
-
+  isAddingMessage: boolean;
   isLoading: boolean;
   createContact: (contact: Contact) => Promise<void>;
   deleteContact: (id: string) => Promise<void>;
@@ -35,6 +36,7 @@ const DataBaseContext = createContext<DataBaseContextType | null>(null);
 export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
   const db = useSQLiteContext();
   const [contacts, setContacts] = useState<Contact[]>([]);
+  const [isAddingMessage, setIsAddingMessage] = useState<boolean>(false);
   const [isLoading, setIsloading] = useState<boolean>(false);
 
   const handleInitDataBase = async () => {
@@ -118,6 +120,7 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const addMessage = async (message: Message) => {
+    setIsAddingMessage(true);
     try {
       const { address, type, date, body, deleviryState, contactId } = message;
 
@@ -130,6 +133,8 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
       );
     } catch (err) {
       console.error("Add message error:", err);
+    } finally {
+      setIsAddingMessage(false);
     }
   };
 
@@ -199,7 +204,6 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
       return [];
     }
   };
-
 
   const getCallList = async (): Promise<Calls[]> => {
     setIsloading(true);
@@ -311,6 +315,7 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
     handleAddCall,
     getCallList,
     getConversationByContactId,
+    isAddingMessage,
     getConatctsList,
     createContact: handleCreateContact,
     deleteContact: handleDeleteConatct,

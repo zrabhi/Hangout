@@ -1,4 +1,4 @@
-import { ExternalPathString, Href, RelativePathString } from "expo-router";
+import { type ExternalPathString, type RelativePathString } from "expo-router";
 
 export const appRoutes : Record<string, RelativePathString | ExternalPathString > = {
     conversation:'/conv',

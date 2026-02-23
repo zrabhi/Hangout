@@ -5,10 +5,11 @@ import { type Contact } from "@/types/Contacts";
 import { router } from "expo-router";
 import { CallIcon } from "@/icons/Call";
 import { MessageIcon } from "@/icons/Message";
+import { type TableCreationReturn } from "@/utils/TableCreationReturn";
 
 interface ContactCardProps {
   contact: Contact;
-  onPressCall: (contact: Contact) => Promise<void>;
+  onPressCall: (address: string, contactName: string, contactId: number) => Promise<TableCreationReturn>
 }
 
 export const ContactCard = ({ contact, onPressCall }: ContactCardProps) => {
@@ -54,7 +55,7 @@ export const ContactCard = ({ contact, onPressCall }: ContactCardProps) => {
           style={styles.actionButton}
           onPress={(e) => {
             e.stopPropagation();
-            onPressCall(contact);
+            onPressCall(contact?.address, fullName, contact.id);
           }}
         >
           <CallIcon strokeWidth={2} fill={Colors.white} />

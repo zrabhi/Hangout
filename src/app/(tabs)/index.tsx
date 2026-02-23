@@ -2,16 +2,14 @@ import { ContactCard } from "@/components/ContactCard";
 import { EmptyListMessage } from "@/components/ui/EmptyList";
 import { Loader } from "@/components/ui/Loader";
 import { SearchInput } from "@/components/ui/SearchInput";
-import Selector from "@/components/ui/Selector";
 import { useAppSettings } from "@/context/AppSettingsContext";
 import { useDataBaseContext } from "@/context/DatabaseContext";
 import { useCallContact } from "@/hooks/usecCallContact";
 import { useContactsSearch } from "@/hooks/useContactSearch";
 import { AquaticRetroIllustration } from "@/icons/RetroAquatic";
-import { Contact } from "@/types/Contacts";
 import { FlashList } from "@shopify/flash-list";
 import React, { useEffect } from "react";
-import { StyleSheet, ToastAndroid, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 export default function ConatctsScreen() {
   const { t } = useAppSettings();
@@ -26,20 +24,6 @@ export default function ConatctsScreen() {
     getConatctsList();
   }, []);
 
-  const handleOnPressCall = async (contact: Contact) => {
-    console.log("im here", contact)
-    const fullName = contact.firstName + " " + contact.lastName;
-    const result = await handleCallContact(
-      contact?.address,
-      fullName,
-      contact.id,
-    );
-    if (!result.success) {
-      ToastAndroid.show(`Error while calling ${fullName}`, ToastAndroid.TOP);
-      return;
-    }
-  };
-
   if (isLoading) return <Loader />;
 
   return (
@@ -50,10 +34,10 @@ export default function ConatctsScreen() {
           value={searchValue}
           onChange={setSearchValue}
         />
-        <View style={styles.filters}>
+        {/* <View style={styles.filters}>
           <Selector label={t("allContacts")} selected />
           <Selector label={t("favorites")} selected={false} />
-        </View>
+        </View> */}
         <View style={styles.container}>
           <FlashList
             extraData={contacts}
@@ -72,10 +56,7 @@ export default function ConatctsScreen() {
             data={filteredContacts}
             showsVerticalScrollIndicator
             renderItem={({ item }) => (
-              <ContactCard
-                onPressCall={() => handleOnPressCall(item)}
-                contact={item}
-              />
+              <ContactCard onPressCall={handleCallContact} contact={item} />
             )}
           />
         </View>
@@ -87,15 +68,6 @@ export default function ConatctsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  activeIndocator: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  filters: {
-    flexDirection: "row",
-    gap: 12,
   },
   listContentConatiner: {
     paddingHorizontal: 15,

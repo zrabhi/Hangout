@@ -1,4 +1,4 @@
-import { Pressable, PressableProps, StyleSheet, Text, View } from "react-native";
+import { Pressable, type PressableProps, StyleSheet, Text, View } from "react-native";
 import { Image } from "expo-image";
 import Colors from "@/utils/Colors";
 import { memo } from "react";
@@ -15,7 +15,6 @@ interface LastMessageCardProps
 export const LastMessageCard = memo(
   ({
     body,
-    address,
     onPress,
     firstName,
     lastName,

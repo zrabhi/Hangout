@@ -22,7 +22,7 @@ export const translations = {
     headerColor: "Header Color",
     emptyContactsMessage:
       "Sadly, your contact list is empty. Add a new contact or sync with your phone to get started!",
-
+typeMessage: "Type a message...",
     // permissions
     photoPermission:
       "Sadly, we don’t have access to your photos. To upload an image, please go to settings and allow permission.",
@@ -95,7 +95,7 @@ export const translations = {
     inbox: "Boîte de réception",
     calls: "Appels",
 
-
+typeMessage: "Écrivez un message...",
     smsReadPermission:
   "Hangouts a besoin de l'autorisation de lire vos SMS afin de détecter et traiter les conversations pertinentes dans l'application.",
 
