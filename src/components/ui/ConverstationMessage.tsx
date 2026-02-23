@@ -10,7 +10,7 @@ interface ConverstationMessageProps {
   deleviryState: DeleviryStateType,
   senderName: string;
   onRetry: () => Promise<void>
-  time: string;
+  time: number;
 }
 
 export const ConversationMessage = ({

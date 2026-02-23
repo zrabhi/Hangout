@@ -36,17 +36,7 @@ export const getConversation = async (
 
 export const callContact = async (phoneNumber: string) => {
   try {
-    const granted = await PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.CALL_PHONE,
-    );
-    if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-      return {
-        success: false,
-        granted: false,
-        error: "CALL_PHONE permission denied",
-      };
-    }
-
+   
      await SmsModule.callNumber(phoneNumber);
     return {success:true};
   } catch (error: any) {

@@ -1,5 +1,8 @@
 /* eslint-disable */
+import { type Calls } from "@/types/Calls";
 import { type Contact } from "@/types/Contacts";
+import { Inbox, type Message } from "@/types/Message";
+import { useSQLiteContext } from "expo-sqlite";
 import {
   createContext,
   type ReactNode,
@@ -7,22 +10,20 @@ import {
   useEffect,
   useState,
 } from "react";
-import { useSQLiteContext } from "expo-sqlite";
-import { type Message } from "@/types/Message";
-import { type Calls } from "@/types/Calls";
+
 interface DataBaseContextType {
   contacts: Contact[];
-
+  isAddingMessage: boolean;
   isLoading: boolean;
   createContact: (contact: Contact) => Promise<void>;
   deleteContact: (id: string) => Promise<void>;
   getConatctsList: () => Promise<Contact[]>;
   getContactById: (id: string) => Promise<Contact | null>;
-  getConversationByaddress: (address: number) => Promise<Message[]>;
+  getConversationByContactId: (address: number) => Promise<Message[]>;
   addMessage: (message: Message) => Promise<void>;
-  handleGetCallsList: () => Promise<Calls[]>;
-  getLatestMessages: () => Promise<Message[]>;
-  handleAddCall: (call: Calls) => Promise<void>;
+  getCallList: () => Promise<Calls[]>;
+  getInbox: () => Promise<Inbox[]>;
+  handleAddCall: (call: Calls) => Promise<number>;
   updateContact: (
     id: string,
     fields: Partial<Omit<Contact, "id">>,
@@ -35,6 +36,7 @@ const DataBaseContext = createContext<DataBaseContextType | null>(null);
 export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
   const db = useSQLiteContext();
   const [contacts, setContacts] = useState<Contact[]>([]);
+  const [isAddingMessage, setIsAddingMessage] = useState<boolean>(false);
   const [isLoading, setIsloading] = useState<boolean>(false);
 
   const handleInitDataBase = async () => {
@@ -87,73 +89,75 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
     handleInitDataBase();
   }, []);
 
-  const getConversationByaddress = async (
-    contactId: number,
-  ): Promise<Message[]> => {
-    try {
-      const result = await db.getAllAsync<Message[]>(
-        `
-            SELECT id, contactId, address, body, date, type, deleviryState
-            FROM messages
-            WHERE contactId = ?
-            ORDER BY date ASC
-          `,
-        [contactId],
-      );
-      return result ?? [];
-    } catch (err) {
-      console.log("err jj", err);
-      return [];
-    }
-  };
-  const addMessage = async (message: Message) => {
-    try {
-      const { address, type, date, body, deleviryState, contactId } = message;
-
-      await db.runAsync(
-        `
-      INSERT INTO messages (contactId, address, body, date, type, deleviryState)
-      VALUES (?, ?, ?, ?, ?, ?)
-      `,
-        [contactId, address, body, date, type, deleviryState],
-      );
-    } catch (err) {
-      console.error("Add message error:", err);
-    }
-  };
-
-  const handleAddCall = async (call: Calls) => {
-    try {
-      const { address, contactName, timestamp } = call;
-
-      await db.runAsync(
-        `
-      INSERT INTO calls (address, contactName, timestamp)
-      VALUES (?, ?, ?)
-      `,
-        [address, contactName, timestamp],
-      );
-    } catch (err) {
-      console.error("Add call error:", err);
-    }
-  };
-
-  const handleGetCallsList = async (): Promise<Calls[]> => {
+  // TO CHAMGE THIS LATERRR
+  const getConversationByContactId = async (contactId: number) => {
     setIsloading(true);
     try {
-      const result = await db.getAllAsync<Calls>(`
-          SELECT * FROM calls ORDER BY id DESC
-        `);
-      console.log(result);
-      return result;
+      const result = await db.getAllAsync(
+        `
+      SELECT 
+        m.id,
+        m.body,
+        m.date,
+        m.type,
+        m.deleviryState,
+        c.firstName,
+        c.lastName
+      FROM messages m
+      JOIN contacts c 
+        ON m.contactId = c.id
+      WHERE m.contactId = ?
+      ORDER BY m.date ASC
+    `,
+        [contactId],
+      );
+      console.log("resulllll isssssss,", result);
+      return result ?? [];
     } catch (err) {
-      throw new Error(`ERROR occured while fetching calls table${err}`);
     } finally {
       setIsloading(false);
     }
   };
 
-  const handleGetContactsList = async () => {
+  const addMessage = async (message: Message) => {
+    setIsAddingMessage(true);
+    try {
+      const { address, type, date, body, deleviryState, contactId } = message;
+
+      await db.runAsync(
+        `
+        INSERT INTO messages (contactId, address, body, date, type, deleviryState)
+        VALUES (?, ?, ?, ?, ?, ?)
+        `,
+        [contactId, address, body, date, type, deleviryState],
+      );
+    } catch (err) {
+      console.error("Add message error:", err);
+    } finally {
+      setIsAddingMessage(false);
+    }
+  };
+
+  const handleAddCall = async (call: Calls): Promise<number> => {
+    console.log("im hereeee");
+    try {
+      const { address, contactName, timestamp, contactId } = call;
+
+      const result = await db.runAsync(
+        `
+        INSERT INTO calls (address, contactName, timestamp, contactId)
+        VALUES (?, ?, ?, ?)
+        `,
+        [address, contactName, timestamp, contactId],
+      );
+      return result.lastInsertRowId;
+    } catch (err) {
+      console.error("Add call error:", err);
+      return 0;
+    }
+  };
+
+  const getConatctsList = async () => {
     setIsloading(true);
     try {
       const result = await db.getAllAsync<Contact>(`
@@ -168,23 +172,51 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const getLatestMessages = async () => {
+  const getInbox = async (): Promise<Inbox[] | []> => {
     try {
-      const result = await db.getAllAsync(`
-        SELECT m1.*
-        FROM messages m1
-        INNER JOIN (
-          SELECT address, MAX(date) as maxDate
-          FROM messages
-          GROUP BY address
-          ) m2
-          ON m1.address = m2.address
-          AND m1.date = m2.maxDate
-          ORDER BY m1.date DESC
-          `);
+      const result = await db.getAllAsync<Inbox>(`
+          SELECT 
+          m.id,
+          m.body,
+          m.date,
+          m.type,
+          m.deleviryState,
+          m.contactId,
+          c.firstName,
+          c.lastName,
+          c.image
+          FROM messages m
+          INNER JOIN (
+            SELECT contactId, MAX(date) as maxDate
+            FROM messages
+            GROUP BY contactId
+            ) grouped
+            ON m.contactId = grouped.contactId
+            AND m.date = grouped.maxDate
+            INNER JOIN contacts c
+            ON m.contactId = c.id
+            ORDER BY m.date DESC
+            `);
+
       return result ?? [];
     } catch (err) {
-      console.log("err jj", err);
+      console.log("Error fetching latest messages", err);
+      return [];
+    }
+  };
+
+  const getCallList = async (): Promise<Calls[]> => {
+    setIsloading(true);
+    try {
+      const result = await db.getAllAsync<Calls>(`
+              SELECT * FROM calls ORDER BY id DESC
+              `);
+      console.log("res ", result);
+      return result;
+    } catch (err) {
+      throw new Error(`ERROR occured while fetching calls table${err}`);
+    } finally {
+      setIsloading(false);
     }
   };
 
@@ -279,11 +311,12 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
     isLoading,
     getContactById,
     addMessage,
-    getLatestMessages,
+    getInbox,
     handleAddCall,
-    handleGetCallsList,
-    getConversationByaddress,
-    getConatctsList: handleGetContactsList,
+    getCallList,
+    getConversationByContactId,
+    isAddingMessage,
+    getConatctsList,
     createContact: handleCreateContact,
     deleteContact: handleDeleteConatct,
     updateContact: handleUpdateContact,

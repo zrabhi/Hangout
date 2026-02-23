@@ -21,12 +21,14 @@ import { useDataBaseContext } from "@/context/DatabaseContext";
 import { DeleviryStateType, type Message } from "@/types/Message";
 import { MessageType } from "@/types/MessageTYpe";
 import { type Contact } from "@/types/Contacts";
+import { Loader } from "@/components/ui/Loader";
+import { useAppSettings } from "@/context/AppSettingsContext";
 
 export default function ConversationDetail() {
   const { id } = useLocalSearchParams();
   const contactId = Number(id);
-
-  const { getConversationByaddress, addMessage, getContactById } =
+  const {t} = useAppSettings();
+  const { getConversationByContactId, addMessage, getContactById, isLoading , isAddingMessage} =
     useDataBaseContext();
 
   const { requestPermission } = usePermissionCheck(
@@ -39,16 +41,13 @@ export default function ConversationDetail() {
 
   const flashListRef = useRef<FlashListRef<Message>>(null);
 
-  // ===============================
-  // LOAD DATA
-  // ===============================
 
   const loadConversation = useCallback(async () => {
     if (!contactId) return;
 
     const [contactData, convo] = await Promise.all([
       getContactById(contactId.toString()),
-      getConversationByaddress(contactId),
+      getConversationByContactId(contactId),
     ]);
 
     setContact(contactData);
@@ -59,9 +58,7 @@ export default function ConversationDetail() {
     loadConversation();
   }, [loadConversation]);
 
-  // ===============================
-  // SEND MESSAGE
-  // ===============================
+
 
   const handleSendMessage = async () => {
     if (!text.trim() || !contact) return;
@@ -101,8 +98,7 @@ export default function ConversationDetail() {
         )
       );
     }
-
-    // Scroll to bottom
+    
     flashListRef.current?.scrollToEnd({ animated: true });
   };
 
@@ -110,9 +106,7 @@ export default function ConversationDetail() {
     ? `${contact.firstName} ${contact.lastName}`
     : "Conversation";
 
-  // ===============================
-  // UI
-  // ===============================
+  if (isLoading) return <Loader />
 
   return (
     <>
@@ -157,7 +151,9 @@ export default function ConversationDetail() {
         />
 
         <ConversationInput
+          placeholder={t('typeMessage')}
           input={text}
+          editable={!isAddingMessage}
           onPress={handleSendMessage}
           onInputChange={setText}
         />

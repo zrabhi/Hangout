@@ -3,4 +3,6 @@
 echo ">>                Running pre-commit hooks..."
 echo ">> Linting your files and fixing them if needed..."
 
+
+# pnpm lint-fix
 git update-index --again

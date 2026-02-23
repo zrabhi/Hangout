@@ -3,7 +3,8 @@ import { type MessageType } from "./MessageTYpe";
 export enum DeleviryStateType  { 
   "SENT", 
   "FAILED",
-  "SENDING"
+  "SENDING",
+  "DELIVERED"
 }
 export interface Message {
   address:string;
@@ -14,6 +15,11 @@ export interface Message {
   deleviryState:  DeleviryStateType
 }
 
+export interface Inbox extends Message {
+  firstName: string,
+  lastName: string, 
+  image: string | null
+} 
 export interface Sms {
   _id: string;
   address: string;
