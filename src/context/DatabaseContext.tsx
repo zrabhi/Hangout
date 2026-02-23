@@ -2,6 +2,7 @@
 import { type Calls } from "@/types/Calls";
 import { type Contact } from "@/types/Contacts";
 import { Inbox, type Message } from "@/types/Message";
+import { TableCreationReturn } from "@/utils/TableCreationReturn";
 import { useSQLiteContext } from "expo-sqlite";
 import {
   createContext,
@@ -11,19 +12,24 @@ import {
   useState,
 } from "react";
 
+interface ContactMessageSummary
+  extends Message, Pick<Contact, "firstName" | "lastName"> {}
+
 interface DataBaseContextType {
   contacts: Contact[];
   isAddingMessage: boolean;
   isLoading: boolean;
-  createContact: (contact: Contact) => Promise<void>;
+  createContact: (contact: Contact) => Promise<TableCreationReturn>;
   deleteContact: (id: string) => Promise<void>;
   getConatctsList: () => Promise<Contact[]>;
   getContactById: (id: string) => Promise<Contact | null>;
-  getConversationByContactId: (address: number) => Promise<Message[]>;
-  addMessage: (message: Message) => Promise<void>;
+  getConversationByContactId: (
+    address: number,
+  ) => Promise<ContactMessageSummary[]>;
+  addMessage: (message: Message) => Promise<TableCreationReturn>;
   getCallList: () => Promise<Calls[]>;
   getInbox: () => Promise<Inbox[]>;
-  handleAddCall: (call: Calls) => Promise<number>;
+  handleAddCall: (call: Calls) => Promise<TableCreationReturn>;
   updateContact: (
     id: string,
     fields: Partial<Omit<Contact, "id">>,
@@ -89,11 +95,12 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
     handleInitDataBase();
   }, []);
 
-  // TO CHAMGE THIS LATERRR
-  const getConversationByContactId = async (contactId: number) => {
+  const getConversationByContactId = async (
+    contactId: number,
+  ): Promise<ContactMessageSummary[]> => {
     setIsloading(true);
     try {
-      const result = await db.getAllAsync(
+      const result = await db.getAllAsync<ContactMessageSummary>(
         `
       SELECT 
         m.id,
@@ -114,31 +121,44 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
       console.log("resulllll isssssss,", result);
       return result ?? [];
     } catch (err) {
+      console.log(
+        "errot occured while attempting to get converstation by ID",
+        err,
+      );
+      return [];
     } finally {
       setIsloading(false);
     }
   };
 
-  const addMessage = async (message: Message) => {
+  const addMessage = async (message: Message): Promise<TableCreationReturn> => {
     setIsAddingMessage(true);
     try {
       const { address, type, date, body, deleviryState, contactId } = message;
 
-      await db.runAsync(
+      const result = await db.runAsync(
         `
         INSERT INTO messages (contactId, address, body, date, type, deleviryState)
         VALUES (?, ?, ?, ?, ?, ?)
         `,
         [contactId, address, body, date, type, deleviryState],
       );
+      return {
+        success: true,
+        id: result.lastInsertRowId,
+      };
     } catch (err) {
       console.error("Add message error:", err);
+      return {
+        success: false,
+        id: 0,
+      };
     } finally {
       setIsAddingMessage(false);
     }
   };
 
-  const handleAddCall = async (call: Calls): Promise<number> => {
+  const handleAddCall = async (call: Calls): Promise<TableCreationReturn> => {
     console.log("im hereeee");
     try {
       const { address, contactName, timestamp, contactId } = call;
@@ -150,10 +170,16 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
         `,
         [address, contactName, timestamp, contactId],
       );
-      return result.lastInsertRowId;
+      return {
+        success: true,
+        id: result.lastInsertRowId,
+      };
     } catch (err) {
       console.error("Add call error:", err);
-      return 0;
+      return {
+        success: true,
+        id: 0,
+      };
     }
   };
 
@@ -236,7 +262,9 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
       setIsloading(false);
     }
   };
-  const handleCreateContact = async (contact: Contact) => {
+  const handleCreateContact = async (
+    contact: Contact,
+  ): Promise<TableCreationReturn> => {
     setIsloading(true);
     try {
       console.log("contact to be created", contact);
@@ -254,10 +282,19 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
         ...prev,
         { ...contact, id: result.lastInsertRowId.toString() },
       ]);
+
+      return {
+        success: true,
+        id: result.lastInsertRowId,
+      };
     } catch (err) {
       throw new Error(`ERROR occured while creating  contact table ${err}`);
     } finally {
       setIsloading(false);
+      return {
+        success: true,
+        id: 0,
+      };
     }
   };
 
