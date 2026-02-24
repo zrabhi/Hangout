@@ -1,13 +1,11 @@
 import { useAppSettings } from "@/context/AppSettingsContext";
-import { LeftArrownIcon } from "@/icons/LeftArrow";
+import { SettingIcon } from "@/icons/Menu";
 import Colors from "@/utils/Colors";
-import { MenuIcon } from "@icons/Menu";
 import { type BottomTabHeaderProps } from "@react-navigation/bottom-tabs";
 import { type NativeStackHeaderProps } from "@react-navigation/native-stack";
-import { router } from "expo-router";
 import { type ReactNode, useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
-import { MenuModal } from "./MenuModal";
+import { StyleSheet, Text, View } from "react-native";
+import { AnimatedIcon } from "./AnimatedIcon";
 
 interface ScreenHeaderProps {
   options: BottomTabHeaderProps | NativeStackHeaderProps;
@@ -20,48 +18,22 @@ export const ScreenHeader = ({
   isTab = true,
   children,
 }: ScreenHeaderProps) => {
-  const [visible, setVisible] = useState(false);
+  // const [visible, setVisible] = useState(false);
   const { headerColor, isLandscape } = useAppSettings();
 
   return (
     <>
-      <View
-        style={[
-          styles.container,
-          { backgroundColor: headerColor },
-          isLandscape && { paddingTop: 40 },
-        ]}
-      >
-        {!isTab && (
-          <Pressable
-            style={styles.menuButton}
-            onPress={() => {
-              router.back();
-            }}
-          >
-            <LeftArrownIcon
-              color={Colors.white}
-              strokeWidth={2}
-              height={16}
-              width={16}
-            />
-          </Pressable>
-        )}
-        {children ? (
-          children
-        ) : (
-          <Text style={styles.title}>{options.options.title}</Text>
-        )}
-        <Pressable style={styles.menuButton} onPress={() => setVisible(true)}>
-          <MenuIcon
-            color={Colors.white}
-            strokeWidth={2}
-            height={16}
-            width={16}
-          />
-        </Pressable>
+      <View style={[styles.headerContainer, { backgroundColor: headerColor }]}>
+        <Text style={styles.title}>{options?.options.title}</Text>
+        <AnimatedIcon
+          variant="blue"
+          style={styles.settingIconConatiner}
+          icon={SettingIcon}
+          onPress={() => {
+            console.log("pressed");
+          }}
+        />
       </View>
-      <MenuModal isMenuVisible={visible} onClose={() => setVisible(false)} />
     </>
   );
 };
@@ -73,17 +45,24 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     backgroundColor: Colors.primary.green[100],
   },
-  container: {
-    marginVertical: 26,
-    paddingHorizontal: 18,
-    borderBottomWidth: 1.5,
-    paddingVertical: 40,
-    justifyContent: "space-between",
-    alignItems: "center",
+  settingIconConatiner: {
+    backgroundColor: Colors.background.icon,
+    padding: 10,
+    borderRadius: 16,
+  },
+  headerContainer: {
+    paddingTop: 40,
+    paddingBottom: 20,
+    paddingHorizontal: 20,
     flexDirection: "row",
+    alignItems: "center",
+    borderBottomWidth: 1,
+    borderColor: Colors.tabBar.border,
+    justifyContent: "space-between",
   },
   title: {
     fontFamily: "Baloo2-Bold",
-    fontSize: 18,
+    fontSize: 22,
+    color: Colors.primary.blue[100],
   },
 });

@@ -14,6 +14,7 @@ import { AppSettingsProvider } from "@/context/AppSettingsContext";
 import { DataBaseProvider } from "@/context/DatabaseContext";
 import { SQLiteProvider } from "expo-sqlite";
 import { useAppBackgroundToast } from "@/hooks/UseLastBackground";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export const unstable_settings = {
   anchor: "(tabs)",
@@ -40,18 +41,20 @@ export default function RootLayout() {
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <SQLiteProvider
         databaseName="hangouts.db"
-       // onError={async () => await deleteDatabaseAsync("hangouts.db")}
+        // onError={async () => await deleteDatabaseAsync("hangouts.db")}
       >
         <DataBaseProvider>
           <AppSettingsProvider>
-            <Stack
-              screenOptions={{
-                orientation: "all",
-              }}
-            >
-              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              <Stack.Screen name="contact" />
-            </Stack>
+            <GestureHandlerRootView style={{ flex: 1 }}>
+              <Stack
+                screenOptions={{
+                  orientation: "all",
+                }}
+              >
+                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                <Stack.Screen name="contact" />
+              </Stack>
+            </GestureHandlerRootView>
           </AppSettingsProvider>
         </DataBaseProvider>
       </SQLiteProvider>
