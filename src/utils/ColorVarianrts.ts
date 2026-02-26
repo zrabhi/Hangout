@@ -1,1 +1,1 @@
-export type ColorVariants = "blue" | "orange";
+export type ColorVariants = "blue" | "orange" | "green";

@@ -11,7 +11,7 @@ export default {
         },
         
          red: {
-      100: '#d9534f', // nice error red
+      100: '#d9534f', 
     },
     },
     tabBar:{
@@ -23,7 +23,8 @@ export default {
     background:{
         icon:'rgba(2, 125, 186, 0.08)',
         card:'#ffffff',
-        header:"#fafafa",
+        searchInput:'rgba(2, 125, 186, 0.15)',
+        header:"#ffffff",
         screen:'#ffffff'
     },
     black:'#000000',

@@ -9,7 +9,6 @@ import { useEffect, useState } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
 
 export default function InboxScreen() {
-
   const { getInbox, isLoading } = useDataBaseContext();
   const [conversations, setConversations] = useState<Inbox[]>([]);
 
@@ -19,7 +18,7 @@ export default function InboxScreen() {
   };
 
   useEffect(() => {
-       handleLoadInbox();
+    handleLoadInbox();
   }, []);
 
   const handleOnPress = (contactId: number) =>
@@ -46,5 +45,5 @@ export default function InboxScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, backgroundColor: Colors.white },
+  container: { flex: 1, backgroundColor: Colors.white },
 });
