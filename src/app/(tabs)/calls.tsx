@@ -40,6 +40,7 @@ export default function CallsScreen() {
       <FlatList
         keyExtractor={(item) => item.id?.toString() ?? ""}
         data={calls}
+        showsVerticalScrollIndicator={false}
         extraData={calls}
         renderItem={({ item }) => (
           <CallCard onPressCall={handleOnPressCallContact} call={item} />

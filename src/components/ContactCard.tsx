@@ -2,116 +2,140 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Image } from "expo-image";
 import Colors from "@/utils/Colors";
 import { type Contact } from "@/types/Contacts";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+  interpolateColor,
+} from "react-native-reanimated";
+import React, { useCallback } from "react";
+import { RotatingIcon } from "./ui/RotatingIcon";
 import { CallIcon } from "@/icons/Call";
 import { MessageIcon } from "@/icons/Message";
-import { type TableCreationReturn } from "@/utils/TableCreationReturn";
+import { ContactAvatar } from "./ui/ContactAvatar";
+import { AnimatedCard } from "./ui/AnimatedCard";
+import { avatarColors } from "@/utils/AvatarColors";
 
 interface ContactCardProps {
   contact: Contact;
-  onPressCall: (address: string, contactName: string, contactId: number) => Promise<TableCreationReturn>
+  onPressCall?: (
+    address: string,
+    contactName: string,
+    contactId: number,
+  ) => void;
 }
 
 export const ContactCard = ({ contact, onPressCall }: ContactCardProps) => {
-  const cdnRandomImage = `https://api.dicebear.com/9.x/toon-head/svg?seed=${contact.firstName}`;
+  const colorIndex = contact.id % avatarColors.length;
+  const avatarColor = avatarColors[colorIndex];
 
-  const fullName = contact.firstName + " " + contact.lastName;
+  const fullName = `${contact.firstName} ${contact.lastName}`;
+
+  const handleOnPressMessage = () =>
+    router.navigate({ pathname: "/conv", params: { id: contact.id } });
+
+  const handleOnPressCard = () =>
+    router.navigate({ pathname: "/contact", params: { id: contact.id } });
   return (
-    <Pressable
-      onPress={() =>
-        router.navigate({ pathname: "/contact", params: { id: contact.id } })
-      }
-      style={styles.button}
-    >
-      <View style={styles.contactDetails}>
-        <Image
-          source={{ uri: contact.image ?? cdnRandomImage }}
-          style={styles.contactImage}
-        />
-        <View>
-          <Text style={styles.contactName}>{fullName}</Text>
-          <Text style={styles.phoneNumber}>{contact?.address}</Text>
+    <>
+      <AnimatedCard color={avatarColor} onPress={handleOnPressCard}>
+        <View style={styles.contactDetails}>
+          <ContactAvatar
+            firstName={contact.firstName ?? ""}
+            lastName={contact.lastName ?? ""}
+            image={contact.image}
+            avatarColor={avatarColor}
+          />
+          <View style={{ flexDirection: "column", flex: 1 }}>
+            <Text style={styles.contactName}>{fullName}</Text>
+            <Text style={styles.phoneNumber}>{contact.address}</Text>
+          </View>
+
+          {/* Action Icons */}
+          <View style={{ flexDirection: "row", gap: 16 }}>
+            <Pressable
+              onPress={() =>
+                onPressCall?.(contact.address, fullName, contact.id)
+              }
+              hitSlop={8}
+            >
+              <RotatingIcon
+                icon={CallIcon}
+                variant="green"
+                direction="right"
+                isBackground
+                style={styles.iconContainer}
+              />
+            </Pressable>
+
+            <Pressable onPress={handleOnPressMessage} hitSlop={8}>
+              <RotatingIcon
+                onPress={handleOnPressMessage}
+                icon={MessageIcon}
+                variant="green"
+                direction="right"
+                isBackground
+                style={styles.iconContainer}
+              />
+            </Pressable>
+          </View>
         </View>
-      </View>
-      <View style={styles.actionButtons}>
-        <Pressable
-          style={styles.actionButton}
-          onPress={(e) => {
-            e.stopPropagation();
-            router.navigate({
-              pathname: "/conv",
-              params: {
-                fullName,
-                id: contact.id,
-                image: contact.image,
-                address: contact?.address,
-              },
-            });
-          }}
-        >
-          <MessageIcon strokeWidth={2} fill={Colors.white} />
-        </Pressable>
-        <Pressable
-          style={styles.actionButton}
-          onPress={(e) => {
-            e.stopPropagation();
-            onPressCall(contact?.address, fullName, contact.id);
-          }}
-        >
-          <CallIcon strokeWidth={2} fill={Colors.white} />
-        </Pressable>
-      </View>
-    </Pressable>
+      </AnimatedCard>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
-  button: {
-    marginBottom: 10,
-    flexDirection: "row",
-    justifyContent: "space-between",
+  divider: {
+    width: "70%",
+    height: 1,
+    alignSelf: "center",
+    backgroundColor: "rgba(0,0,0,0.05)",
+    marginTop: 8,
+  },
+  avatar: {
+    width: 60,
+    height: 60,
+    borderRadius: 16,
+    justifyContent: "center",
     alignItems: "center",
-    gap: 12,
-    padding: 15,
-    borderWidth: 1.3,
-    borderRadius: 15,
+  },
+  avatarText: {
+    color: "#fff",
+    fontSize: 16,
+    fontFamily: "Baloo2-Bold",
+  },
+  card: {
+    flexDirection: "row",
+    alignItems: "center",
     backgroundColor: Colors.background.card,
+    padding: 12,
+    marginTop: 14,
+    paddingRight: 18,
+    borderRadius: 0,
+    borderLeftWidth: 30,
+    borderLeftColor: "transparent",
   },
   contactDetails: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 12,
-  },
-  contactImage: {
-    width: 50,
-    height: 50,
-    borderRadius: 10,
-    borderWidth: 1,
+    gap: 18,
+    flex: 1,
   },
   contactName: {
-    fontFamily: "Baloo2-SemiBold",
-    fontSize: 14,
+    fontFamily: "Baloo2-Bold",
+    fontSize: 18,
     color: Colors.black,
   },
   phoneNumber: {
-    fontSize: 14,
+    fontSize: 16,
     fontFamily: "Baloo2-Medium",
-    color: "gray",
+    color: Colors.text.gray,
   },
-  actionButtons: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    paddingRight: 12,
-  },
-  actionButton: {
-    width: 40,
-    height: 40,
-    borderStyle: "dashed",
-    borderWidth: 1,
-    borderRadius: 20,
-    backgroundColor: Colors.primary.orange[100],
-    justifyContent: "center",
-    alignItems: "center",
+  iconContainer: {
+    backgroundColor: Colors.background.icon,
+    padding: 10,
+    borderRadius: 16,
   },
 });

@@ -28,12 +28,12 @@ export default function ConatctsScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.contentContainer}>
         <SearchInput
           placeholder={t("search")}
           value={searchValue}
           onChange={setSearchValue}
         />
+      <View style={styles.contentContainer}>
         {/* <View style={styles.filters}>
           <Selector label={t("allContacts")} selected />
           <Selector label={t("favorites")} selected={false} />
@@ -70,10 +70,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   listContentConatiner: {
-    paddingHorizontal: 15,
   },
   contentContainer: {
-    paddingHorizontal: 28,
     gap: 23,
     flex: 1,
   },

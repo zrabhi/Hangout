@@ -1,0 +1,1 @@
+export type ColorVariants = "blue" | "orange" | "green";

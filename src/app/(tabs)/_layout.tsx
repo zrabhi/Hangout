@@ -13,10 +13,8 @@ import { PermissionModal } from "@/components/ui/PermissionsMessageModal";
 import { PermissionsDialog } from "@/utils/PermissionsDialog";
 
 export default function TabLayout() {
-
   const { t, permissionPrompt, handleCloseModal, handlePressSettingButton } =
     useAppSettings();
-
 
   return (
     <>

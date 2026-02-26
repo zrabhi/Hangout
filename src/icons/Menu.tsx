@@ -1,28 +1,22 @@
 import React, { memo } from "react";
-import { Path, Svg, type SvgProps } from "react-native-svg";
+import { Circle, Path, Svg, type SvgProps } from "react-native-svg";
 
-export const MenuIcon = memo(({ color = "#000000", ...rest }: SvgProps) => {
+export const SettingIcon = memo(({ color = "#000000", ...rest }: SvgProps) => {
   return (
     <Svg
       color={color}
-      {...rest}
-      width="16"
-      height="16"
+      width="24"
+      height="24"
       viewBox="0 0 24 24"
+      fill="none"
       stroke="currentColor"
-      stroke-width="1.75"
+      stroke-width="2"
       stroke-linecap="round"
       stroke-linejoin="round"
+      {...rest}
     >
-      <Path d="M10 5H3" />
-      <Path d="M12 19H3" />
-      <Path d="M14 3v4" />
-      <Path d="M16 17v4" />
-      <Path d="M21 12h-9" />
-      <Path d="M21 19h-5" />
-      <Path d="M21 5h-7" />
-      <Path d="M8 10v4" />
-      <Path d="M8 12H3" />
+      <Path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915" />
+      <Circle cx="12" cy="12" r="3" />
     </Svg>
   );
 });
