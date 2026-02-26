@@ -1,5 +1,4 @@
-
-export interface TableCreationReturn {
+export interface CrudOperationRetun {
   success: boolean;
   id: number;
 }

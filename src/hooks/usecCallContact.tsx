@@ -2,7 +2,7 @@ import { useAppSettings } from "@/context/AppSettingsContext";
 import { useDataBaseContext } from "@/context/DatabaseContext";
 import { callContact } from "@/nativeModule/sms/smsService";
 import { PermissionType } from "@/types/Permissions";
-import { type TableCreationReturn } from "@/utils/TableCreationReturn";
+import { type CrudOperationRetun } from "@/utils/TableCreationReturn";
 import { PermissionsAndroid, ToastAndroid } from "react-native";
 
 export const useCallContact = () => {
@@ -12,7 +12,7 @@ export const useCallContact = () => {
     address: string,
     contactName: string,
     contactId: number,
-  ): Promise<TableCreationReturn> => {
+  ): Promise<CrudOperationRetun> => {
     const granted = await PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.CALL_PHONE,
     );

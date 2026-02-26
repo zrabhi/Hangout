@@ -1,21 +1,14 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
-import { Image } from "expo-image";
-import Colors from "@/utils/Colors";
-import { type Contact } from "@/types/Contacts";
-import { router, useFocusEffect } from "expo-router";
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-  interpolateColor,
-} from "react-native-reanimated";
-import React, { useCallback } from "react";
-import { RotatingIcon } from "./ui/RotatingIcon";
 import { CallIcon } from "@/icons/Call";
 import { MessageIcon } from "@/icons/Message";
-import { ContactAvatar } from "./ui/ContactAvatar";
-import { AnimatedCard } from "./ui/AnimatedCard";
+import { type Contact } from "@/types/Contacts";
 import { avatarColors } from "@/utils/AvatarColors";
+import Colors from "@/utils/Colors";
+import { router } from "expo-router";
+import React from "react";
+import { Pressable, StyleSheet, Text, View } from "react-native";
+import { AnimatedCard } from "./ui/AnimatedCard";
+import { AnimatedIcon } from "./ui/AnimatedIcon";
+import { ContactAvatar } from "./ui/ContactAvatar";
 
 interface ContactCardProps {
   contact: Contact;
@@ -60,7 +53,7 @@ export const ContactCard = ({ contact, onPressCall }: ContactCardProps) => {
               }
               hitSlop={8}
             >
-              <RotatingIcon
+              <AnimatedIcon
                 icon={CallIcon}
                 variant="green"
                 direction="right"
@@ -70,7 +63,7 @@ export const ContactCard = ({ contact, onPressCall }: ContactCardProps) => {
             </Pressable>
 
             <Pressable onPress={handleOnPressMessage} hitSlop={8}>
-              <RotatingIcon
+              <AnimatedIcon
                 onPress={handleOnPressMessage}
                 icon={MessageIcon}
                 variant="green"

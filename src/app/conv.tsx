@@ -23,16 +23,23 @@ import { MessageType } from "@/types/MessageTYpe";
 import { type Contact } from "@/types/Contacts";
 import { Loader } from "@/components/ui/Loader";
 import { useAppSettings } from "@/context/AppSettingsContext";
+import Colors from "@/utils/Colors";
 
 export default function ConversationDetail() {
   const { id } = useLocalSearchParams();
   const contactId = Number(id);
-  const {t} = useAppSettings();
-  const { getConversationByContactId, addMessage, getContactById, isLoading , isAddingMessage} =
-    useDataBaseContext();
+  const { t } = useAppSettings();
+  const {
+    getConversationByContactId,
+    updateMessageStatus,
+    addMessage,
+    getContactById,
+    isLoading,
+    isAddingMessage,
+  } = useDataBaseContext();
 
   const { requestPermission } = usePermissionCheck(
-    PermissionsAndroid.PERMISSIONS.SEND_SMS
+    PermissionsAndroid.PERMISSIONS.SEND_SMS,
   );
 
   const [contact, setContact] = useState<Contact | null>(null);
@@ -40,7 +47,6 @@ export default function ConversationDetail() {
   const [text, setText] = useState("");
 
   const flashListRef = useRef<FlashListRef<Message>>(null);
-
 
   const loadConversation = useCallback(async () => {
     if (!contactId) return;
@@ -58,55 +64,78 @@ export default function ConversationDetail() {
     loadConversation();
   }, [loadConversation]);
 
-
-
   const handleSendMessage = async () => {
     if (!text.trim() || !contact) return;
 
     const hasPermission = await requestPermission();
     if (!hasPermission) return;
 
+    const result = await sendSms(contact.address, text);
+
     const newMessage: Message = {
       contactId,
       body: text,
       type: MessageType.SENT,
-      deleviryState: DeleviryStateType.SENT,
+      deleviryState: DeleviryStateType.PENDING,
       date: Date.now(),
     };
 
-    // 🔥 Optimistic UI
     setMessages((prev) => [...prev, newMessage]);
     setText("");
-
-    const result = await sendSms(contact.address, text);
 
     const deliveryState = result.success
       ? DeleviryStateType.SENT
       : DeleviryStateType.FAILED;
 
-    await addMessage({
+    const savedMessage = await addMessage({
       ...newMessage,
       deleviryState: deliveryState,
     });
 
-    if (!result.success) {
-      setMessages((prev) =>
-        prev.map((msg, index) =>
-          index === prev.length - 1
-            ? { ...msg, deleviryState: deliveryState }
-            : msg
-        )
-      );
-    }
-    
+    setMessages((prev) =>
+      prev.map((msg, index) =>
+        index === prev.length - 1
+          ? { ...msg, id: savedMessage.id, deleviryState: deliveryState }
+          : msg,
+      ),
+    );
+
     flashListRef.current?.scrollToEnd({ animated: true });
   };
 
+  const handleRetryMessage = async (messageId: number) => {
+    if (!contact) return;
+
+    setMessages((prev) =>
+      prev.map((msg) =>
+        msg.id === messageId
+          ? { ...msg, deleviryState: DeleviryStateType.PENDING }
+          : msg,
+      ),
+    );
+
+    const messageToRetry = messages.find((msg) => msg.id === messageId);
+    if (!messageToRetry) return;
+
+    const result = await sendSms(contact.address, messageToRetry.body);
+
+    const deliveryState = result.success
+      ? DeleviryStateType.SENT
+      : DeleviryStateType.FAILED;
+
+    await updateMessageStatus(messageId, deliveryState);
+
+    setMessages((prev) =>
+      prev.map((msg) =>
+        msg.id === messageId ? { ...msg, deleviryState: deliveryState } : msg,
+      ),
+    );
+  };
   const fullName = contact
     ? `${contact.firstName} ${contact.lastName}`
     : "Conversation";
 
-  if (isLoading) return <Loader />
+  if (isLoading) return <Loader />;
 
   return (
     <>
@@ -115,12 +144,8 @@ export default function ConversationDetail() {
           header: (props) => (
             <ScreenHeader options={props} isTab={false}>
               <View style={styles.headerContainer}>
-                <Text style={styles.fullName}>
-                  {fullName}
-                </Text>
-                <Text style={styles.phoneNumber}>
-                  {contact?.address}
-                </Text>
+                <Text style={styles.fullName}>{fullName}</Text>
+                <Text style={styles.phoneNumber}>{contact?.address}</Text>
               </View>
             </ScreenHeader>
           ),
@@ -136,11 +161,11 @@ export default function ConversationDetail() {
           ref={flashListRef}
           data={messages}
           estimatedItemSize={80}
-          keyExtractor={(item) =>
-            item.id?.toString()
-          }
+          keyExtractor={(item) => item.id?.toString()}
           renderItem={({ item }) => (
             <ConversationMessage
+              messageId={item?.id}
+              onRetry={handleRetryMessage}
               senderName={fullName}
               time={item.date}
               type={item.type}
@@ -151,7 +176,7 @@ export default function ConversationDetail() {
         />
 
         <ConversationInput
-          placeholder={t('typeMessage')}
+          placeholder={t("typeMessage")}
           input={text}
           editable={!isAddingMessage}
           onPress={handleSendMessage}
@@ -162,19 +187,23 @@ export default function ConversationDetail() {
   );
 }
 
-
 const styles = StyleSheet.create({
-  headerContainer:{
-     alignItems: "center" 
+  headerContainer: {
+    flexDirection: "column",
+    justifyContent: "center",
   },
-  container:{
-    flex:1
+  container: {
+    flex: 1,
+    backgroundColor:Colors.background.screen
   },
-  fullName:{
-      fontSize:16,
-      fontFamily:'Baloo2-SemiBold'
+  fullName: {
+    fontSize: 24,
+    color: Colors.primary.blue[100],
+    fontFamily: "Baloo2-Bold",
   },
-  phoneNumber:{
-     fontSize: 12, color: "gray" 
-  }
-})
+  phoneNumber: {
+    fontSize: 12,
+    fontFamily: "Baloo2-Medium",
+    color: Colors.text.gray,
+  },
+});

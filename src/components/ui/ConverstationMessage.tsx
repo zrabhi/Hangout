@@ -1,15 +1,16 @@
 import { DeleviryStateType } from "@/types/Message";
 import { MessageType } from "@/types/MessageTYpe";
+import Colors from "@/utils/Colors";
 import { formatTime } from "@/utils/Helpers";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
-
 interface ConverstationMessageProps {
   type: MessageType;
+  messageId: number;
   message: string;
-  deleviryState: DeleviryStateType,
+  deleviryState: DeleviryStateType;
   senderName: string;
-  onRetry: () => Promise<void>
+  onRetry: (messageId: number) => Promise<void>;
   time: number;
 }
 
@@ -17,27 +18,29 @@ export const ConversationMessage = ({
   type,
   message,
   time,
+  messageId,
   senderName,
   onRetry,
-  deleviryState
+  deleviryState,
 }: ConverstationMessageProps) => {
-
-
   const isSent = type === MessageType.SENT;
-  console.log("type", deleviryState, isSent)
+  console.log("type", deleviryState, isSent);
 
   const renderStatus = () => {
-    console.log(deleviryState)
+    console.log(deleviryState);
     if (!isSent) return null;
-
 
     if (deleviryState === DeleviryStateType.SENT) {
       return <Text style={styles.statusText}>✓ Sent</Text>;
     }
 
+    if (deleviryState === DeleviryStateType.PENDING) {
+      return <Text style={styles.statusText}>⏳ Sending...</Text>;
+    }
+
     if (deleviryState === DeleviryStateType.FAILED) {
       return (
-        <TouchableOpacity onPress={onRetry}>
+        <TouchableOpacity onPress={() => onRetry(messageId)}>
           <Text style={styles.retryText}>Failed • Tap to retry</Text>
         </TouchableOpacity>
       );
@@ -48,18 +51,20 @@ export const ConversationMessage = ({
 
   return (
     <View
-      style={[
-        styles.messageContainer,
-        type === MessageType.SENT ? styles.sent : styles.received,
-      ]}
+      style={[styles.messageContainer, isSent ? styles.sent : styles.received]}
     >
-      <Text style={styles.senderText}>
-        {type === MessageType.SENT ? "You" : senderName}
-      </Text>
-      <View style={styles.textBubble}>
-        <Text style={styles.messageText}>{message}</Text>
+      {!isSent && <Text style={styles.senderText}>{senderName}</Text>}
+      <View
+        style={[
+          styles.textBubble,
+          isSent ? styles.senderBubble : styles.recieverBubble,
+        ]}
+      >
+        <Text style={[isSent && { color: Colors.white }, styles.messageText]}>
+          {message}
+        </Text>
       </View>
-     <View style={styles.footerRow}>
+      <View style={styles.footerRow}>
         <Text style={styles.timeText}>{formatTime(time)}</Text>
         {renderStatus()}
       </View>
@@ -71,28 +76,42 @@ const styles = StyleSheet.create({
   messageContainer: {
     marginHorizontal: 10,
   },
-  statusText: {
-  fontSize: 10,
-  color: "gray",
-},
-footerRow: {
-  flexDirection: "row",
-  alignItems: "center",
-  justifyContent: "flex-end",
-  gap: 6,
-},
-retryText: {
-  fontSize: 10,
-  color: "red",
-  fontWeight: "600",
-},
-  textBubble: {
-    backgroundColor: "#edf1f7",
-    padding: 10,
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-    borderBottomLeftRadius: 10,
+  senderBubble: {
+    backgroundColor: Colors.primary.blue[100],
+    borderColor: `${Colors.primary.blue[100]}30`,
+    elevation: 3,
     borderWidth: 1,
+    borderBottomLeftRadius: 14,
+  },
+  recieverBubble: {
+    backgroundColor: Colors.white,
+    elevation: 3,
+    borderColor: "rgba(0,0,0,0.08)",
+    borderWidth: 1,
+    borderBottomRightRadius: 14,
+    // color:Colors.black
+  },
+  statusText: {
+    fontSize: 12,
+    fontFamily: "Baloo2-Bold",
+    color: Colors.text.gray,
+  },
+  footerRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    gap: 6,
+  },
+  retryText: {
+    fontSize: 10,
+    color: "red",
+    fontWeight: "600",
+  },
+  textBubble: {
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderTopLeftRadius: 14,
+    borderTopRightRadius: 14,
   },
   senderText: {
     fontFamily: "Baloo2-SemiBold",
@@ -101,14 +120,14 @@ retryText: {
     marginBottom: 2,
   },
   timeText: {
-    fontFamily: "Baloo2-Medium",
-    fontSize: 10,
-    color: "gray",
+    fontFamily: "Baloo2-Bold",
+    fontSize: 12,
+    color: Colors.text.gray,
     marginTop: 2,
     alignSelf: "flex-end",
   },
   messageText: {
-    fontFamily: "Baloo2-Medium",
+    fontFamily: "Baloo2-SemiBold",
     fontSize: 14,
   },
   sent: { alignSelf: "flex-end" },

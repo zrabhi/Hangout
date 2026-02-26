@@ -4,10 +4,11 @@ import { SparkelsIcons } from "@/icons/SparkelsIcon";
 import Colors from "@/utils/Colors";
 import { type BottomTabHeaderProps } from "@react-navigation/bottom-tabs";
 import { type NativeStackHeaderProps } from "@react-navigation/native-stack";
+import { router } from "expo-router";
 import { type ReactNode } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { RotatingIcon } from "./RotatingIcon";
-import { router } from "expo-router";
+import { AnimatedIcon } from "./AnimatedIcon";
+import { LeftArrownIcon } from "@/icons/LeftArrow";
 
 interface ScreenHeaderProps {
   options: BottomTabHeaderProps | NativeStackHeaderProps;
@@ -22,23 +23,39 @@ export const ScreenHeader = ({
 }: ScreenHeaderProps) => {
   // const [visible, setVisible] = useState(false);
   const { headerColor, isLandscape } = useAppSettings();
-const handleOnPressSetting = () => router.navigate('/conv')
+  const handleOnPressSetting = () => router.navigate("/settings");
+
+  const handleOnPressBack = () => router.back();
   return (
     <>
       <View style={[styles.headerContainer, { backgroundColor: headerColor }]}>
-        <View style={styles.titleConatiner}>
-          <Text style={styles.title}>{options?.options.title}</Text>
-          <SparkelsIcons
-            height={20}
-            width={20}
-            strokeWidth={2.5}
-            color={Colors.primary.orange[100]}
-          />
+        <View style={[styles.titleConatiner, !isTab && {gap:16}]}>
+          {!isTab && (
+            <AnimatedIcon
+              variant="blue"
+              icon={LeftArrownIcon}
+              style={styles.leftArrowIconCOnatiner}
+              onPress={handleOnPressBack}
+            />
+          )}
+          {children === undefined ? (
+            <>
+              <Text style={styles.title}>{options?.options.title}</Text>
+              <SparkelsIcons
+                height={20}
+                width={20}
+                strokeWidth={2.5}
+                color={Colors.primary.orange[100]}
+              />
+            </>
+          ) : (
+            children
+          )}
         </View>
-        <RotatingIcon
+        <AnimatedIcon
           variant="blue"
           direction="right"
-          style={styles.settingIconConatiner}
+          style={styles.iconConatiner}
           icon={SettingIcon}
           onPress={handleOnPressSetting}
         />
@@ -50,6 +67,7 @@ const handleOnPressSetting = () => router.navigate('/conv')
 const styles = StyleSheet.create({
   titleConatiner: {
     alignItems: "center",
+    justifyContent:'center',
     flexDirection: "row",
     gap: 10,
   },
@@ -59,7 +77,12 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     backgroundColor: Colors.primary.green[100],
   },
-  settingIconConatiner: {
+  leftArrowIconCOnatiner:{
+    backgroundColor: Colors.background.icon,
+    padding: 10,
+    borderRadius: 16,
+  },
+  iconConatiner: {
     backgroundColor: Colors.background.icon,
     padding: 10,
     borderRadius: 16,

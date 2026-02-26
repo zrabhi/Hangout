@@ -1,15 +1,13 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
-import { Image } from "expo-image";
-import Colors from "@/utils/Colors";
 import { CallIcon } from "@/icons/Call"; // outgoing call icon
-import { memo } from "react";
-import { type Calls } from "@/types/Calls";
-import { formatTime } from "@/utils/Helpers";
-import { AnimatedCard } from "./ui/AnimatedCard";
-import { avatarColors } from "@/utils/AvatarColors";
-import { ContactAvatar } from "./ui/ContactAvatar";
 import { OutgoingCall } from "@/icons/OutgoingCall";
-import { RotatingIcon } from "./ui/RotatingIcon";
+import { type Calls } from "@/types/Calls";
+import { avatarColors } from "@/utils/AvatarColors";
+import Colors from "@/utils/Colors";
+import { memo } from "react";
+import { Pressable, StyleSheet, Text, View } from "react-native";
+import { AnimatedCard } from "./ui/AnimatedCard";
+import { AnimatedIcon } from "./ui/AnimatedIcon";
+import { ContactAvatar } from "./ui/ContactAvatar";
 
 interface CallCardProps {
   call: Calls; // only outgoing calls
@@ -46,7 +44,7 @@ export const CallCard = memo(({ call, onPressCall }: CallCardProps) => {
             <Text style={styles.message}>Yesterday, 5:30 PM</Text>
           </View>
           <Pressable onPress={() => onPressCall(call)} hitSlop={8}>
-            <RotatingIcon
+            <AnimatedIcon
               icon={CallIcon}
               variant="green"
               direction="right"
