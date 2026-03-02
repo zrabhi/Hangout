@@ -6,6 +6,10 @@ import Colors from "@/utils/Colors";
 import { AddIcon } from "@/icons/Add";
 import { router } from "expo-router";
 
+
+export const tabBarScreens : Record<number, string> = {
+  [0]: 'Contacts'
+}
 export const AnimatedTabBar = memo(({ state, descriptors, navigation }: BottomTabBarProps) => {
   return (
     <View style={tabBarStyle.container}>
@@ -40,7 +44,7 @@ export const AnimatedTabBar = memo(({ state, descriptors, navigation }: BottomTa
                     color: isFocused ? Colors.black : Colors.white,
                   })}
 
-                {isFocused && <Text style={tabBarStyle.tabName}>{route.name}</Text>}
+                {isFocused && <Text style={tabBarStyle.tabName}>{options.title}</Text>}
               </Pressable>
             </Animated.View>
           );
@@ -72,11 +76,11 @@ const tabBarStyle = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
-    backgroundColor: Colors.primary.orange[100],
     height: 60,
     width: "70%",
     borderRadius: 16,
     borderWidth: 1.5,
+    backgroundColor:Colors.background.screen,
     borderColor: Colors.black,
   },
   tab: {

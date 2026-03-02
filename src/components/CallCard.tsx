@@ -46,7 +46,6 @@ export const CallCard = memo(({ call, onPressCall }: CallCardProps) => {
           <Pressable onPress={() => onPressCall(call)} hitSlop={8}>
             <AnimatedIcon
               icon={CallIcon}
-              variant="green"
               direction="right"
               isBackground
               style={styles.iconContainer}
@@ -67,7 +66,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   iconContainer: {
-    backgroundColor: Colors.background.icon,
+    backgroundColor: Colors.primary.green[100],
     padding: 10,
     borderRadius: 16,
   },
