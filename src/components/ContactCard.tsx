@@ -55,7 +55,6 @@ export const ContactCard = ({ contact, onPressCall }: ContactCardProps) => {
             >
               <AnimatedIcon
                 icon={CallIcon}
-                variant="green"
                 direction="right"
                 isBackground
                 style={styles.iconContainer}
@@ -66,7 +65,6 @@ export const ContactCard = ({ contact, onPressCall }: ContactCardProps) => {
               <AnimatedIcon
                 onPress={handleOnPressMessage}
                 icon={MessageIcon}
-                variant="green"
                 direction="right"
                 isBackground
                 style={styles.iconContainer}
@@ -127,7 +125,7 @@ const styles = StyleSheet.create({
     color: Colors.text.gray,
   },
   iconContainer: {
-    backgroundColor: Colors.background.icon,
+    backgroundColor: Colors.primary.green[100],
     padding: 10,
     borderRadius: 16,
   },

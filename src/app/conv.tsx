@@ -24,11 +24,12 @@ import { type Contact } from "@/types/Contacts";
 import { Loader } from "@/components/ui/Loader";
 import { useAppSettings } from "@/context/AppSettingsContext";
 import Colors from "@/utils/Colors";
+import { PermissionType } from "@/types/Permissions";
 
 export default function ConversationDetail() {
   const { id } = useLocalSearchParams();
   const contactId = Number(id);
-  const { t } = useAppSettings();
+  const { t, handleSetPermissionPrompt } = useAppSettings();
   const {
     getConversationByContactId,
     updateMessageStatus,
@@ -68,7 +69,10 @@ export default function ConversationDetail() {
     if (!text.trim() || !contact) return;
 
     const hasPermission = await requestPermission();
-    if (!hasPermission) return;
+    if (!hasPermission) {
+      handleSetPermissionPrompt(PermissionType.SMS_SEND)
+      return;
+    }
 
     const result = await sendSms(contact.address, text);
 
@@ -142,7 +146,7 @@ export default function ConversationDetail() {
       <Stack.Screen
         options={{
           header: (props) => (
-            <ScreenHeader options={props} isTab={false}>
+            <ScreenHeader options={props}  isTab={false}>
               <View style={styles.headerContainer}>
                 <Text style={styles.fullName}>{fullName}</Text>
                 <Text style={styles.phoneNumber}>{contact?.address}</Text>
@@ -198,12 +202,12 @@ const styles = StyleSheet.create({
   },
   fullName: {
     fontSize: 24,
-    color: Colors.primary.blue[100],
+    color: Colors.black,
     fontFamily: "Baloo2-Bold",
   },
   phoneNumber: {
-    fontSize: 12,
-    fontFamily: "Baloo2-Medium",
+    fontSize: 14,
+    fontFamily: "Baloo2-SemiBold",
     color: Colors.text.gray,
   },
 });

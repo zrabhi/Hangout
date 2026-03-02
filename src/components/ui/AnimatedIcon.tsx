@@ -20,7 +20,6 @@ interface AnimatedIconProps extends ViewProps {
   onPressOut?: VoidFunction; // optional
   isZoomed?: boolean;
   direction?: RotationDirection;
-  variant: ColorVariants;
   icon: ElementType;
   isBackground?: boolean;
   disabled?: boolean;
@@ -30,7 +29,6 @@ export const AnimatedIcon = memo(
   ({
     onPress,
     icon,
-    variant,
     direction = undefined,
     isZoomed,
     onPressIn,
@@ -93,22 +91,13 @@ export const AnimatedIcon = memo(
           style={[
             styles.iconContainer,
             rest.style,
-            isBackground && {
-              backgroundColor: colorsMap[variant],
-            },
             animatedStyle,
           ]}
         >
           <Icon
             strokeWidth={2}
             fill="none"
-            color={
-              disabled
-                ? "rgba(0,0,0,0.3)"
-                : isBackground
-                  ? "#FFFFFF"
-                  : colorsMap[variant]
-            }
+            
           />
         </Animated.View>
       </GestureDetector>
@@ -118,6 +107,10 @@ export const AnimatedIcon = memo(
 
 const styles = StyleSheet.create({
   iconContainer: {
+    padding:10,
+    borderRadius: 16,
+    backgroundColor:'transparent',
+    borderWidth:1,
     alignItems: "center",
     justifyContent: "center",
   },

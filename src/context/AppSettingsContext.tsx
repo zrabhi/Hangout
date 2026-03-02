@@ -1,6 +1,7 @@
 import { useOrientation } from "@/hooks/useOrientation";
 import { type PermissionType } from "@/types/Permissions";
-import { AppColors } from "@/utils/AppColors";
+import { AppColorName, AppColors } from "@/utils/AppColors";
+import { AppLanguageCode } from "@/utils/AppLanguages";
 import { type Language, translations } from "@/utils/Translation";
 import {
   createContext,
@@ -19,8 +20,8 @@ interface PermissionPromptState {
 }
 
 interface LanguageContextType {
-  lang: Language;
-  setLanguage: (lang: Language) => void;
+  lang: AppLanguageCode;
+  setLanguage: (lang: AppLanguageCode) => void;
   handleSetPermissionPrompt: (permission: PermissionType | null) => void;
   headerColor: string;
   isLandscape: boolean;
@@ -35,8 +36,12 @@ const AppSettingContext = createContext<LanguageContextType | null>(null);
 
 export const AppSettingsProvider = ({ children }: { children: ReactNode }) => {
   const { isLandscape } = useOrientation();
-  const [language, setLanguage] = useState<Language>("en");
-  const [headerColor, setHeaderColor] = useState<string>(AppColors.WHITE);
+  const [language, setLanguage] = useState<AppLanguageCode>(
+  AppLanguageCode.EN
+);
+  const [headerColor, setHeaderColor] = useState<string>(
+    AppColors[AppColorName.WHITE],
+  );
 
   const [permissionPrompt, setPermissionPrompt] =
     useState<PermissionPromptState>({

@@ -40,6 +40,7 @@ export default function CallsScreen() {
       <FlatList
         keyExtractor={(item) => item.id?.toString() ?? ""}
         data={calls}
+        contentContainerStyle={{paddingHorizontal:16}}
         showsVerticalScrollIndicator={false}
         extraData={calls}
         renderItem={({ item }) => (

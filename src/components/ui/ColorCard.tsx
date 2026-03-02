@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useEffect } from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import Animated, {
   useSharedValue,
@@ -7,7 +7,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import Colors from "@/utils/Colors";
-import { CallIcon } from "@/icons/Call";
+import { CheckIcon } from "@/icons/CheckIcon";
 
 interface ColorCardProps {
   color: string;
@@ -17,17 +17,35 @@ interface ColorCardProps {
 }
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
-
+const AnimatedView = Animated.createAnimatedComponent(View);
 export const ColorCard = memo(
   ({ color, name, selected = false, onPress }: ColorCardProps) => {
     const scale = useSharedValue(selected ? 1.05 : 1);
 
+    const iconScale = useSharedValue(selected ? 1 : 0);
+
+    const iconOpacity = useSharedValue(selected ? 1 : 0);
+
+    useEffect(() => {
+      if (selected) {
+        iconScale.value = withSpring(1);
+        iconOpacity.value = withTiming(1);
+      } else {
+        iconScale.value = withSpring(0);
+        iconOpacity.value = withTiming(0);
+      }
+    }, [selected]);
+
     const animatedStyle = useAnimatedStyle(() => ({
       transform: [{ scale: scale.value }],
-      borderColor: selected ? Colors.primary.blue[100] : "rgba(0,0,0,0.08)",
-      borderWidth: 2.5,
+      borderColor: selected ? Colors.primary.blue[100] : Colors.black,
+      borderWidth: selected ? 2.5 : 1
     }));
 
+    const animatedIconStyle = useAnimatedStyle(() => ({
+      transform: [{ scale: iconScale.value }],
+      opacity: iconOpacity.value,
+    }));
     return (
       <AnimatedPressable
         onPress={() => {
@@ -39,13 +57,13 @@ export const ColorCard = memo(
         }}
         style={[styles.card, animatedStyle]}
       >
-        {/* {selected && (
-          <View style={styles.selectedIcon}>
-            <CallIcon strokeWidth={2.5} color="#fff" />
-          </View>
-        )} */}
         <View style={[styles.colorBox, { backgroundColor: color }]} />
         <Text style={styles.colorName}>{name}</Text>
+        {selected && (
+          <AnimatedView style={[styles.selectedIcon, animatedIconStyle]}>
+            <CheckIcon strokeWidth={2.5} color="#fff" />
+          </AnimatedView>
+        )}
       </AnimatedPressable>
     );
   },
@@ -61,14 +79,11 @@ const styles = StyleSheet.create({
     padding: 10,
     margin: 8,
     borderWidth: 1,
-    elevation: 100,
   },
   colorBox: {
     width: 50,
     height: 50,
-    elevation:10,
-    borderWidth:1,
-    borderColor:'rgba(0,0,0,0.08)',
+    borderWidth: 1,
     borderRadius: 12,
     marginBottom: 8,
   },
@@ -80,8 +95,8 @@ const styles = StyleSheet.create({
   },
   selectedIcon: {
     position: "absolute",
-    top: 6,
-    left: 6,
+    top: -10,
+    right: -10,
     backgroundColor: Colors.primary.blue[100],
     padding: 4,
     borderRadius: 12,

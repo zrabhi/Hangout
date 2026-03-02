@@ -22,24 +22,21 @@ export const translations = {
     headerColor: "Header Color",
     emptyContactsMessage:
       "Sadly, your contact list is empty. Add a new contact or sync with your phone to get started!",
-typeMessage: "Type a message...",
+    typeMessage: "Type a message...",
     // permissions
     photoPermission:
       "Sadly, we don’t have access to your photos. To upload an image, please go to settings and allow permission.",
     smsReadPermission:
-  "Hangouts needs permission to read your SMS messages to detect and process relevant conversations inside the app.",
+      "Hangouts needs permission to read your SMS messages to detect and process relevant conversations inside the app.",
 
-  smsSendPermission:
-    "Hangouts requires permission to send SMS messages so you can communicate with your contacts directly from the app.",
+    smsSendPermission:
+      "Hangouts requires permission to send SMS messages so you can communicate with your contacts directly from the app.",
 
-  callPhonePermission:
-    "Hangouts needs phone call permission to allow you to initiate calls directly from the app.",
+    callPhonePermission:
+      "Hangouts needs phone call permission to allow you to initiate calls directly from the app.",
 
-  smsReceivePermission:
-    "Hangouts requires permission to receive SMS messages to stay updated with incoming conversations.",
-
-
-
+    smsReceivePermission:
+      "Hangouts requires permission to receive SMS messages to stay updated with incoming conversations.",
 
     // Errors
     firstNameRequired: "First name is required",
@@ -52,12 +49,37 @@ typeMessage: "Type a message...",
     phoneNumberInvalid: "Please enter a valid phone number",
     postalCodeRequired: "Postal code is required",
     postalCodeInvalid: "Please enter a valid postal code",
-
+    appLanguageTitle: "App Language",
+    appLanguageDialog: "Select your preferred language",
+    appHeaderColorTitle: "App Header Color",
+    appHeaderColorDialog: "Choose your preferred theme",
     inbox: "Inbox",
     calls: "Calls",
+    settings: "Settings",
+    en: "English",
+    fr: "French",
+    white: "White",
+    lightGray: "Light Gray",
+    blueTint: "Blue Tint",
+    greenTint: "Green Tint",
+    orangeTint: "Orange Tint",
+    pinkTint: "Pink Tint",
   },
 
   fr: {
+    white: "Blanc",
+lightGray: "Gris clair",
+blueTint: "Teinte bleue",
+greenTint: "Teinte verte",
+orangeTint: "Teinte orange",
+pinkTint: "Teinte rose",
+    en: "Anglais",
+    fr: "Français",
+    settings: "Paramètres",
+    appHeaderColorTitle: "Couleur de l'en-tête de l'application",
+    appHeaderColorDialog: "Choisissez votre thème préféré",
+    appLanguageTitle: "Langue de l'application",
+    appLanguageDialog: "Sélectionnez votre langue préférée",
     changePhoto: "Changer la photo",
     createContact: "Créer un contact",
     delete: "Supprimer",
@@ -95,18 +117,18 @@ typeMessage: "Type a message...",
     inbox: "Boîte de réception",
     calls: "Appels",
 
-typeMessage: "Écrivez un message...",
+    typeMessage: "Écrivez un message...",
     smsReadPermission:
-  "Hangouts a besoin de l'autorisation de lire vos SMS afin de détecter et traiter les conversations pertinentes dans l'application.",
+      "Hangouts a besoin de l'autorisation de lire vos SMS afin de détecter et traiter les conversations pertinentes dans l'application.",
 
-smsSendPermission:
-  "Hangouts nécessite l'autorisation d'envoyer des SMS afin que vous puissiez communiquer avec vos contacts directement depuis l'application.",
+    smsSendPermission:
+      "Hangouts nécessite l'autorisation d'envoyer des SMS afin que vous puissiez communiquer avec vos contacts directement depuis l'application.",
 
-callPhonePermission:
-  "Hangouts a besoin de l'autorisation d'effectuer des appels téléphoniques afin de vous permettre d'initier des appels directement depuis l'application.",
+    callPhonePermission:
+      "Hangouts a besoin de l'autorisation d'effectuer des appels téléphoniques afin de vous permettre d'initier des appels directement depuis l'application.",
 
-smsReceivePermission:
-  "Hangouts nécessite l'autorisation de recevoir des SMS afin de rester informé des conversations entrantes.",
+    smsReceivePermission:
+      "Hangouts nécessite l'autorisation de recevoir des SMS afin de rester informé des conversations entrantes.",
   },
 };
 

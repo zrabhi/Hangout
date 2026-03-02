@@ -1,11 +1,97 @@
 import { ColorCard } from "@/components/ui/ColorCard";
+import { ScreenHeader } from "@/components/ui/ScreenHeader";
+import { SelectableCard } from "@/components/ui/SelectableCard";
+import { SettingItemCard } from "@/components/ui/SettingItemCard";
+import { useAppSettings } from "@/context/AppSettingsContext";
+import { PainIcon } from "@/icons/Paint";
+import { AppColors } from "@/utils/AppColors";
+import { AppLanguageCode, AppLanguages } from "@/utils/AppLanguages";
 import Colors from "@/utils/Colors";
-import { View } from "react-native";
+import { Stack } from "expo-router";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
 
 export default function SettingsScreen() {
-  return <View style={{flex:1, alignItems:'center',justifyContent:'center'}}>
-
-    <ColorCard  selected name="orange" color={Colors.primary.orange[100]} />
-    
-  </View>;
+  const { headerColor, setHeaderColor, lang, setLanguage, t } =
+    useAppSettings();
+  return (
+    <>
+      <Stack.Screen
+        options={{
+          header: (props) => (
+            <ScreenHeader options={props} isSettingsShown={false} isTab={false}>
+              <View style={styles.headerContainer}>
+                <Text style={styles.fullName}>{t("settings")}</Text>
+              </View>
+            </ScreenHeader>
+          ),
+        }}
+      />
+      <ScrollView
+        style={{
+          flex: 1,
+          paddingVertical: 20,
+          paddingHorizontal: 18,
+          backgroundColor: Colors.background.screen,
+        }}
+        contentContainerStyle={{
+          gap: 30,
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <SettingItemCard
+          Icon={PainIcon}
+          variant={"green"}
+          title={t("appHeaderColorTitle")}
+          dialog={t("appHeaderColorDialog")}
+        >
+          {Object.entries(AppColors).map(([name, value]) => (
+            <ColorCard
+              key={name}
+              name={t(name)}
+              color={value}
+              selected={headerColor === value}
+              onPress={() => setHeaderColor(value)}
+            />
+          ))}
+        </SettingItemCard>
+        <SettingItemCard
+          Icon={PainIcon}
+          variant="blue"
+          title={t("appLanguageTitle")}
+          dialog={t("appLanguageDialog")}
+        >
+          {Object.entries(AppLanguageCode).map(([name, value]) => (
+            <SelectableCard
+              key={name}
+              label={t(value)}
+              selected={lang === value}
+              onPress={() => setLanguage(value)}
+            />
+          ))}
+        </SettingItemCard>
+      </ScrollView>
+    </>
+  );
 }
+
+const styles = StyleSheet.create({
+  headerContainer: {
+    flexDirection: "column",
+    justifyContent: "center",
+  },
+  container: {
+    flex: 1,
+    backgroundColor: Colors.background.screen,
+  },
+  fullName: {
+    fontSize: 24,
+    color: Colors.black,
+    fontFamily: "Baloo2-Bold",
+  },
+  phoneNumber: {
+    fontSize: 14,
+    fontFamily: "Baloo2-SemiBold",
+    color: Colors.text.gray,
+  },
+});
