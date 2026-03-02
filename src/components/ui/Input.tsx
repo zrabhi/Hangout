@@ -21,9 +21,7 @@ export const Input = ({
   return (
     <View style={styles.container}>
       <View style={styles.labelConatiner}>
-        <Text style={styles.label}>
-          {label}
-        </Text>
+        <Text style={styles.label}>{label}</Text>
       </View>
       <TextInput
         editable={isEditable}
@@ -46,13 +44,13 @@ const styles = StyleSheet.create({
     transform: [{ translateY: -10 }],
     left: 14,
     zIndex: 1,
-    backgroundColor: "rgb(242, 242, 242)",
+    backgroundColor: Colors.white,
     paddingHorizontal: 4,
   },
   errorText: {
     fontFamily: "Baloo2-Medium",
     fontSize: 13,
-    paddingLeft:3,
+    paddingLeft: 3,
     color: Colors.primary.red[100],
   },
   label: {
@@ -61,7 +59,7 @@ const styles = StyleSheet.create({
   },
   container: {
     width: "90%",
-    gap:4
+    gap: 4,
   },
   input: {
     borderWidth: 1.2,

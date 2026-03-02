@@ -1,8 +1,8 @@
 /* eslint-disable */
 import { type Calls } from "@/types/Calls";
 import { type Contact } from "@/types/Contacts";
-import { Inbox, type Message } from "@/types/Message";
-import { TableCreationReturn } from "@/utils/TableCreationReturn";
+import { DeleviryStateType, Inbox, type Message } from "@/types/Message";
+import { CrudOperationRetun } from "@/utils/TableCreationReturn";
 import { useSQLiteContext } from "expo-sqlite";
 import {
   createContext,
@@ -19,17 +19,24 @@ interface DataBaseContextType {
   contacts: Contact[];
   isAddingMessage: boolean;
   isLoading: boolean;
-  createContact: (contact: Contact) => Promise<TableCreationReturn>;
+  createContact: (contact: Contact) => Promise<CrudOperationRetun>;
   deleteContact: (id: string) => Promise<void>;
   getConatctsList: () => Promise<Contact[]>;
   getContactById: (id: string) => Promise<Contact | null>;
+  updateMessageStatus: (
+    id: number,
+    status: DeleviryStateType,
+  ) => Promise<{
+    success: boolean;
+    id: number;
+  }>;
   getConversationByContactId: (
     address: number,
   ) => Promise<ContactMessageSummary[]>;
-  addMessage: (message: Message) => Promise<TableCreationReturn>;
+  addMessage: (message: Message) => Promise<CrudOperationRetun>;
   getCallList: () => Promise<Calls[]>;
   getInbox: () => Promise<Inbox[]>;
-  handleAddCall: (call: Calls) => Promise<TableCreationReturn>;
+  handleAddCall: (call: Calls) => Promise<CrudOperationRetun>;
   updateContact: (
     id: string,
     fields: Partial<Omit<Contact, "id">>,
@@ -69,7 +76,7 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
           body TEXT,
           date INTEGER,
           type TEXT,
-          deleviryState TEXT,
+          deleviryState number,
           FOREIGN KEY (contactId) REFERENCES contacts(id)
           );
           `);
@@ -131,7 +138,7 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const addMessage = async (message: Message): Promise<TableCreationReturn> => {
+  const addMessage = async (message: Message): Promise<CrudOperationRetun> => {
     setIsAddingMessage(true);
     try {
       const { address, type, date, body, deleviryState, contactId } = message;
@@ -158,7 +165,23 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const handleAddCall = async (call: Calls): Promise<TableCreationReturn> => {
+  const updateMessageStatus = async (
+    id: number,
+    status: DeleviryStateType,
+  ): Promise<{ success: boolean; id: number }> => {
+    try {
+      await db.runAsync(`UPDATE messages SET deleviryState = ? WHERE id = ?`, [
+        status,
+        id,
+      ]);
+      return { success: true, id };
+    } catch (err) {
+      console.error("Update message status error:", err);
+      return { success: false, id };
+    }
+  };
+
+  const handleAddCall = async (call: Calls): Promise<CrudOperationRetun> => {
     console.log("im hereeee");
     try {
       const { address, contactName, timestamp, contactId } = call;
@@ -264,7 +287,7 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
   };
   const handleCreateContact = async (
     contact: Contact,
-  ): Promise<TableCreationReturn> => {
+  ): Promise<CrudOperationRetun> => {
     setIsloading(true);
     try {
       console.log("contact to be created", contact);
@@ -354,6 +377,7 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
     getConversationByContactId,
     isAddingMessage,
     getConatctsList,
+    updateMessageStatus,
     createContact: handleCreateContact,
     deleteContact: handleDeleteConatct,
     updateContact: handleUpdateContact,

@@ -12,6 +12,7 @@ export const Loader = () => {
 const styles = StyleSheet.create({
   activeIndocator: {
     flex: 1,
+    backgroundColor:Colors.background.screen,
     justifyContent: "center",
     alignItems: "center",
   },

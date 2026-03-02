@@ -28,23 +28,19 @@ export default function ConatctsScreen() {
 
   return (
     <View style={styles.container}>
-        <SearchInput
-          placeholder={t("search")}
-          value={searchValue}
-          onChange={setSearchValue}
-        />
+      <SearchInput
+        placeholder={t("search")}
+        value={searchValue}
+        onChange={setSearchValue}
+      />
       <View style={styles.contentContainer}>
-        {/* <View style={styles.filters}>
-          <Selector label={t("allContacts")} selected />
-          <Selector label={t("favorites")} selected={false} />
-        </View> */}
         <View style={styles.container}>
           <FlashList
             extraData={contacts}
             contentContainerStyle={[
               styles.listContentConatiner,
               contacts.length === 0 && {
-                margin: contacts.length,
+                margin: "auto",
               },
             ]}
             ListEmptyComponent={
@@ -70,6 +66,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   listContentConatiner: {
+    paddingHorizontal: 10,
   },
   contentContainer: {
     gap: 23,

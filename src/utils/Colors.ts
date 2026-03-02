@@ -22,10 +22,11 @@ export default {
     },
     background:{
         icon:'rgba(2, 125, 186, 0.08)',
+        disabledIcon:'rgba(2, 125, 186, 0.04)',
         card:'#ffffff',
         searchInput:'rgba(2, 125, 186, 0.15)',
-        header:"#ffffff",
-        screen:'#ffffff'
+        screen:'#ffffff',
+            header: '#fafafa',
     },
     black:'#000000',
     white:'#fcfcfc',

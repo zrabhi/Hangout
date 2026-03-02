@@ -3,10 +3,11 @@ import { type MessageType } from "./MessageTYpe";
 export enum DeleviryStateType  { 
   "SENT", 
   "FAILED",
-  "SENDING",
+  "PENDING",
   "DELIVERED"
 }
 export interface Message {
+  id?:number,
   address:string;
   contactId:number,
   body: string,

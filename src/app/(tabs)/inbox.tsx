@@ -33,6 +33,7 @@ export default function InboxScreen() {
     <View style={styles.container}>
       <FlatList
         data={conversations}
+        contentContainerStyle={{paddingHorizontal:16}}
         renderItem={({ item }) => (
           <LastMessageCard
             onPress={() => handleOnPress(item.contactId)}

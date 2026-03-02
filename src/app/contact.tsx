@@ -1,10 +1,12 @@
 import { Button } from "@/components/ui/Button";
+import { Loader } from "@/components/ui/Loader";
 import { ScreenHeader } from "@/components/ui/ScreenHeader";
 import { ContactForm } from "@/containers/CreateContactForms";
 import { useAppSettings } from "@/context/AppSettingsContext";
 import { useDataBaseContext } from "@/context/DatabaseContext";
 import { type Contact, contactCreationInit } from "@/types/Contacts";
 import { type Errors } from "@/types/ContactsError";
+import Colors from "@/utils/Colors";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
@@ -14,7 +16,7 @@ import { StyleSheet, View } from "react-native";
 export default function ContactScreen() {
   const { id } = useLocalSearchParams();
   const { t } = useAppSettings();
-  const { createContact, updateContact, getContactById, deleteContact } =
+  const { createContact, updateContact, getContactById, deleteContact,  isLoading } =
     useDataBaseContext();
   const [contactInfo, setContactInfo] = useState<Contact>(contactCreationInit);
   const [errors, setErrors] = useState<Errors>({});
@@ -83,6 +85,7 @@ export default function ContactScreen() {
     router.back();
   };
   
+    if (isLoading) return <Loader />;
   return (
     <>
       <Stack.Screen
@@ -122,7 +125,8 @@ export default function ContactScreen() {
 const styles = StyleSheet.create({
   contentConatainer: {
     flex: 1,
-    marginTop: 25,
+    paddingTop: 25,
+    backgroundColor: Colors.white
   },
   button: {
     flex: 1,
@@ -135,6 +139,7 @@ const styles = StyleSheet.create({
   //   zIndex: 10,
   // },
   buttonsContainer: {
+    backgroundColor:Colors.white,
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",

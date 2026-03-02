@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
     top: 0,
     left: 14,
     paddingHorizontal: 4,
-    backgroundColor: "rgb(242, 242, 242)",
+    backgroundColor: Colors.white,
     transform: [{ translateY: -10 }],
   },
   photoLabel: {

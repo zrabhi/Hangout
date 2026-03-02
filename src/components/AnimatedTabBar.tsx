@@ -1,58 +1,61 @@
 import { memo } from "react";
 import type { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import Colors from "@utils/Colors";
+import Animated, { useSharedValue, useAnimatedStyle, withSpring } from "react-native-reanimated";
+import Colors from "@/utils/Colors";
 import { AddIcon } from "@/icons/Add";
 import { router } from "expo-router";
 
-export const AnimatedTabBar = memo(
-  ({ state, descriptors, navigation }: BottomTabBarProps) => {
-    // TODO: Add animation to the active tab indicator Spring
+export const AnimatedTabBar = memo(({ state, descriptors, navigation }: BottomTabBarProps) => {
+  return (
+    <View style={tabBarStyle.container}>
+      <View style={tabBarStyle.tabBarContainer}>
+        {state.routes.map((route, index) => {
+          const { options } = descriptors[route.key];
+          const isFocused = state.index === index;
 
-    return (
-      <>
-        <View style={tabBarStyle.container}>
-          <View style={tabBarStyle.tabBarContainer}>
-            {state.routes.map((route, index) => {
-              const { options } = descriptors[route.key];
-              const isFocused = state.index === index;
+          // Shared value for spring scale
+          const scale = useSharedValue(isFocused ? 1.1 : 1);
 
-              return (
-                <Pressable
-                  key={route.key}
-                  style={[tabBarStyle.tab, isFocused && tabBarStyle.focusedTab]}
-                  onPress={() => navigation.navigate(route.name)}
-                >
-                  {options.tabBarIcon &&
-                    options.tabBarIcon?.({
-                      focused: isFocused,
-                      size: 16,
-                      color: isFocused ? Colors.black : Colors.white,
-                    })}
+          const animatedStyle = useAnimatedStyle(() => ({
+            transform: [{ scale: withSpring(scale.value, { damping: 12, stiffness: 150 }) }],
+          }));
 
-                  {isFocused && (
-                    <Text style={tabBarStyle.tabName}>{route.name}</Text>
-                  )}
-                </Pressable>
-              );
-            })}
-          </View>
-          <Pressable
-            style={tabBarStyle.addContactButton}
-            onPress={ () =>router.navigate('/contact')}
-          >
-            <AddIcon
-              fill={Colors.white}
-              color={Colors.white}
-              height={24}
-              width={24}
-            />
-          </Pressable>
-        </View>
-      </>
-    );
-  },
-);
+          return (
+            <Animated.View key={route.key} style={animatedStyle}>
+              <Pressable
+                style={tabBarStyle.tab}
+                onPress={() => {
+                  navigation.navigate(route.name);
+                  scale.value = 1.1;
+                  setTimeout(() => {
+                    scale.value = 1; // bounce back
+                  }, 200);
+                }}
+              >
+                {options.tabBarIcon &&
+                  options.tabBarIcon({
+                    focused: isFocused,
+                    size: 16,
+                    color: isFocused ? Colors.black : Colors.white,
+                  })}
+
+                {isFocused && <Text style={tabBarStyle.tabName}>{route.name}</Text>}
+              </Pressable>
+            </Animated.View>
+          );
+        })}
+      </View>
+
+      <Pressable
+        style={tabBarStyle.addContactButton}
+        onPress={() => router.navigate("/contact")}
+      >
+        <AddIcon fill={Colors.white} color={Colors.white} height={24} width={24} />
+      </Pressable>
+    </View>
+  );
+});
 
 const tabBarStyle = StyleSheet.create({
   container: {
@@ -63,44 +66,6 @@ const tabBarStyle = StyleSheet.create({
     width: "100%",
     bottom: 30,
     gap: 12,
-  },
-  addContactButton: {
-    backgroundColor: Colors.primary.green[100],
-    width: 48,
-    height: 48,
-    borderRadius: 32,
-    borderWidth: 1.2,
-    borderStyle: "dashed",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  tabName: {
-    fontFamily: "Baloo2-Medium",
-    fontSize: 12,
-    color: Colors.black,
-  },
-  focusedTab: {
-    backgroundColor: Colors.white,
-    paddingVertical: 4,
-    paddingHorizontal: 12,
-    borderRadius: 6,
-    borderWidth: 1.2,
-  },
-  activeTab: {
-    position: "absolute",
-    paddingVertical: 15,
-    backgroundColor: Colors.white,
-    borderRadius: 6,
-    borderWidth: 1,
-    borderColor: Colors.black,
-  },
-  tab: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 6,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
   },
   tabBarContainer: {
     paddingHorizontal: 5,
@@ -113,5 +78,29 @@ const tabBarStyle = StyleSheet.create({
     borderRadius: 16,
     borderWidth: 1.5,
     borderColor: Colors.black,
+  },
+  tab: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 6,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+  },
+  tabName: {
+    fontFamily: "Baloo2-Medium",
+    fontSize: 12,
+    marginLeft: 4,
+    color: Colors.black,
+  },
+  addContactButton: {
+    backgroundColor: Colors.primary.green[100],
+    width: 48,
+    height: 48,
+    borderRadius: 32,
+    borderWidth: 1.2,
+    borderStyle: "dashed",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

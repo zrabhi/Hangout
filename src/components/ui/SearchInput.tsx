@@ -28,13 +28,9 @@ export const SearchInput = ({
     <View
       style={[
         {
-          backgroundColor: Colors.background.header,
           width: "100%",
           alignItems: "center",
           paddingVertical: 16,
-          borderBottomWidth: 1,
-          elevation: 3,
-          borderBottomColor: "rgba(2, 125, 186, 0.15)",
         },
       ]}
     >
@@ -69,14 +65,11 @@ const styles = StyleSheet.create({
     width: "100%",
     alignItems: "center",
     paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "rgba(2, 125, 186, 0.15)",
   },
   focusedSearchInput: {
-    borderColor: Colors.black,
+    borderWidth:2,
   },
   searchInput: {
-    elevation: 3,
     width: "90%",
     gap: 12,
     flexDirection: "row",
@@ -86,13 +79,12 @@ const styles = StyleSheet.create({
     height: 52,
     backgroundColor: Colors.white,
     borderWidth: 1.5,
-    borderRadius: 12,
-    borderColor: "rgba(2, 125, 186, 0.15)",
+    borderRadius: 16,
   },
   input: {
-    paddingTop: 12, // to be removed later
     width: "90%",
     alignItems: "center",
+    borderColor: Colors.black,
     fontFamily: "Baloo2-SemiBold",
     fontSize: 14,
     color: Colors.black,

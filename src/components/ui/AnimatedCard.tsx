@@ -15,27 +15,15 @@ interface AnimatedCardProps {
   onPress: VoidFunction;
 }
 
+
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export const AnimatedCard = memo(
-  ({ children, onPress, color }: AnimatedCardProps) => {
-    const translationX = useSharedValue(-50);
-    const borderAnim = useSharedValue(0);
-
-    useFocusEffect(
-      useCallback(() => {
-        translationX.value = withSpring(0, { damping: 32, stiffness: 400 });
-      }, []),
-    );
+  ({ children, onPress }: AnimatedCardProps) => {
+    const scale = useSharedValue(1);
 
     const animatedStyle = useAnimatedStyle(() => ({
-      transform: [{ translateX: translationX.value }],
-      borderLeftWidth: 5,
-      borderLeftColor: interpolateColor(
-        borderAnim.value,
-        [0, 1],
-        ["transparent", color],
-      ),
+      transform: [{ scale: scale.value }],
     }));
 
     return (
@@ -43,12 +31,10 @@ export const AnimatedCard = memo(
         <AnimatedPressable
           onPress={onPress}
           onPressIn={() => {
-            translationX.value = 15;
-            borderAnim.value = 1;
+            scale.value = withSpring(1.03, { damping: 12, stiffness: 150 });
           }}
           onPressOut={() => {
-            translationX.value = 0;
-            borderAnim.value = 0;
+            scale.value = withSpring(1, { damping: 12, stiffness: 150 });
           }}
           style={[styles.card, animatedStyle]}
         >
@@ -58,7 +44,7 @@ export const AnimatedCard = memo(
         <View style={styles.divider} />
       </>
     );
-  },
+  }
 );
 
 const styles = StyleSheet.create({
@@ -77,8 +63,7 @@ const styles = StyleSheet.create({
     padding: 12,
     marginTop: 14,
     paddingRight: 18,
-    borderRadius: 0,
-    borderLeftWidth: 30,
-    borderLeftColor: "transparent",
+    borderRadius: 16,
+    borderWidth:1,
   },
 });
