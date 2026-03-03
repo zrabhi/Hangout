@@ -30,6 +30,7 @@ interface DataBaseContextType {
     success: boolean;
     id: number;
   }>;
+  setContacts: React.Dispatch<React.SetStateAction<Contact[]>>
   getConversationByContactId: (
     address: number,
   ) => Promise<ContactMessageSummary[]>;
@@ -326,7 +327,6 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
     try {
       await db.runAsync(`DELETE FROM contacts WHERE id = ?`, [id]);
 
-      setContacts((prev) => prev.filter((contact) => contact.id !== id));
     } catch (err) {
       throw new Error(`ERROR occurred while deleting contact: ${err}`);
     } finally {
@@ -380,6 +380,7 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
     deleteContact: handleDeleteConatct,
     updateContact: handleUpdateContact,
     onInitDb: handleInitDataBase,
+    setContacts,
   };
 
   return (

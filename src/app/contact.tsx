@@ -21,6 +21,7 @@ export default function ContactScreen() {
     updateContact,
     getContactById,
     deleteContact,
+    setContacts,
     isLoading,
   } = useDataBaseContext();
   const [contactInfo, setContactInfo] = useState<Contact>(contactCreationInit);
@@ -87,6 +88,7 @@ export default function ContactScreen() {
     if (!contactInfo.id) return;
 
     deleteContact(contactInfo.id);
+       setContacts((prev) => prev.filter((contact) => contact.id !== id));
     router.back();
   };
 

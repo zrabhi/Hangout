@@ -16,13 +16,13 @@ import { SQLiteProvider } from "expo-sqlite";
 import { useAppBackgroundToast } from "@/hooks/UseLastBackground";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { LoadingIndicator } from "@/components/LoadingSplashScreen";
-import { useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 
 export const unstable_settings = {
   anchor: "(tabs)",
 };
 
-export default function RootLayout() {
+export const AppProviders = ({ children }: { children: ReactNode }) => {
   const colorScheme = useColorScheme();
 
   const [loaded] = useFonts({
@@ -32,45 +32,49 @@ export default function RootLayout() {
     "Baloo2-Bold": require("@assets/font/Baloo2-Bold.ttf"),
     "Baloo2-ExtraBold": require("@assets/font/Baloo2-ExtraBold.ttf"),
   });
+
   const [showSplash, setShowSplash] = useState(true);
-
-  useAppBackgroundToast();
-
   useEffect(() => {
     if (loaded) {
       const timer = setTimeout(() => {
         setShowSplash(false);
-      }, 3200); 
+      }, 5200);
 
       return () => clearTimeout(timer);
     }
   }, [loaded]);
 
-
-  if (showSplash)  return <LoadingIndicator />;
+  if (showSplash) return <LoadingIndicator />;
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <SQLiteProvider
-        databaseName="hangouts.db"
-        // onError={async () => await deleteDatabaseAsync("hangouts.db")}
-      >
+      <SQLiteProvider databaseName="hangouts.db">
         <DataBaseProvider>
           <AppSettingsProvider>
             <GestureHandlerRootView style={{ flex: 1 }}>
-              <Stack
-                screenOptions={{
-                  orientation: "all",
-                }}
-              >
-                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                <Stack.Screen name="contact" />
-              </Stack>
+              {children}
             </GestureHandlerRootView>
           </AppSettingsProvider>
         </DataBaseProvider>
       </SQLiteProvider>
       <StatusBar style="auto" />
     </ThemeProvider>
+  );
+};
+
+export default function RootLayout() {
+  useAppBackgroundToast();
+
+  return (
+    <AppProviders>
+      <Stack
+        screenOptions={{
+          orientation: "all",
+        }}
+      >
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="contact" />
+      </Stack>
+    </AppProviders>
   );
 }

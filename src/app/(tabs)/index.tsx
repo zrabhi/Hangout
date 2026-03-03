@@ -48,6 +48,7 @@ export default function ConatctsScreen() {
                 margin: contacts.length === 0 ? "auto" : undefined,
               },
             ]}
+            keyExtractor={(item) => item.id?.toString() ?? ""}
             ListEmptyComponent={
               <EmptyListMessage
                 message={t("emptyContactsMessage")}
