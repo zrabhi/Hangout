@@ -9,17 +9,20 @@ import { type ReactNode } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { AnimatedIcon } from "./AnimatedIcon";
 import { LeftArrownIcon } from "@/icons/LeftArrow";
+import { AnimatedLogoApp } from "./AnimatedLogoApp";
 
 interface ScreenHeaderProps {
   options: BottomTabHeaderProps | NativeStackHeaderProps;
   isTab?: boolean;
   children?: ReactNode;
+  isLogoShown?:boolean;
   isSettingsShown?: boolean;
 }
 
 export const ScreenHeader = ({
   options,
   isTab = true,
+  isLogoShown = false,
   isSettingsShown = true,
   children,
 }: ScreenHeaderProps) => {
@@ -30,7 +33,10 @@ export const ScreenHeader = ({
   return (
     <>
       <View style={[styles.headerContainer, { backgroundColor: headerColor }]}>
-        <View style={[styles.titleConatiner, !isTab && { gap: 16 }]}>
+        <View style={[styles.titleConatiner, (!isTab || isLogoShown) && { gap: 16 }]}>
+          {/* {isLogoShown && 
+            <AnimatedLogoApp size="sm"/>
+          } */}
           {!isTab && (
             <AnimatedIcon icon={LeftArrownIcon} onPress={handleOnPressBack} />
           )}

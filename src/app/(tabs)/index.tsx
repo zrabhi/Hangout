@@ -24,7 +24,12 @@ export default function ConatctsScreen() {
     getConatctsList();
   }, []);
 
-  if (isLoading) return <Loader />;
+  if (isLoading)
+    return (
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <Loader />
+      </View>
+    );
 
   return (
     <View style={styles.container}>
@@ -39,8 +44,8 @@ export default function ConatctsScreen() {
             extraData={contacts}
             contentContainerStyle={[
               styles.listContentConatiner,
-              contacts.length === 0 && {
-                margin: "auto",
+              {
+                margin: contacts.length === 0 ? "auto" : undefined,
               },
             ]}
             ListEmptyComponent={

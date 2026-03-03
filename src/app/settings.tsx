@@ -11,7 +11,7 @@ import { Stack } from "expo-router";
 import { View, Text, StyleSheet, ScrollView } from "react-native";
 
 export default function SettingsScreen() {
-  const { headerColor, setHeaderColor, lang, setLanguage, t } =
+  const { headerColor, handleSetHeaderColor, lang, handleSetLanguage, t } =
     useAppSettings();
   return (
     <>
@@ -29,7 +29,7 @@ export default function SettingsScreen() {
       <ScrollView
         style={{
           flex: 1,
-          paddingVertical: 20,
+          paddingVertical: 25,
           paddingHorizontal: 18,
           backgroundColor: Colors.background.screen,
         }}
@@ -51,7 +51,7 @@ export default function SettingsScreen() {
               name={t(name)}
               color={value}
               selected={headerColor === value}
-              onPress={() => setHeaderColor(value)}
+              onPress={async() => await handleSetHeaderColor(value)}
             />
           ))}
         </SettingItemCard>
@@ -66,7 +66,7 @@ export default function SettingsScreen() {
               key={name}
               label={t(value)}
               selected={lang === value}
-              onPress={() => setLanguage(value)}
+              onPress={async() => await handleSetLanguage(value)}
             />
           ))}
         </SettingItemCard>

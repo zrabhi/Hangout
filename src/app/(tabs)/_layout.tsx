@@ -24,7 +24,7 @@ export default function TabLayout() {
           sceneStyle: {
             backgroundColor: Colors.background.screen,
           },
-          header: (props) => <ScreenHeader options={props} />,
+          header: (props) => <ScreenHeader isLogoShown options={props} />,
           headerShown: false,
           tabBarButton: HapticTab,
         }}

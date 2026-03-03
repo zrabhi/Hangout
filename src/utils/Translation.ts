@@ -21,9 +21,8 @@ export const translations = {
     language: "Language",
     headerColor: "Header Color",
     emptyContactsMessage:
-      "Sadly, your contact list is empty. Add a new contact or sync with your phone to get started!",
+      "Sadly, your contact list is empty. Try to Add a new contact to get started!",
     typeMessage: "Type a message...",
-    // permissions
     photoPermission:
       "Sadly, we don’t have access to your photos. To upload an image, please go to settings and allow permission.",
     smsReadPermission:
@@ -38,7 +37,6 @@ export const translations = {
     smsReceivePermission:
       "Hangouts requires permission to receive SMS messages to stay updated with incoming conversations.",
 
-    // Errors
     firstNameRequired: "First name is required",
     firstNameTooShort: "First name must be at least 2 characters",
     lastNameRequired: "Last name is required",
@@ -53,6 +51,11 @@ export const translations = {
     appLanguageDialog: "Select your preferred language",
     appHeaderColorTitle: "App Header Color",
     appHeaderColorDialog: "Choose your preferred theme",
+    emptyCallsMessage:
+      "You don’t have any recent calls. Try calling someone to get started!",
+    emptyInboxMessage:
+      "Your inbox is empty. Send a message to start a conversation!",
+    openSettings: "Open Settings",
     inbox: "Inbox",
     calls: "Calls",
     settings: "Settings",
@@ -64,19 +67,31 @@ export const translations = {
     greenTint: "Green Tint",
     orangeTint: "Orange Tint",
     pinkTint: "Pink Tint",
+    createContactAction: "Create Contact",
+    updateContactAction: "Update Contact",
+    deleteContactAction: "Delete ",
   },
 
   fr: {
+    createContactAction: "Créer un contact",
+    updateContactAction: "Mettre à jour ",
+    deleteContactAction: "Supprimer ",
+    openSettings: "Ouvrir les paramètres",
     white: "Blanc",
-lightGray: "Gris clair",
-blueTint: "Teinte bleue",
-greenTint: "Teinte verte",
-orangeTint: "Teinte orange",
-pinkTint: "Teinte rose",
+    lightGray: "Gris clair",
+    blueTint: "Teinte bleue",
+    greenTint: "Teinte verte",
+    orangeTint: "Teinte orange",
+    pinkTint: "Teinte rose",
     en: "Anglais",
     fr: "Français",
     settings: "Paramètres",
+    photoPermission:
+      "Malheureusement, nous n’avons pas accès à vos photos. Pour télécharger une image, veuillez aller dans les paramètres et autoriser l’accès.",
     appHeaderColorTitle: "Couleur de l'en-tête de l'application",
+    emptyInboxMessage:
+      "Votre boîte de réception est vide. Envoyez un message pour commencer une conversation !",
+      
     appHeaderColorDialog: "Choisissez votre thème préféré",
     appLanguageTitle: "Langue de l'application",
     appLanguageDialog: "Sélectionnez votre langue préférée",
@@ -103,7 +118,9 @@ pinkTint: "Teinte rose",
     // errors
 
     emptyContactsMessage:
-      "Malheureusement, votre liste de contacts est vide. Ajoutez un nouveau contact ou synchronisez avec votre téléphone pour commencer !",
+      "Malheureusement, votre liste de contacts est vide. Ajoutez un nouveau contact pour commencer !",
+    emptyCallsMessage:
+      "Vous n’avez aucun appel récent. Essayez d’appeler quelqu’un pour commencer !",
     firstNameRequired: "Le prénom est obligatoire",
     firstNameTooShort: "Le prénom doit contenir au moins 2 caractères",
     lastNameRequired: "Le nom est obligatoire",

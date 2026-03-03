@@ -1,6 +1,6 @@
 import { colorsMap } from "@/utils/ClorsMap";
 import { ColorVariants } from "@/utils/ColorVarianrts";
-import React, { ElementType, memo } from "react";
+import React, { ElementType, memo, ReactNode } from "react";
 import { StyleSheet, ViewProps } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
@@ -20,7 +20,8 @@ interface AnimatedIconProps extends ViewProps {
   onPressOut?: VoidFunction; // optional
   isZoomed?: boolean;
   direction?: RotationDirection;
-  icon: ElementType;
+  icon?: ElementType;
+  chidlren?: ReactNode;
   isBackground?: boolean;
   disabled?: boolean;
 }
@@ -28,9 +29,10 @@ interface AnimatedIconProps extends ViewProps {
 export const AnimatedIcon = memo(
   ({
     onPress,
-    icon,
     direction = undefined,
+    chidlren = undefined,
     isZoomed,
+    icon = undefined,
     onPressIn,
     onPressOut,
     isBackground = false,
@@ -88,17 +90,9 @@ export const AnimatedIcon = memo(
     return (
       <GestureDetector gesture={tapGesture}>
         <Animated.View
-          style={[
-            styles.iconContainer,
-            rest.style,
-            animatedStyle,
-          ]}
+          style={[styles.iconContainer, rest.style, animatedStyle]}
         >
-          <Icon
-            strokeWidth={2}
-            fill="none"
-            
-          />
+          {Icon ? <Icon strokeWidth={2} fill="none" />: chidlren}
         </Animated.View>
       </GestureDetector>
     );
@@ -107,10 +101,10 @@ export const AnimatedIcon = memo(
 
 const styles = StyleSheet.create({
   iconContainer: {
-    padding:10,
+    padding: 10,
     borderRadius: 16,
-    backgroundColor:'transparent',
-    borderWidth:1,
+    backgroundColor: "transparent",
+    borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",
   },

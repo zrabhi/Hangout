@@ -35,10 +35,10 @@ export const SettingItemCard = memo(
               padding: 10,
               borderRadius: 10,
               alignItems: "center",
+              justifyContent: "center",
               gap: 10,
               borderWidth: 1,
               borderColor: Colors.black,
-              justifyContent: "center",
             }}
           >
             <Icon color={Colors.white} strokeWidth={2.5} />
@@ -46,13 +46,14 @@ export const SettingItemCard = memo(
           <View
             style={{
               justifyContent: "center",
+
             }}
           >
             <Text
               numberOfLines={2}
               style={{
                 fontFamily: "Baloo2-Bold",
-                fontSize: 18,
+                fontSize: 16,
                 color: Colors.black,
               }}
             >
