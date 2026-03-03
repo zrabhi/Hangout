@@ -16,8 +16,13 @@ import { StyleSheet, View } from "react-native";
 export default function ContactScreen() {
   const { id } = useLocalSearchParams();
   const { t } = useAppSettings();
-  const { createContact, updateContact, getContactById, deleteContact,  isLoading } =
-    useDataBaseContext();
+  const {
+    createContact,
+    updateContact,
+    getContactById,
+    deleteContact,
+    isLoading,
+  } = useDataBaseContext();
   const [contactInfo, setContactInfo] = useState<Contact>(contactCreationInit);
   const [errors, setErrors] = useState<Errors>({});
   const isEditing = !!id;
@@ -84,8 +89,13 @@ export default function ContactScreen() {
     deleteContact(contactInfo.id);
     router.back();
   };
-  
-    if (isLoading) return <Loader />;
+
+  if (isLoading)
+    return (
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <Loader />
+      </View>
+    );
   return (
     <>
       <Stack.Screen
@@ -107,14 +117,16 @@ export default function ContactScreen() {
           <Button
             style={styles.button}
             variant="danger"
-            title={"Delete " + contactInfo.firstName}
+            title={t("deleteContactAction") + contactInfo.firstName}
             onClick={handleOnPressDelete}
           />
         )}
         <Button
           style={styles.button}
           variant="primary"
-          title={isEditing ? "Update" : "Create"}
+          title={
+            isEditing ? t("updateContactAction") : t("createContactAction")
+          }
           onClick={handleOnPress}
         />
       </View>
@@ -126,7 +138,7 @@ const styles = StyleSheet.create({
   contentConatainer: {
     flex: 1,
     paddingTop: 25,
-    backgroundColor: Colors.white
+    backgroundColor: Colors.white,
   },
   button: {
     flex: 1,
@@ -139,7 +151,7 @@ const styles = StyleSheet.create({
   //   zIndex: 10,
   // },
   buttonsContainer: {
-    backgroundColor:Colors.white,
+    backgroundColor: Colors.white,
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",

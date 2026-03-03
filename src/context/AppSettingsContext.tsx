@@ -2,6 +2,7 @@ import { useOrientation } from "@/hooks/useOrientation";
 import { type PermissionType } from "@/types/Permissions";
 import { AppColorName, AppColors } from "@/utils/AppColors";
 import { AppLanguageCode } from "@/utils/AppLanguages";
+import { getItem, setItem } from "@/utils/Storage";
 import { type Language, translations } from "@/utils/Translation";
 import {
   createContext,
@@ -9,6 +10,7 @@ import {
   type ReactNode,
   type SetStateAction,
   useContext,
+  useEffect,
   useState,
 } from "react";
 import { Linking } from "react-native";
@@ -21,14 +23,14 @@ interface PermissionPromptState {
 
 interface LanguageContextType {
   lang: AppLanguageCode;
-  setLanguage: (lang: AppLanguageCode) => void;
+  handleSetLanguage: (lang: AppLanguageCode) => Promise<void>;
   handleSetPermissionPrompt: (permission: PermissionType | null) => void;
   headerColor: string;
   isLandscape: boolean;
   handleCloseModal: () => void;
   permissionPrompt: PermissionPromptState;
   handlePressSettingButton: () => void;
-  setHeaderColor: Dispatch<SetStateAction<string>>;
+  handleSetHeaderColor: (color: string) => Promise<void>;
   t: (key: tranlsationKeyType) => string;
 }
 
@@ -36,12 +38,26 @@ const AppSettingContext = createContext<LanguageContextType | null>(null);
 
 export const AppSettingsProvider = ({ children }: { children: ReactNode }) => {
   const { isLandscape } = useOrientation();
-  const [language, setLanguage] = useState<AppLanguageCode>(
-  AppLanguageCode.EN
-);
+  const [language, setLanguage] = useState<AppLanguageCode>(AppLanguageCode.EN);
+
   const [headerColor, setHeaderColor] = useState<string>(
     AppColors[AppColorName.WHITE],
   );
+
+  useEffect(() => {
+    async function loadSettings() {
+      try {
+        const savedLang = await getItem<AppLanguageCode>("LANGUAGE");
+        if (savedLang) setLanguage(savedLang);
+
+        const savedColor = await getItem<string>("HEADER_COLOR");
+        if (savedColor) setHeaderColor(savedColor);
+      } catch (error) {
+        console.error("Failed to load app settings:", error);
+      }
+    }
+    loadSettings();
+  }, []);
 
   const [permissionPrompt, setPermissionPrompt] =
     useState<PermissionPromptState>({
@@ -68,12 +84,22 @@ export const AppSettingsProvider = ({ children }: { children: ReactNode }) => {
     handleCloseModal();
   };
 
+  const handleSetLanguage = async (lang: AppLanguageCode) => {
+    setLanguage(lang);
+    await setItem("LANGUAGE", lang);
+  };
+
+  const handleSetHeaderColor = async (color: string) => {
+    setHeaderColor(color);
+    await setItem("HEADER_COLOR", color);
+  };
+
   const t = (key: tranlsationKeyType) => translations[language][key];
 
   return (
     <AppSettingContext.Provider
       value={{
-        setLanguage,
+        handleSetLanguage,
         lang: language,
         handleSetPermissionPrompt,
         t,
@@ -81,7 +107,7 @@ export const AppSettingsProvider = ({ children }: { children: ReactNode }) => {
         permissionPrompt,
         headerColor,
         handlePressSettingButton,
-        setHeaderColor,
+        handleSetHeaderColor,
         isLandscape,
       }}
     >

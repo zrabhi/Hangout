@@ -324,13 +324,11 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
   const handleDeleteConatct = async (id: string) => {
     setIsloading(true);
     try {
-      await db.runAsync(
-        `
-        DELETE FROM contacts WHERE id=?`,
-        [id],
-      );
+      await db.runAsync(`DELETE FROM contacts WHERE id = ?`, [id]);
+
+      setContacts((prev) => prev.filter((contact) => contact.id !== id));
     } catch (err) {
-      throw new Error(`ERROR occured while deleting contact table ${err}`);
+      throw new Error(`ERROR occurred while deleting contact: ${err}`);
     } finally {
       setIsloading(false);
     }

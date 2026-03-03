@@ -43,10 +43,9 @@ export const PermissionModal = ({
           style={styles.settingsButton}
           onClick={onPress}
         />
+        
         <Pressable onPress={onClose} style={styles.closeButton}>
-          <View style={styles.closeOverlay}>
             <Text style={styles.closeButtonText}>X</Text>
-          </View>
         </Pressable>
       </BlurView>
     </Modal>
@@ -66,17 +65,15 @@ const styles = StyleSheet.create({
     top: "10%",
     right: "10%",
     padding: 12,
-    borderRadius: 10,
-    borderWidth: 1.5,
+    borderRadius: 14,
+    borderWidth: 1,
     height: 42,
     width: 42,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: Colors.primary.green[100],
   },
   closeButtonText: {
-    color: Colors.white,
-    fontSize: 10,
+    fontSize: 14,
     fontFamily: "Baloo2-Bold",
   },
   closeOverlay: {
@@ -84,7 +81,6 @@ const styles = StyleSheet.create({
     height: 21,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: Colors.primary.orange[100],
     borderRadius: 16,
     borderColor: Colors.white,
     borderWidth: 1.5,

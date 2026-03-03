@@ -15,6 +15,8 @@ import { DataBaseProvider } from "@/context/DatabaseContext";
 import { SQLiteProvider } from "expo-sqlite";
 import { useAppBackgroundToast } from "@/hooks/UseLastBackground";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { LoadingIndicator } from "@/components/LoadingSplashScreen";
+import { useEffect, useState } from "react";
 
 export const unstable_settings = {
   anchor: "(tabs)",
@@ -30,12 +32,22 @@ export default function RootLayout() {
     "Baloo2-Bold": require("@assets/font/Baloo2-Bold.ttf"),
     "Baloo2-ExtraBold": require("@assets/font/Baloo2-ExtraBold.ttf"),
   });
-
-  // NOTE: just a tempo return.
+  const [showSplash, setShowSplash] = useState(true);
 
   useAppBackgroundToast();
-  // r
-  if (!loaded) return null;
+
+  useEffect(() => {
+    if (loaded) {
+      const timer = setTimeout(() => {
+        setShowSplash(false);
+      }, 3200); 
+
+      return () => clearTimeout(timer);
+    }
+  }, [loaded]);
+
+
+  if (showSplash)  return <LoadingIndicator />;
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>

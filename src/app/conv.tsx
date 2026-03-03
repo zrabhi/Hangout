@@ -70,7 +70,7 @@ export default function ConversationDetail() {
 
     const hasPermission = await requestPermission();
     if (!hasPermission) {
-      handleSetPermissionPrompt(PermissionType.SMS_SEND)
+      handleSetPermissionPrompt(PermissionType.SMS_SEND);
       return;
     }
 
@@ -139,14 +139,19 @@ export default function ConversationDetail() {
     ? `${contact.firstName} ${contact.lastName}`
     : "Conversation";
 
-  if (isLoading) return <Loader />;
+  if (isLoading)
+    return (
+      <View style={{ flex: 1,alignItems:'center', justifyContent:'center' }}>
+        <Loader />
+      </View>
+    );
 
   return (
     <>
       <Stack.Screen
         options={{
           header: (props) => (
-            <ScreenHeader options={props}  isTab={false}>
+            <ScreenHeader options={props} isTab={false}>
               <View style={styles.headerContainer}>
                 <Text style={styles.fullName}>{fullName}</Text>
                 <Text style={styles.phoneNumber}>{contact?.address}</Text>
@@ -198,7 +203,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor:Colors.background.screen
+    backgroundColor: Colors.background.screen,
   },
   fullName: {
     fontSize: 24,
