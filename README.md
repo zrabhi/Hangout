@@ -1,50 +1,7 @@
-# Welcome to your Expo app 👋
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
-## Get started
+https://github.com/user-attachments/assets/e5ddc7ba-8058-400a-a57a-787ea341af1c
 
-1. Install dependencies
-
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+<img width="1170" height="2532" alt="Simulator Screenshot - iPhone 16e - 2026-03-05 at 01 52 59" src="https://github.com/user-attachments/assets/4ccc201c-1f5b-4ca3-b012-f8100f1f7184" />
+<img width="1170" height="2532" alt="Simulator Screenshot - iPhone 16e - 2026-03-05 at 01 53 03" src="https://github.com/user-attachments/assets/766bb589-4606-4fc6-8cdc-bf1322a6a936" />
+<img width="1170" height="2532" alt="Simulator Screenshot - iPhone 16e - 2026-03-05 at 01 53 09" src="https://github.com/user-attachments/assets/f2d8b5be-d51b-4ed7-80a2-bfb403a62306" />
