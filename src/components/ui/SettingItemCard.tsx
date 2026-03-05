@@ -1,10 +1,9 @@
-import { PainIcon } from "@/icons/Paint";
 import Colors from "@/utils/Colors";
 import { ElementType, memo, ReactNode } from "react";
-import { View, StyleSheet, Text } from "react-native";
+import { StyleSheet, Text, View, ViewProps, ViewStyle } from "react-native";
 
-type ItemVariant = "blue" | "green";
-interface SettingItemCardProps {
+type ItemVariant = "blue" | "green" | "orange";
+interface SettingItemCardProps  {
   Icon: ElementType;
   variant: ItemVariant;
   title: string;
@@ -12,7 +11,7 @@ interface SettingItemCardProps {
   dialog: string;
 }
 
-export const SettingItemCard = memo(
+export const ItemCard = memo(
   ({ Icon, title, dialog, variant, children }: SettingItemCardProps) => {
     return (
       <View style={styles.conatiner}>
@@ -54,7 +53,7 @@ export const SettingItemCard = memo(
               style={{
                 fontFamily: "Baloo2-Bold",
                 fontSize: 16,
-                color: Colors.black,
+                color: Colors.primary[variant][100],
               }}
             >
               {title}
@@ -71,7 +70,8 @@ export const SettingItemCard = memo(
           </View>
         </View>
         <View
-          style={{
+          style={[{
+            flex:1,
             paddingVertical: 16,
             alignItems: "center",
             justifyContent: "center",
@@ -82,7 +82,7 @@ export const SettingItemCard = memo(
             borderBottomLeftRadius: 22,
             borderBottomRightRadius: 22,
             backgroundColor: Colors.background.card,
-          }}
+          }]}
         >
           {children}
         </View>

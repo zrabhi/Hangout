@@ -5,7 +5,7 @@ interface InputProps {
   value: string | null;
   label: string;
   placeHolder?: string;
-  error: string | undefined;
+  error?: string | undefined;
   onChange: (input: string) => void;
   isEditable?: boolean;
 }
@@ -17,7 +17,6 @@ export const Input = ({
   placeHolder = "Enter your value",
   isEditable = true,
 }: InputProps) => {
-  console.log("erros is ", error);
   return (
     <View style={styles.container}>
       <View style={styles.labelConatiner}>
@@ -58,6 +57,7 @@ const styles = StyleSheet.create({
     fontFamily: "Baloo2-Medium",
   },
   container: {
+    marginTop:30,
     width: "90%",
     gap: 4,
   },

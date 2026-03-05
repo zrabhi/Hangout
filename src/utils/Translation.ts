@@ -15,7 +15,13 @@ export const translations = {
     cancel: "Cancel",
     update: "Update",
     apply: "Apply",
+    personalInfoTitle: "Personal Info",
+    requiredDetailsDialog: "Required Details *",
+    optionalDetails: "Optional Details",
+    additionalInfos: "Additional Infos",
+    address: "Address",
     search: "Search",
+    contactDetails: "Contact Details",
     allContacts: "All Contacts",
     favorites: "Favorites",
     language: "Language",
@@ -73,6 +79,7 @@ export const translations = {
   },
 
   fr: {
+    contactDetails: "Détails du contact",
     createContactAction: "Créer un contact",
     updateContactAction: "Mettre à jour ",
     deleteContactAction: "Supprimer ",
@@ -91,7 +98,11 @@ export const translations = {
     appHeaderColorTitle: "Couleur de l'en-tête de l'application",
     emptyInboxMessage:
       "Votre boîte de réception est vide. Envoyez un message pour commencer une conversation !",
-      
+    personalInfoTitle: "Informations personnelles",
+    requiredDetailsDialog: "Détails obligatoires *",
+    optionalDetails: "Détails optionnels",
+    additionalInfos: "Informations supplémentaires",
+    address: "Adresse",
     appHeaderColorDialog: "Choisissez votre thème préféré",
     appLanguageTitle: "Langue de l'application",
     appLanguageDialog: "Sélectionnez votre langue préférée",

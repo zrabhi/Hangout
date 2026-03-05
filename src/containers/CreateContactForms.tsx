@@ -9,14 +9,22 @@ import {
   Pressable,
   StyleSheet,
   Image,
-  ScrollView,
   Linking,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
 } from "react-native";
 
 import Colors from "@/utils/Colors";
 import { type Errors } from "@/types/ContactsError";
 import { useAppSettings } from "@/context/AppSettingsContext";
 import { PermissionModal } from "@/components/ui/PermissionsMessageModal";
+import { ItemCard } from "@/components/ui/SettingItemCard";
+import { CallIcon } from "@/icons/Call";
+import { BuildingIcon } from "@/icons/BuildingIcon";
+import { AnimatedIcon } from "@/components/ui/AnimatedIcon";
+import { CameraIcon } from "@/icons/CameraIcon";
+import { PersonIcon } from "@/icons/PersonIcon";
 
 interface ConatctFromProps {
   contact: Contact;
@@ -60,85 +68,137 @@ export const ContactForm = ({
   };
   return (
     <>
-      <View style={styles.container}>
-        <Pressable style={styles.photoContainer} onPress={handlePickImage}>
-          <View style={styles.labelConatiner}>
-            <Text style={styles.photoLabel}>{t("photo")}</Text>
-          </View>
-          {contact.image && (
-            <Image source={{ uri: contact.image }} style={styles.photo} />
-          )}
-
-          <Pressable style={styles.uploadImageButton} onPress={handlePickImage}>
-            <SquarePenIcon
-              color={Colors.white}
-              strokeWidth={2.5}
-              height={14}
-              width={14}
-            />
-            <Text style={styles.photoPlaceholder}>
-              {contact.image !== null ? t("changePhoto") : t("photoUpload")}
-            </Text>
-          </Pressable>
-        </Pressable>
-
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={100}
+      >
         <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.contentContainer}
-          style={styles.scrollView}
         >
-          <Input
-            label={t("firstName")}
-            placeHolder={
-              t("inputPlaceHolder") + " " + t("firstName").toLowerCase()
-            }
-            value={contact.firstName}
-            error={errors["firstName"]}
-            onChange={(text: string) =>
-              onChange({ ...contact, firstName: text })
-            }
-          />
-          <Input
-            label={t("lastName")}
-            error={errors["lastName"]}
-            placeHolder={
-              t("inputPlaceHolder") + " " + t("lastName").toLowerCase()
-            }
-            value={contact.lastName}
-            onChange={(text: string) =>
-              onChange({ ...contact, lastName: text })
-            }
-          />
-          <Input
-            label={t("email")}
-            placeHolder={t("inputPlaceHolder") + " " + t("email").toLowerCase()}
-            value={contact.email}
-            error={errors["email"]}
-            onChange={(text: string) => onChange({ ...contact, email: text })}
-          />
+          <Pressable
+            style={[
+              styles.photoContainer,
+              !contact.image && { backgroundColor: Colors.primary.blue[100] },
+            ]}
+            onPress={handlePickImage}
+          >
+            {contact.image ? (
+              <Image source={{ uri: contact.image }} style={styles.photo} />
+            ) : (
+              <PersonIcon
+                height={64}
+                width={64}
+                strokeWidth={1.5}
+                color={Colors.white}
+              />
+            )}
 
-          <Input
-            error={errors["phoneNumber"]}
-            label={t("phoneNumber")}
-            placeHolder={
-              t("inputPlaceHolder") + " " + t("phoneNumber").toLowerCase()
-            }
-            value={contact.address}
-            onChange={(text: string) => onChange({ ...contact, address: text })}
-          />
-          <Input
-            label={t("postalCode")}
-            error={errors["postalCode"]}
-            value={contact.postalCode}
-            placeHolder={
-              t("inputPlaceHolder") + " " + t("postalCode").toLowerCase()
-            }
-            onChange={(text: string) =>
-              onChange({ ...contact, postalCode: text })
-            }
-          />
+            <View
+              style={{
+                position: "absolute",
+                bottom: -10,
+                right: -10,
+              }}
+            >
+              <AnimatedIcon
+                style={{
+                  backgroundColor: Colors.primary.orange[100],
+                }}
+                icon={CameraIcon}
+              />
+            </View>
+          </Pressable>
+          <ItemCard
+            variant="blue"
+            Icon={PersonIcon}
+            title={t("personalInfoTitle")}
+            dialog={t("requiredDetailsDialog")}
+          >
+            <Input
+              label={t("firstName")}
+              placeHolder={
+                t("inputPlaceHolder") + " " + t("firstName").toLowerCase()
+              }
+              value={contact.firstName}
+              error={errors["firstName"]}
+              onChange={(text: string) =>
+                onChange({ ...contact, firstName: text })
+              }
+            />
+            <Input
+              label={t("lastName")}
+              error={errors["lastName"]}
+              placeHolder={
+                t("inputPlaceHolder") + " " + t("lastName").toLowerCase()
+              }
+              value={contact.lastName}
+              onChange={(text: string) =>
+                onChange({ ...contact, lastName: text })
+              }
+            />
+          </ItemCard>
+          <ItemCard
+            Icon={CallIcon}
+            variant="orange"
+            title={t("contactDetails")}
+            dialog={t("requiredDetailsDialog")}
+          >
+            <Input
+              label={t("email")}
+              placeHolder={
+                t("inputPlaceHolder") + " " + t("email").toLowerCase()
+              }
+              value={contact.email}
+              error={errors["email"]}
+              onChange={(text: string) => onChange({ ...contact, email: text })}
+            />
+
+            <Input
+              error={errors["phoneNumber"]}
+              label={t("phoneNumber")}
+              placeHolder={
+                t("inputPlaceHolder") + " " + t("phoneNumber").toLowerCase()
+              }
+              value={contact.address}
+              onChange={(text: string) =>
+                onChange({ ...contact, address: text })
+              }
+            />
+          </ItemCard>
+          <ItemCard
+            Icon={BuildingIcon}
+            variant="green"
+            title="Additional Info"
+            dialog="Optional Details"
+          >
+            <Input
+              label={t("postalCode")}
+              error={errors["address"]}
+              value={contact.postalCode}
+              placeHolder={
+                t("inputPlaceHolder") + " " + t("postalCode").toLowerCase()
+              }
+              onChange={(text: string) =>
+                onChange({ ...contact, postalCode: text })
+              }
+            />
+            <Input
+              label={t("address")}
+              error={errors["address"]}
+              value={contact.postalCode}
+              placeHolder={
+                t("inputPlaceHolder") + " " + t("address").toLowerCase()
+              }
+              onChange={(text: string) =>
+                onChange({ ...contact, postalCode: text })
+              }
+            />
+          </ItemCard>
         </ScrollView>
-      </View>
+      </KeyboardAvoidingView>
       <PermissionModal
         onClose={handleCloseModal}
         onPress={handlePressSettingButton}
@@ -152,31 +212,31 @@ export const ContactForm = ({
 const styles = StyleSheet.create({
   contentContainer: {
     alignItems: "center",
+    justifyContent: "center",
     gap: 22,
     paddingVertical: 20,
   },
-  uploadImageButton: {
-    position: "absolute",
-    padding: 8,
-    flexDirection: "row",
-    gap: 4,
+  scrollContent: {
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: Colors.primary.green[100],
-    borderRadius: 10,
-    borderWidth: 1.5,
+    flexGrow: 1,
+    gap: 20,
+    padding: 20,
   },
-  scrollView: {
+
+  keyBoardContainer: {
     flex: 1,
+    alignItems: "center",
+    gap: 22,
+    paddingVertical: 20,
     width: "100%",
   },
   container: {
     flex: 1,
-    paddingTop: 34,
     flexDirection: "column",
     alignItems: "center",
+    justifyContent: "center",
     gap: 36,
-    paddingHorizontal: 20,
   },
   labelConatiner: {
     position: "absolute",
@@ -187,30 +247,20 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
     transform: [{ translateY: -10 }],
   },
-  photoLabel: {
-    fontSize: 13,
-    fontFamily: "Baloo2-Medium",
-  },
+
   photoContainer: {
     borderStyle: "dashed",
     width: 130,
-    height: 100,
+    height: 130,
     borderRadius: 10,
-    backgroundColor: "transparent",
     borderWidth: 1,
-
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 16,
   },
   photo: {
-    width: 115,
-    height: 85,
-    borderRadius: 6,
-  },
-  photoPlaceholder: {
-    fontFamily: "Baloo2-SemiBold",
-    fontSize: 10,
-    color: Colors.white,
+    width: 128,
+    height: 128,
+    borderRadius: 10,
   },
 });

@@ -1,14 +1,14 @@
 import { ColorCard } from "@/components/ui/ColorCard";
 import { ScreenHeader } from "@/components/ui/ScreenHeader";
 import { SelectableCard } from "@/components/ui/SelectableCard";
-import { SettingItemCard } from "@/components/ui/SettingItemCard";
+import { ItemCard } from "@/components/ui/SettingItemCard";
 import { useAppSettings } from "@/context/AppSettingsContext";
 import { PainIcon } from "@/icons/Paint";
 import { AppColors } from "@/utils/AppColors";
-import { AppLanguageCode, AppLanguages } from "@/utils/AppLanguages";
+import { AppLanguageCode } from "@/utils/AppLanguages";
 import Colors from "@/utils/Colors";
 import { Stack } from "expo-router";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 
 export default function SettingsScreen() {
   const { headerColor, handleSetHeaderColor, lang, handleSetLanguage, t } =
@@ -39,7 +39,7 @@ export default function SettingsScreen() {
           justifyContent: "center",
         }}
       >
-        <SettingItemCard
+        <ItemCard
           Icon={PainIcon}
           variant={"green"}
           title={t("appHeaderColorTitle")}
@@ -54,8 +54,8 @@ export default function SettingsScreen() {
               onPress={async() => await handleSetHeaderColor(value)}
             />
           ))}
-        </SettingItemCard>
-        <SettingItemCard
+        </ItemCard>
+        <ItemCard
           Icon={PainIcon}
           variant="blue"
           title={t("appLanguageTitle")}
@@ -69,7 +69,7 @@ export default function SettingsScreen() {
               onPress={async() => await handleSetLanguage(value)}
             />
           ))}
-        </SettingItemCard>
+        </ItemCard>
       </ScrollView>
     </>
   );
