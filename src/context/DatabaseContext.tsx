@@ -126,7 +126,6 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
     `,
         [contactId],
       );
-      console.log("resulllll isssssss,", result);
       return result ?? [];
     } catch (err) {
       console.log(
@@ -183,7 +182,6 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const handleAddCall = async (call: Calls): Promise<CrudOperationRetun> => {
-    console.log("im hereeee");
     try {
       const { address, contactName, timestamp, contactId } = call;
 
@@ -250,7 +248,6 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
 
       return result ?? [];
     } catch (err) {
-      console.log("Error fetching latest messages", err);
       return [];
     }
   };
@@ -261,10 +258,11 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
       const result = await db.getAllAsync<Calls>(`
               SELECT * FROM calls ORDER BY id DESC
               `);
-      console.log("res ", result);
       return result;
     } catch (err) {
+      // toast need to appear here 
       throw new Error(`ERROR occured while fetching calls table${err}`);
+      return [];
     } finally {
       setIsloading(false);
     }
@@ -277,7 +275,6 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
         `SELECT * FROM contacts WHERE id = ?`,
         [id],
       );
-      console.log("creation", contact);
       return contact;
     } catch (err) {
       console.error("Error fetching contact by ID:", err);
@@ -291,7 +288,6 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
   ): Promise<CrudOperationRetun> => {
     setIsloading(true);
     try {
-      console.log("contact to be created", contact);
       const { firstName, lastName, address, postalCode, email, image } =
         contact;
       const result = await db.runAsync(

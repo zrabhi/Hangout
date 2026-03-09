@@ -41,7 +41,6 @@ export const AnimatedCard = memo(
           {children}
         </AnimatedPressable>
 
-        <View style={styles.divider} />
       </>
     );
   }

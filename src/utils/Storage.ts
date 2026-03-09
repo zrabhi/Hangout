@@ -3,7 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export const StorageKeys = {
   LANGUAGE: "app_language",
   HEADER_COLOR: "header_color",
-} as const;
+};
 
 type StorageKey = keyof typeof StorageKeys;
 

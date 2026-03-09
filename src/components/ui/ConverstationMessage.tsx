@@ -24,10 +24,8 @@ export const ConversationMessage = ({
   deleviryState,
 }: ConverstationMessageProps) => {
   const isSent = type === MessageType.SENT;
-  console.log("type", deleviryState, isSent);
 
   const renderStatus = () => {
-    console.log(deleviryState);
     if (!isSent) return null;
 
     if (deleviryState === DeleviryStateType.SENT) {

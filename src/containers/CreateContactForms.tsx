@@ -5,7 +5,6 @@ import { useState, type Dispatch, type SetStateAction } from "react";
 import * as ImagePicker from "expo-image-picker";
 import {
   View,
-  Text,
   Pressable,
   StyleSheet,
   Image,
