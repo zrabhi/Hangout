@@ -14,6 +14,7 @@ export default {
       100: '#d9534f', 
     },
     },
+    danger:"#d9534e",
     tabBar:{
         border:'rgba(0,0,0,0.06)'
     },

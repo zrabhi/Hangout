@@ -88,7 +88,7 @@ export default function ContactScreen() {
     if (!contactInfo.id) return;
 
     deleteContact(contactInfo.id);
-       setContacts((prev) => prev.filter((contact) => contact.id !== id));
+    setContacts((prev) => prev.filter((contact) => contact.id !== id));
     router.back();
   };
 

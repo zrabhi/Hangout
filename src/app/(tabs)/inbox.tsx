@@ -7,22 +7,30 @@ import { AquaticRetroIllustration } from "@/icons/RetroAquatic";
 import { type Inbox } from "@/types/Message";
 import { appRoutes } from "@/utils/appRoutes";
 import Colors from "@/utils/Colors";
-import { router } from "expo-router";
-import { useEffect, useState } from "react";
+import { router, useFocusEffect } from "expo-router";
+import { useCallback, useEffect, useState } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
 
 export default function InboxScreen() {
+  
   const { getInbox, isLoading } = useDataBaseContext();
+  
   const [conversations, setConversations] = useState<Inbox[]>([]);
+  
   const { t } = useAppSettings();
+
   const handleLoadInbox = async () => {
     const result = await getInbox();
     setConversations(result);
   };
 
-  useEffect(() => {
-    handleLoadInbox();
-  }, []);
+  useFocusEffect(
+    // Not best practice to do this .......... to change later
+    useCallback(() => {
+      handleLoadInbox();
+    }, [])
+  );
+
 
   const handleOnPress = (contactId: number) =>
     router.navigate({

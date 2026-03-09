@@ -221,6 +221,7 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const getInbox = async (): Promise<Inbox[] | []> => {
+    setIsloading(true);
     try {
       const result = await db.getAllAsync<Inbox>(`
           SELECT 
@@ -250,6 +251,9 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
     } catch (err) {
       return [];
     }
+     finally {
+       setIsloading(false)
+     }
   };
 
   const getCallList = async (): Promise<Calls[]> => {
@@ -318,17 +322,24 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const handleDeleteConatct = async (id: string) => {
-    setIsloading(true);
-    try {
-      await db.runAsync(`DELETE FROM contacts WHERE id = ?`, [id]);
+ const handleDeleteConatct = async (id: string) => {
+  setIsloading(true);
+  try {
+    await db.withTransactionAsync(async () => {
+      await db.runAsync(`DELETE FROM messages WHERE contactId = ?`, [id]);
 
-    } catch (err) {
-      throw new Error(`ERROR occurred while deleting contact: ${err}`);
-    } finally {
-      setIsloading(false);
-    }
-  };
+      await db.runAsync(`DELETE FROM calls WHERE contactId = ?`, [id]);
+
+      await db.runAsync(`DELETE FROM contacts WHERE id = ?`, [id]);
+    });
+
+
+  } catch (err) {
+    throw new Error(`ERROR occurred while deleting contact: ${err}`);
+  } finally {
+    setIsloading(false);
+  }
+};
 
   const handleUpdateContact = async (
     id: string,

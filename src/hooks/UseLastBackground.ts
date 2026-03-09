@@ -1,9 +1,13 @@
+import { useAppSettings } from "@/context/AppSettingsContext";
 import { useEffect, useRef } from "react";
 import { AppState, type AppStateStatus, ToastAndroid } from "react-native";
 
 export const useAppBackgroundToast = () => {
   const lastBackgroundTime = useRef<number | null>(null);
 
+
+  const {t} = useAppSettings()
+  
   useEffect(() => {
     const handleAppStateChange = (nextState: AppStateStatus) => {
       if (nextState === "background") {
@@ -14,11 +18,13 @@ export const useAppBackgroundToast = () => {
         const date = new Date(lastBackgroundTime.current);
 
         const formattedTime = date.toLocaleString();
-
-        ToastAndroid.show(
-          `Last backgrounded at: ${formattedTime}`,
-          ToastAndroid.CENTER,
-        );
+      ToastAndroid.showWithGravityAndOffset(
+        `${t('lastBackgroundedAt')} ${formattedTime}`,
+        ToastAndroid.LONG,
+        ToastAndroid.CENTER,
+        ToastAndroid.BOTTOM,
+        0,
+      );
 
         lastBackgroundTime.current = null;
       }

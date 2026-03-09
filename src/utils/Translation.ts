@@ -76,10 +76,12 @@ export const translations = {
     createContactAction: "Create Contact",
     updateContactAction: "Update Contact",
     deleteContactAction: "Delete ",
+    lastBackgroundedAt: "Last backgrounded at:",
   },
 
   fr: {
     contactDetails: "Détails du contact",
+    lastBackgroundedAt: "Dernière mise en arrière-plan :",
     createContactAction: "Créer un contact",
     updateContactAction: "Mettre à jour ",
     deleteContactAction: "Supprimer ",

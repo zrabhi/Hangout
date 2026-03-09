@@ -202,6 +202,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   container: {
+    paddingTop:20,
     flex: 1,
     backgroundColor: Colors.background.screen,
   },

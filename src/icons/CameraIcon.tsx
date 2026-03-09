@@ -1,10 +1,10 @@
 import React, { memo } from "react";
 import { Circle, Path, Svg, type SvgProps } from "react-native-svg";
 
-export const CameraIcon = memo(({ color = "#000000", ...rest }: SvgProps) => {
+export const CameraIcon = memo(({ color = "#ffffff", ...rest }: SvgProps) => {
   return (
     <Svg
-        color={color}
+      color={color}
       width="24"
       height="24"
       viewBox="0 0 24 24"

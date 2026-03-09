@@ -3,13 +3,27 @@ import {
   NativeModules,
   Platform,
   PermissionsAndroid,
+  NativeEventEmitter,
 } from "react-native";
 
 const { SmsModule } = NativeModules;
 
-//const smsEventEmitter = new NativeEventEmitter(SmsModule);
+let smsEventEmitter: NativeEventEmitter | null = null;
 
-// r
+export const initSmsModule = async () => {
+  if (Platform.OS !== "android") return;
+
+  if (!smsEventEmitter) {
+    smsEventEmitter = new NativeEventEmitter(SmsModule);
+  }
+};
+
+export const onIncomingSms = (callback: (sms: { address: string; body: string; date: number }) => void) => {
+  if (!smsEventEmitter) return () => {};
+  const subscription = smsEventEmitter.addListener("IncomingSms", callback);
+  return () => subscription.remove();
+};
+
 
 export const getConversation = async (
   phoneNumber: string,
@@ -34,9 +48,10 @@ export const getConversation = async (
   }
 };
 
+
+
 export const callContact = async (phoneNumber: string) => {
   try {
-   
      await SmsModule.callNumber(phoneNumber);
     return {success:true};
   } catch (error: any) {
