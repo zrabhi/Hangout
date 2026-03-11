@@ -82,18 +82,7 @@ The application requires the following Android permissions:
 - `SEND_SMS`
 - `RECEIVE_SMS`
 - `READ_CONTACTS`
-- `WRITE_CONTACTS`
 - `CALL_PHONE`
-
-Permissions are requested dynamically at runtime.
-
-
-## Installation
-
-### 1. Clone the repository
-
-https://github.com/user-attachments/assets/e5ddc7ba-8058-400a-a57a-787ea341af1c
-
 
 ## Future Improvements
 
