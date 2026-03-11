@@ -3,6 +3,10 @@
 A mobile messaging and contact management application built with **React Native**, featuring custom **Android Native Modules** for SMS, incoming message listening, phone calls, and contact management.  
 The application uses a **local NoSQL database** to store messages, contacts, and conversations.
 
+
+https://github.com/user-attachments/assets/8a098ce3-ef05-4db3-a157-94409bfcab73
+
+
 ---
 
 ## Overview
