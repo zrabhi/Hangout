@@ -96,7 +96,7 @@ Possible future improvements for the project:
 - Support multimedia messages
 - Add message delivery and read status
 - Improve conversation grouping
-- Improve UI animations
+- On Boarding
 
 <img width="1170" height="2532" alt="Simulator Screenshot - iPhone 16e - 2026-03-05 at 01 52 59" src="https://github.com/user-attachments/assets/4ccc201c-1f5b-4ca3-b012-f8100f1f7184" />
 <img width="1170" height="2532" alt="Simulator Screenshot - iPhone 16e - 2026-03-05 at 01 53 03" src="https://github.com/user-attachments/assets/766bb589-4606-4fc6-8cdc-bf1322a6a936" />
