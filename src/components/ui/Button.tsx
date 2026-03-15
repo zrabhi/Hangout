@@ -9,7 +9,7 @@ import {
   ViewStyle,
 } from "react-native";
 
-type ButtonVariant = "primary" | "secondary" |"danger";
+type ButtonVariant = "primary" | "secondary" | "danger";
 
 interface ButtonProps extends PressableProps {
   onClick: VoidFunction;
@@ -40,10 +40,10 @@ const styles = StyleSheet.create({
   buttonText: {
     color: Colors.white,
     fontSize: 14,
-    fontFamily: "Baloo2-Medium",
+    fontFamily: "Baloo2-SemiBold",
   },
   primaryButton: {
-    backgroundColor: Colors.primary.orange[100],
+    backgroundColor: Colors.primary.blue[100],
   },
   secondaryButton: {
     backgroundColor: Colors.white,
@@ -54,19 +54,18 @@ const styles = StyleSheet.create({
   secondaryText: {
     color: Colors.black,
   },
-  dangerButton:{
-    backgroundColor:'#d9534f',
+  
+  dangerButton: {
+    backgroundColor: Colors.danger,
   },
   dangerText: {
-    color: Colors.black,
+    color: Colors.white,
   },
   button: {
-    padding: 10,
     borderRadius: 12,
     borderWidth: 1.5,
     height: 42,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: Colors.primary.orange[100],
   },
 });

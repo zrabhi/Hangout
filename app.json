@@ -14,7 +14,7 @@
       "bundleIdentifier": "com.anonymous.Hangout"
     },
     "android": {
-      "permissions": ["READ_SMS","SEND_SMS", "CALL_PHONE", "SMS_RECEIVE"],
+      "permissions": ["READ_SMS","SEND_SMS", "CALL_PHONE", "RECEIVE_SMS"],
       "icon": "./assets/images/icon.png",
     
       "edgeToEdgeEnabled": true,

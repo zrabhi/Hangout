@@ -12,9 +12,8 @@ import { ContactAvatar } from "./ui/ContactAvatar";
 
 interface ContactCardProps {
   contact: Contact;
-  onPressCall?: (
+  onPressCall: (
     address: string,
-    contactName: string,
     contactId: number,
   ) => void;
 }
@@ -23,7 +22,7 @@ export const ContactCard = ({ contact, onPressCall }: ContactCardProps) => {
   const colorIndex = contact.id % avatarColors.length;
   const avatarColor = avatarColors[colorIndex];
 
-  const fullName = `${contact.firstName} ${contact.lastName}`;
+  const fullName = `${contact.firstName} ${contact.lastName ?? ""}`;
 
   const handleOnPressMessage = () =>
     router.navigate({ pathname: "/conv", params: { id: contact.id } });
@@ -45,11 +44,13 @@ export const ContactCard = ({ contact, onPressCall }: ContactCardProps) => {
             <Text style={styles.phoneNumber}>{contact.address}</Text>
           </View>
 
-          {/* Action Icons */}
           <View style={{ flexDirection: "row", gap: 16 }}>
             <Pressable
               onPress={() =>
-                onPressCall?.(contact.address, fullName, contact.id)
+              {
+                if (!contact.address || !contact.id) return;
+                onPressCall(contact.address, contact.id)
+              }
               }
               hitSlop={8}
             >

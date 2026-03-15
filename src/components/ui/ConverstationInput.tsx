@@ -7,6 +7,7 @@ import {
   View
 } from "react-native";
 import { AnimatedIcon } from "./AnimatedIcon";
+import { useAppSettings } from "@/context/AppSettingsContext";
 
 interface ConversationInputProps extends TextInputProps {
   input: string | null;
@@ -20,7 +21,8 @@ export const ConversationInput = ({
   onInputChange,
   ...rest
 }: ConversationInputProps) => {
-  return (
+  const {headerColor} = useAppSettings();
+   return (
     <View style={styles.inputContainer}>
       <TextInput
         editable={input?.length !== 0}
@@ -32,9 +34,8 @@ export const ConversationInput = ({
       <AnimatedIcon
         isBackground
         disabled={input?.length === 0}
-        variant="blue"
         icon={SendIcon}
-        style={[styles.sendButton]}
+        style={[styles.sendButton, {backgroundColor:headerColor}]}
         onPress={onPress}
       />
     </View>
@@ -45,15 +46,12 @@ const styles = StyleSheet.create({
   inputContainer: {
     backgroundColor: Colors.background.header,
     borderTopWidth: 1,
-    borderColor: "rgba(0,0,0,0.06)",
     zIndex: 99,
     padding: 20,
     gap:10,
     elevation: 3,
     flexDirection: "row",
     alignItems: "center",
-    //position:'absolute',
-    //bottom:20,
   },
   disbaledButton: {
     backgroundColor: Colors.background.disabledIcon,
@@ -66,11 +64,10 @@ const styles = StyleSheet.create({
 
   input: {
     flex: 1,
-    borderWidth: 2,
-    borderColor: "rgba(2, 125, 186, 0.15)",
+    borderWidth: 1.5,
     fontFamily: "Baloo2-Medium",
     fontSize: 16,
-    borderRadius: 26,
+    borderRadius: 16,
     padding: 10,
     paddingLeft: 26,
   },

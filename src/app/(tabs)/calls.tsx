@@ -5,22 +5,19 @@ import { useAppSettings } from "@/context/AppSettingsContext";
 import { useDataBaseContext } from "@/context/DatabaseContext";
 import { useCallContact } from "@/hooks/usecCallContact";
 import { AquaticRetroIllustration } from "@/icons/RetroAquatic";
-import { type Calls } from "@/types/Calls";
-import { useEffect, useState } from "react";
+import { CallsSummary, type Calls } from "@/types/Calls";
+import { useFocusEffect } from "expo-router";
+import { useCallback, useEffect, useState } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
 
 export default function CallsScreen() {
   const { getCallList, isLoading } = useDataBaseContext();
   const { t } = useAppSettings();
-  const [calls, setCalls] = useState<Calls[]>([]);
+  const [calls, setCalls] = useState<CallsSummary[]>([]);
   const { handleCallContact } = useCallContact();
 
-  const handleOnPressCallContact = async (call: Calls) => {
-    const result = await handleCallContact(
-      call.address,
-      call.contactName,
-      call.contactId,
-    );
+  const handleOnPressCallContact = async (call: CallsSummary) => {
+    const result = await handleCallContact(call.address, call.contactId);
 
     if (!result.success) return;
 
@@ -32,13 +29,15 @@ export default function CallsScreen() {
     setCalls(result);
   };
 
-  useEffect(() => {
-    handleGetCallsList();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      handleGetCallsList();
+    }, []),
+  );
 
   if (isLoading)
     return (
-      <View style={{ flex: 1,alignItems:'center', justifyContent:'center' }}>
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
         <Loader />
       </View>
     );

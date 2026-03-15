@@ -1,30 +1,31 @@
-import { useEffect, useState, useRef, useCallback } from "react";
-import {
-  View,
-  Text,
-  KeyboardAvoidingView,
-  Platform,
-  PermissionsAndroid,
-  StyleSheet,
-} from "react-native";
-import { useLocalSearchParams, Stack } from "expo-router";
 import { FlashList, type FlashListRef } from "@shopify/flash-list";
+import { Stack, useLocalSearchParams } from "expo-router";
+import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  KeyboardAvoidingView,
+  PermissionsAndroid,
+  Platform,
+  StyleSheet,
+  Text,
+  ToastAndroid,
+  View,
+} from "react-native";
 
-import { ScreenHeader } from "@/components/ui/ScreenHeader";
 import { ConversationInput } from "@/components/ui/ConverstationInput";
 import { ConversationMessage } from "@/components/ui/ConverstationMessage";
+import { ScreenHeader } from "@/components/ui/ScreenHeader";
 
+import { useDataBaseContext } from "@/context/DatabaseContext";
 import { usePermissionCheck } from "@/hooks/usePermissionCheck";
 import { sendSms } from "@/nativeModule/sms/smsService";
-import { useDataBaseContext } from "@/context/DatabaseContext";
 
-import { DeleviryStateType, type Message } from "@/types/Message";
-import { MessageType } from "@/types/MessageTYpe";
-import { type Contact } from "@/types/Contacts";
 import { Loader } from "@/components/ui/Loader";
 import { useAppSettings } from "@/context/AppSettingsContext";
-import Colors from "@/utils/Colors";
+import { type Contact } from "@/types/Contacts";
+import { DeleviryStateType, type Message } from "@/types/Message";
+import { MessageType } from "@/types/MessageTYpe";
 import { PermissionType } from "@/types/Permissions";
+import Colors from "@/utils/Colors";
 
 export default function ConversationDetail() {
   const { id } = useLocalSearchParams();
@@ -32,11 +33,13 @@ export default function ConversationDetail() {
   const { t, handleSetPermissionPrompt } = useAppSettings();
   const {
     getConversationByContactId,
-    updateMessageStatus,
+    handleUpdateMessageStatus: updateMessageStatus,
     addMessage,
     getContactById,
     isLoading,
     isAddingMessage,
+    convMessages,
+    setConvMessages,
   } = useDataBaseContext();
 
   const { requestPermission } = usePermissionCheck(
@@ -44,7 +47,6 @@ export default function ConversationDetail() {
   );
 
   const [contact, setContact] = useState<Contact | null>(null);
-  const [messages, setMessages] = useState<Message[]>([]);
   const [text, setText] = useState("");
 
   const flashListRef = useRef<FlashListRef<Message>>(null);
@@ -56,35 +58,45 @@ export default function ConversationDetail() {
       getContactById(contactId.toString()),
       getConversationByContactId(contactId),
     ]);
-
+    if (!contactData) return;
     setContact(contactData);
-    setMessages(convo);
+    setConvMessages({
+      address: contactData?.address,
+      messages: convo,
+    });
   }, [contactId]);
 
   useEffect(() => {
-    loadConversation();
-  }, [loadConversation]);
+    if (id) loadConversation();
+    return () => setConvMessages({ address: null, messages: [] });
+  }, [loadConversation, id]);
 
   const handleSendMessage = async () => {
-    if (!text.trim() || !contact) return;
+    if (!text.trim() || !contact || !contact.address) return;
 
     const hasPermission = await requestPermission();
+
     if (!hasPermission) {
       handleSetPermissionPrompt(PermissionType.SMS_SEND);
       return;
     }
+    const result = await sendSms(contact?.address, text);
 
-    const result = await sendSms(contact.address, text);
-
+    const tempId = -Date.now();
     const newMessage: Message = {
       contactId,
+      id: tempId,
+      address: contact?.address,
       body: text,
       type: MessageType.SENT,
       deleviryState: DeleviryStateType.PENDING,
       date: Date.now(),
     };
 
-    setMessages((prev) => [...prev, newMessage]);
+    setConvMessages((prev) => ({
+      ...prev,
+      messages: [...prev.messages, newMessage],
+    }));
     setText("");
 
     const deliveryState = result.success
@@ -95,30 +107,44 @@ export default function ConversationDetail() {
       ...newMessage,
       deleviryState: deliveryState,
     });
+    if (savedMessage.success === false) {
+      ToastAndroid.showWithGravityAndOffset(
+        `${t("errorSendingMessage")}`,
+        ToastAndroid.LONG,
+        ToastAndroid.CENTER,
+        ToastAndroid.BOTTOM,
+        0,
+      );
+      return;
+    }
 
-    setMessages((prev) =>
-      prev.map((msg, index) =>
-        index === prev.length - 1
+    setConvMessages((prev) => ({
+      ...prev,
+      messages: prev.messages.map((msg, index) =>
+        index === prev.messages.length - 1
           ? { ...msg, id: savedMessage.id, deleviryState: deliveryState }
           : msg,
       ),
-    );
+    }));
 
     flashListRef.current?.scrollToEnd({ animated: true });
   };
 
   const handleRetryMessage = async (messageId: number) => {
-    if (!contact) return;
+    if (!contact || !contact.address) return;
 
-    setMessages((prev) =>
-      prev.map((msg) =>
+    setConvMessages((prev) => ({
+      ...prev,
+      messages: prev.messages.map((msg) =>
         msg.id === messageId
           ? { ...msg, deleviryState: DeleviryStateType.PENDING }
           : msg,
       ),
-    );
+    }));
 
-    const messageToRetry = messages.find((msg) => msg.id === messageId);
+    const messageToRetry = convMessages.messages.find(
+      (msg) => msg.id === messageId,
+    );
     if (!messageToRetry) return;
 
     const result = await sendSms(contact.address, messageToRetry.body);
@@ -129,11 +155,12 @@ export default function ConversationDetail() {
 
     await updateMessageStatus(messageId, deliveryState);
 
-    setMessages((prev) =>
-      prev.map((msg) =>
+    setConvMessages((prev) => ({
+      ...prev,
+      messages: prev.messages.map((msg) =>
         msg.id === messageId ? { ...msg, deleviryState: deliveryState } : msg,
       ),
-    );
+    }));
   };
   const fullName = contact
     ? `${contact.firstName} ${contact.lastName}`
@@ -141,7 +168,7 @@ export default function ConversationDetail() {
 
   if (isLoading)
     return (
-      <View style={{ flex: 1,alignItems:'center', justifyContent:'center' }}>
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
         <Loader />
       </View>
     );
@@ -168,9 +195,8 @@ export default function ConversationDetail() {
       >
         <FlashList
           ref={flashListRef}
-          data={messages}
-          estimatedItemSize={80}
-          keyExtractor={(item) => item.id?.toString()}
+          data={convMessages.messages}
+          keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
             <ConversationMessage
               messageId={item?.id}
@@ -202,6 +228,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   container: {
+    paddingTop: 20,
     flex: 1,
     backgroundColor: Colors.background.screen,
   },

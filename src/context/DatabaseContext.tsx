@@ -1,12 +1,14 @@
 /* eslint-disable */
-import { type Calls } from "@/types/Calls";
-import { type Contact } from "@/types/Contacts";
+import { CallsSummary, type Calls } from "@/types/Calls";
+import { ContactCreation, type Contact } from "@/types/Contacts";
 import { DeleviryStateType, Inbox, type Message } from "@/types/Message";
 import { CrudOperationRetun } from "@/utils/TableCreationReturn";
 import { useSQLiteContext } from "expo-sqlite";
 import {
   createContext,
+  Dispatch,
   type ReactNode,
+  SetStateAction,
   useContext,
   useEffect,
   useState,
@@ -19,36 +21,43 @@ interface DataBaseContextType {
   contacts: Contact[];
   isAddingMessage: boolean;
   isLoading: boolean;
-  createContact: (contact: Contact) => Promise<CrudOperationRetun>;
-  deleteContact: (id: string) => Promise<void>;
+  handleCreateContact: (contact: ContactCreation) => Promise<CrudOperationRetun>;
+  handleDeleteContact: (id: string) => Promise<void>;
   getConatctsList: () => Promise<Contact[]>;
   getContactById: (id: string) => Promise<Contact | null>;
-  updateMessageStatus: (
+  handleUpdateMessageStatus: (
     id: number,
     status: DeleviryStateType,
   ) => Promise<{
     success: boolean;
     id: number;
   }>;
-  setContacts: React.Dispatch<React.SetStateAction<Contact[]>>
+  setContacts: React.Dispatch<React.SetStateAction<Contact[]>>;
   getConversationByContactId: (
     address: number,
   ) => Promise<ContactMessageSummary[]>;
   addMessage: (message: Message) => Promise<CrudOperationRetun>;
-  getCallList: () => Promise<Calls[]>;
-  getInbox: () => Promise<Inbox[]>;
+  getCallList: () => Promise<CallsSummary[]>;
+  handleGetInbox: () => Promise<Inbox[]>;
   handleAddCall: (call: Calls) => Promise<CrudOperationRetun>;
-  updateContact: (
+  handleUpdateContact: (
     id: string,
     fields: Partial<Omit<Contact, "id">>,
   ) => Promise<void>;
-  onInitDb: () => Promise<void>;
+  setConvMessages: Dispatch<SetStateAction<ConversationState>>;
+  convMessages: ConversationState;
+  handleInitDataBase: () => Promise<void>;
 }
+type ConversationState = {
+  address: string | null;
+  messages: Message[];
+};
 
 const DataBaseContext = createContext<DataBaseContextType | null>(null);
 
 export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
   const db = useSQLiteContext();
+  const [convMessages, setConvMessages] = useState<ConversationState[]>([]);
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [isAddingMessage, setIsAddingMessage] = useState<boolean>(false);
   const [isLoading, setIsloading] = useState<boolean>(false);
@@ -61,9 +70,10 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
         CREATE TABLE IF NOT EXISTS contacts  (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           firstName TEXT NOT null,
-          lastName TEXT NOT null,
+          lastName TEXT ,
           address TEXT,
           postalCode TEXT,
+          homeAddress TEXT,
           email TEXT,
           image TEXT
           );
@@ -87,8 +97,7 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           address TEXT NOT NULL,
           contactId INTEGER,
-          contactName TEXT,
-          timestamp TEXT NOT NULL,
+          timestamp INTEGER,
           FOREIGN KEY(contactId) REFERENCES contacts(id)
           );
           `);
@@ -158,6 +167,7 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
       console.error("Add message error:", err);
       return {
         success: false,
+        message: "errorSendingMessage",
         id: 0,
       };
     } finally {
@@ -183,14 +193,14 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
 
   const handleAddCall = async (call: Calls): Promise<CrudOperationRetun> => {
     try {
-      const { address, contactName, timestamp, contactId } = call;
+      const { address,  timestamp, contactId } = call;
 
       const result = await db.runAsync(
         `
-        INSERT INTO calls (address, contactName, timestamp, contactId)
-        VALUES (?, ?, ?, ?)
+        INSERT INTO calls (address, timestamp, contactId)
+        VALUES (?, ?, ?)
         `,
-        [address, contactName, timestamp, contactId],
+        [address, timestamp, contactId],
       );
       return {
         success: true,
@@ -221,6 +231,7 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const getInbox = async (): Promise<Inbox[] | []> => {
+    setIsloading(true);
     try {
       const result = await db.getAllAsync<Inbox>(`
           SELECT 
@@ -249,20 +260,39 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
       return result ?? [];
     } catch (err) {
       return [];
+    } finally {
+      setIsloading(false);
     }
   };
 
-  const getCallList = async (): Promise<Calls[]> => {
+  const getCallList = async (): Promise<CallsSummary[]> => {
     setIsloading(true);
     try {
-      const result = await db.getAllAsync<Calls>(`
-              SELECT * FROM calls ORDER BY id DESC
+      const result = await db.getAllAsync<CallsSummary>(`
+              SELECT
+              ca.id,
+              ca.address,
+              ca.contactId,
+              ca.timestamp,
+              co.firstName,
+              co.lastName,
+              co.image
+              FROM calls ca
+              INNER JOIN (
+                SELECT contactId, MAX(timestamp) as maxDate
+                FROM calls
+                GROUP BY contactId
+              ) grouped
+              ON ca.contactId = grouped.contactId
+              AND ca.timestamp = grouped.maxDate
+              INNER JOIN contacts co
+              ON ca.contactId = co.id
+              ORDER BY ca.timestamp DESC
               `);
       return result;
     } catch (err) {
-      // toast need to appear here 
+      // toast need to appear here
       throw new Error(`ERROR occured while fetching calls table${err}`);
-      return [];
     } finally {
       setIsloading(false);
     }
@@ -284,25 +314,47 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
     }
   };
   const handleCreateContact = async (
-    contact: Contact,
+    contact: ContactCreation
   ): Promise<CrudOperationRetun> => {
+
     setIsloading(true);
     try {
-      const { firstName, lastName, address, postalCode, email, image } =
-        contact;
+      const {
+        firstName,
+        lastName,
+        
+        postalCode,
+        email,
+        image,
+        address,
+        homeAddress,
+      } = contact;
+      const isExisting = await db.getFirstAsync<Contact>(
+        `
+        SELECT id FROM contacts WHERE address = ?
+        `,
+        [address],
+      );
+      if (isExisting) {
+        console.log("existes");
+        return {
+          success: false,
+          message: "contactAlreadyExistError",
+          id: isExisting.id,
+        };
+      }
       const result = await db.runAsync(
         `
-  INSERT INTO contacts (firstName, lastName, address, postalCode, email, image)
-  VALUES (?, ?, ?, ?, ?, ?)
-  `,
-        [firstName, lastName, address, postalCode, email, image],
+        INSERT INTO contacts (firstName, lastName, address, postalCode, email, image, homeAddress)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+        `,
+        [firstName, lastName, address, postalCode, email, image, homeAddress],
       );
 
       setContacts((prev) => [
         ...prev,
-        { ...contact, id: result.lastInsertRowId.toString() },
+        { ...contact, id: result.lastInsertRowId },
       ]);
-
       return {
         success: true,
         id: result.lastInsertRowId,
@@ -311,18 +363,19 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
       throw new Error(`ERROR occured while creating  contact table ${err}`);
     } finally {
       setIsloading(false);
-      return {
-        success: true,
-        id: 0,
-      };
     }
   };
 
   const handleDeleteConatct = async (id: string) => {
     setIsloading(true);
     try {
-      await db.runAsync(`DELETE FROM contacts WHERE id = ?`, [id]);
+      await db.withTransactionAsync(async () => {
+        await db.runAsync(`DELETE FROM messages WHERE contactId = ?`, [id]);
 
+        await db.runAsync(`DELETE FROM calls WHERE contactId = ?`, [id]);
+
+        await db.runAsync(`DELETE FROM contacts WHERE id = ?`, [id]);
+      });
     } catch (err) {
       throw new Error(`ERROR occurred while deleting contact: ${err}`);
     } finally {
@@ -350,7 +403,7 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
 
       setContacts((prev) =>
         prev.map((contact) =>
-          contact.id == id ? { ...contact, ...fields } : contact,
+          contact?.id === id ? { ...contact, ...fields } : contact,
         ),
       );
     } catch (err) {
@@ -365,18 +418,20 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
     isLoading,
     getContactById,
     addMessage,
-    getInbox,
+    handleGetInbox: getInbox,
     handleAddCall,
     getCallList,
     getConversationByContactId,
     isAddingMessage,
     getConatctsList,
-    updateMessageStatus,
-    createContact: handleCreateContact,
-    deleteContact: handleDeleteConatct,
-    updateContact: handleUpdateContact,
-    onInitDb: handleInitDataBase,
+    handleUpdateMessageStatus: updateMessageStatus,
+    handleCreateContact: handleCreateContact,
+    handleDeleteContact: handleDeleteConatct,
+    handleUpdateContact: handleUpdateContact,
+    handleInitDataBase: handleInitDataBase,
     setContacts,
+    convMessages,
+    setConvMessages,
   };
 
   return (

@@ -1,6 +1,6 @@
 import { Input } from "@/components/ui/Input";
 import { SquarePenIcon } from "@/icons/SquarePen";
-import { type Contact } from "@/types/Contacts";
+import { ContactCreation, type Contact } from "@/types/Contacts";
 import { useState, type Dispatch, type SetStateAction } from "react";
 import * as ImagePicker from "expo-image-picker";
 import {
@@ -26,9 +26,9 @@ import { CameraIcon } from "@/icons/CameraIcon";
 import { PersonIcon } from "@/icons/PersonIcon";
 
 interface ConatctFromProps {
-  contact: Contact;
+  contact: ContactCreation;
   errors: Errors;
-  onChange: Dispatch<SetStateAction<Contact>>;
+  onChange: Dispatch<SetStateAction<ContactCreation>>;
 }
 
 export const ContactForm = ({
@@ -121,7 +121,7 @@ export const ContactForm = ({
               placeHolder={
                 t("inputPlaceHolder") + " " + t("firstName").toLowerCase()
               }
-              value={contact.firstName}
+              value={contact.firstName ?? ""}
               error={errors["firstName"]}
               onChange={(text: string) =>
                 onChange({ ...contact, firstName: text })
@@ -133,7 +133,7 @@ export const ContactForm = ({
               placeHolder={
                 t("inputPlaceHolder") + " " + t("lastName").toLowerCase()
               }
-              value={contact.lastName}
+              value={contact.lastName ?? ""}
               onChange={(text: string) =>
                 onChange({ ...contact, lastName: text })
               }
@@ -150,7 +150,7 @@ export const ContactForm = ({
               placeHolder={
                 t("inputPlaceHolder") + " " + t("email").toLowerCase()
               }
-              value={contact.email}
+              value={contact.email ?? ""}
               error={errors["email"]}
               onChange={(text: string) => onChange({ ...contact, email: text })}
             />
@@ -161,7 +161,7 @@ export const ContactForm = ({
               placeHolder={
                 t("inputPlaceHolder") + " " + t("phoneNumber").toLowerCase()
               }
-              value={contact.address}
+              value={contact.address ?? ""}
               onChange={(text: string) =>
                 onChange({ ...contact, address: text })
               }
@@ -176,7 +176,7 @@ export const ContactForm = ({
             <Input
               label={t("postalCode")}
               error={errors["address"]}
-              value={contact.postalCode}
+              value={contact.postalCode ?? ""}
               placeHolder={
                 t("inputPlaceHolder") + " " + t("postalCode").toLowerCase()
               }
@@ -186,13 +186,13 @@ export const ContactForm = ({
             />
             <Input
               label={t("address")}
-              error={errors["address"]}
-              value={contact.postalCode}
+              error={errors["homeAddress"]}
+              value={contact.homeAddress ?? ""}
               placeHolder={
                 t("inputPlaceHolder") + " " + t("address").toLowerCase()
               }
               onChange={(text: string) =>
-                onChange({ ...contact, postalCode: text })
+                onChange({ ...contact, homeAddress: text })
               }
             />
           </ItemCard>

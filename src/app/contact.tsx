@@ -4,29 +4,33 @@ import { ScreenHeader } from "@/components/ui/ScreenHeader";
 import { ContactForm } from "@/containers/CreateContactForms";
 import { useAppSettings } from "@/context/AppSettingsContext";
 import { useDataBaseContext } from "@/context/DatabaseContext";
-import { type Contact, contactCreationInit } from "@/types/Contacts";
+import { ContactCreation, contactCreationInit } from "@/types/Contacts";
 import { type Errors } from "@/types/ContactsError";
 import Colors from "@/utils/Colors";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, ToastAndroid, View } from "react-native";
 
 // fake fetch
 
 export default function ContactScreen() {
   const { id } = useLocalSearchParams();
   const { t } = useAppSettings();
+  const isEditing = !!id;
+
   const {
-    createContact,
-    updateContact,
+    handleCreateContact: createContact,
+    handleUpdateContact: updateContact,
     getContactById,
-    deleteContact,
+    handleDeleteContact: deleteContact,
     setContacts,
     isLoading,
   } = useDataBaseContext();
-  const [contactInfo, setContactInfo] = useState<Contact>(contactCreationInit);
+
+  const [contactInfo, setContactInfo] =
+    useState<ContactCreation>(contactCreationInit);
+
   const [errors, setErrors] = useState<Errors>({});
-  const isEditing = !!id;
 
   const validate = (): boolean => {
     const newErrors: Errors = {};
@@ -55,12 +59,6 @@ export default function ContactScreen() {
       newErrors.phoneNumber = t("phoneNumberInvalid");
     }
 
-    if (!contactInfo.postalCode?.trim()) {
-      newErrors.postalCode = t("postalCodeRequired");
-    } else if (!/^[A-Za-z0-9\s\-]{3,10}$/.test(contactInfo.postalCode)) {
-      newErrors.postalCode = t("postalCodeInvalid");
-    }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -71,24 +69,35 @@ export default function ContactScreen() {
         (data) => data && setContactInfo(data),
       );
     }
+    return () => setContactInfo(contactCreationInit)
   }, [id, isEditing]);
 
   const handleOnPress = async () => {
     const result = validate();
     if (!result) return;
     if (!isEditing) {
-      await createContact(contactInfo);
-      router.back();
-      return;
+      const result = await createContact(contactInfo);
+      if (result.success === false && result.message) {
+        ToastAndroid.showWithGravityAndOffset(
+          `${t(result?.message)} `,
+          ToastAndroid.LONG,
+          ToastAndroid.CENTER,
+          ToastAndroid.BOTTOM,
+          0,
+        );
+      }
     }
-    await updateContact(id.toString(), contactInfo);
+    else {
+      await updateContact(id.toString(), contactInfo);
+    }
+    router.back();
   };
 
   const handleOnPressDelete = async () => {
-    if (!contactInfo.id) return;
+    if (!id) return;
 
-    deleteContact(contactInfo.id);
-       setContacts((prev) => prev.filter((contact) => contact.id !== id));
+    deleteContact(id.toString());
+    setContacts((prev) => prev.filter((contact) => contact.id !== Number(id)));
     router.back();
   };
 
@@ -102,7 +111,7 @@ export default function ContactScreen() {
     <>
       <Stack.Screen
         options={{
-          title: isEditing ? "Edit Contact" : "Create Contact",
+          title: isEditing ? t("editContact") : t("createContact"),
           header: (props) => <ScreenHeader options={props} isTab={false} />,
         }}
       />
@@ -113,7 +122,6 @@ export default function ContactScreen() {
           onChange={setContactInfo}
         />
       </View>
-
       <View style={styles.buttonsContainer}>
         {isEditing && (
           <Button
@@ -145,13 +153,6 @@ const styles = StyleSheet.create({
   button: {
     flex: 1,
   },
-  // trashIcon: {
-  //   position: "absolute",
-  //   top: 0,
-  //   right: 60,
-  //   padding: 8,
-  //   zIndex: 10,
-  // },
   buttonsContainer: {
     backgroundColor: Colors.white,
     flexDirection: "row",

@@ -7,10 +7,10 @@ export enum DeleviryStateType  {
   "DELIVERED"
 }
 export interface Message {
-  id?:number,
-  address:string;
-  contactId:number,
+  id: number,
+  address: string;
   body: string,
+  contactId: number,
   date: number,
   type: MessageType;
   deleviryState:  DeleviryStateType
@@ -21,6 +21,8 @@ export interface Inbox extends Message {
   lastName: string, 
   image: string | null
 } 
+
+
 export interface Sms {
   _id: string;
   address: string;

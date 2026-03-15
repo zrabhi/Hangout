@@ -1,6 +1,6 @@
 import { CallIcon } from "@/icons/Call"; // outgoing call icon
 import { OutgoingCall } from "@/icons/OutgoingCall";
-import { type Calls } from "@/types/Calls";
+import { CallsSummary, type Calls } from "@/types/Calls";
 import { avatarColors } from "@/utils/AvatarColors";
 import Colors from "@/utils/Colors";
 import { memo } from "react";
@@ -8,14 +8,16 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { AnimatedCard } from "./ui/AnimatedCard";
 import { AnimatedIcon } from "./ui/AnimatedIcon";
 import { ContactAvatar } from "./ui/ContactAvatar";
+import { formatTime } from "@/utils/Helpers";
 
 interface CallCardProps {
-  call: Calls; // only outgoing calls
-  onPressCall: (call: Calls) => Promise<void>;
+  call: CallsSummary;
+  onPressCall: (call: CallsSummary) => Promise<void>;
 }
 
 export const CallCard = memo(({ call, onPressCall }: CallCardProps) => {
-  const fullName = call.contactName ?? call.address;
+  const contactName = call.firstName  + call.lastName
+  const fullName = contactName ?? call.address;
   const colorIndex = call.contactId % avatarColors.length;
   const avatarColor = avatarColors[colorIndex];
 
@@ -25,7 +27,7 @@ export const CallCard = memo(({ call, onPressCall }: CallCardProps) => {
         <ContactAvatar
           firstName={fullName}
           lastName={""}
-          image={""}
+          image={call.image}
           avatarColor={avatarColor}
         />
         <View style={{ flexDirection: "row", flex: 1 }}>
@@ -41,7 +43,7 @@ export const CallCard = memo(({ call, onPressCall }: CallCardProps) => {
               />
               <Text style={styles.contactName}>{fullName}</Text>
             </View>
-            <Text style={styles.message}>Yesterday, 5:30 PM</Text>
+            <Text style={styles.message}>{formatTime(call.timestamp)}</Text>
           </View>
           <Pressable onPress={() => onPressCall(call)} hitSlop={8}>
             <AnimatedIcon

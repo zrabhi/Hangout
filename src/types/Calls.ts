@@ -1,7 +1,12 @@
 export interface Calls {
     id?:number,
-    contactName:string,
     address:string,
     contactId:number,
-    timestamp:string
+    timestamp:number
+}
+
+export interface CallsSummary extends Calls {
+  firstName: string,
+  lastName: string, 
+  image: string | null
 }

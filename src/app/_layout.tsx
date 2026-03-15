@@ -17,6 +17,8 @@ import { useAppBackgroundToast } from "@/hooks/UseLastBackground";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { LoadingIndicator } from "@/components/LoadingSplashScreen";
 import { ReactNode, useEffect, useState } from "react";
+import { StyleSheet } from "react-native";
+import { useIncomingSms } from "@/hooks/UseIncomingSms";
 
 export const unstable_settings = {
   anchor: "(tabs)",
@@ -51,7 +53,7 @@ export const AppProviders = ({ children }: { children: ReactNode }) => {
       <SQLiteProvider databaseName="hangouts.db">
         <DataBaseProvider>
           <AppSettingsProvider>
-            <GestureHandlerRootView style={{ flex: 1 }}>
+            <GestureHandlerRootView style={styles.gestureContainer}>
               {children}
             </GestureHandlerRootView>
           </AppSettingsProvider>
@@ -62,19 +64,31 @@ export const AppProviders = ({ children }: { children: ReactNode }) => {
   );
 };
 
-export default function RootLayout() {
+export const AppLayout = () => {
   useAppBackgroundToast();
+  useIncomingSms();
+  return (
+    <Stack
+      screenOptions={{
+        orientation: "all",
+      }}
+    >
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen name="contact" />
+    </Stack>
+  );
+};
+export default function App() {
 
   return (
     <AppProviders>
-      <Stack
-        screenOptions={{
-          orientation: "all",
-        }}
-      >
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="contact" />
-      </Stack>
+      <AppLayout />
     </AppProviders>
   );
 }
+
+const styles = StyleSheet.create({
+  gestureContainer: {
+    flex: 1,
+  },
+});
