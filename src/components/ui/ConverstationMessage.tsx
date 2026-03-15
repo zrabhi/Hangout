@@ -1,3 +1,4 @@
+import { useAppSettings } from "@/context/AppSettingsContext";
 import { DeleviryStateType } from "@/types/Message";
 import { MessageType } from "@/types/MessageTYpe";
 import Colors from "@/utils/Colors";
@@ -23,23 +24,24 @@ export const ConversationMessage = ({
   onRetry,
   deleviryState,
 }: ConverstationMessageProps) => {
+  const { t } = useAppSettings();
   const isSent = type === MessageType.SENT;
 
   const renderStatus = () => {
     if (!isSent) return null;
 
     if (deleviryState === DeleviryStateType.SENT) {
-      return <Text style={styles.statusText}>✓ Sent</Text>;
+      return <Text style={styles.statusText}>{t("sent")}</Text>;
     }
 
     if (deleviryState === DeleviryStateType.PENDING) {
-      return <Text style={styles.statusText}>⏳ Sending...</Text>;
+      return <Text style={styles.statusText}>{t("sending")}.</Text>;
     }
 
     if (deleviryState === DeleviryStateType.FAILED) {
       return (
         <TouchableOpacity onPress={() => onRetry(messageId)}>
-          <Text style={styles.retryText}>Failed • Tap to retry</Text>
+          <Text style={styles.retryText}>{t("messageFailedRetry")}</Text>
         </TouchableOpacity>
       );
     }

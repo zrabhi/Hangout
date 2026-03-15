@@ -8,12 +8,12 @@ import { type Inbox } from "@/types/Message";
 import { appRoutes } from "@/utils/appRoutes";
 import Colors from "@/utils/Colors";
 import { router, useFocusEffect } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
 
 export default function InboxScreen() {
   
-  const { getInbox, isLoading } = useDataBaseContext();
+  const { handleGetInbox: getInbox, isLoading } = useDataBaseContext();
   
   const [conversations, setConversations] = useState<Inbox[]>([]);
   
@@ -29,6 +29,7 @@ export default function InboxScreen() {
     useCallback(() => {
       handleLoadInbox();
     }, [])
+    
   );
 
 

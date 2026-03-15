@@ -8,14 +8,19 @@ import {
 
 const { SmsModule } = NativeModules;
 
+
 let smsEventEmitter: NativeEventEmitter | null = null;
+let isInitialized = false;
 
-export const initSmsModule = async () => {
-  if (Platform.OS !== "android") return;
+export const initSmsModule = () => {
+  if (Platform.OS !== "android" || !SmsModule) return null;
 
-  if (!smsEventEmitter) {
+  if (!isInitialized) {
     smsEventEmitter = new NativeEventEmitter(SmsModule);
+    isInitialized = true;
   }
+
+  return smsEventEmitter;
 };
 
 export const onIncomingSms = (callback: (sms: { address: string; body: string; date: number }) => void) => {

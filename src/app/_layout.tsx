@@ -18,7 +18,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { LoadingIndicator } from "@/components/LoadingSplashScreen";
 import { ReactNode, useEffect, useState } from "react";
 import { StyleSheet } from "react-native";
-import { useIncomingSms } from "@/hooks/useIncomingSms";
+import { useIncomingSms } from "@/hooks/UseIncomingSms";
 
 export const unstable_settings = {
   anchor: "(tabs)",
@@ -66,7 +66,7 @@ export const AppProviders = ({ children }: { children: ReactNode }) => {
 
 export const AppLayout = () => {
   useAppBackgroundToast();
-//  useIncomingSms();
+  useIncomingSms();
   return (
     <Stack
       screenOptions={{

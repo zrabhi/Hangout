@@ -1,4 +1,3 @@
-
 import React, { memo } from "react";
 import { Path, Svg, type SvgProps } from "react-native-svg";
 
@@ -6,8 +5,8 @@ export const CallIcon = memo(({ color = "#000000", ...rest }: SvgProps) => {
   ``;
   return (
     <Svg
-       {...rest}
-       color={color}
+      {...rest}
+      color={color}
       width="20"
       height="20"
       viewBox="0 0 24 24"

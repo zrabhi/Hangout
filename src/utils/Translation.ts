@@ -2,6 +2,7 @@ export const translations = {
   en: {
     createContact: "Create Contact",
     delete: "Delete",
+    editContact: "Edit Contact",
     changePhoto: "Change photo",
     firstName: "First Name",
     inputPlaceHolder: "Enter your ",
@@ -25,6 +26,7 @@ export const translations = {
     allContacts: "All Contacts",
     favorites: "Favorites",
     language: "Language",
+    errorSendingMessage: "Error sending message. Please retry.",
     headerColor: "Header Color",
     emptyContactsMessage:
       "Sadly, your contact list is empty. Try to Add a new contact to get started!",
@@ -57,6 +59,8 @@ export const translations = {
     appLanguageDialog: "Select your preferred language",
     appHeaderColorTitle: "App Header Color",
     appHeaderColorDialog: "Choose your preferred theme",
+    contactAlreadyExistError:
+  "A contact with this phone number already exists.",
     emptyCallsMessage:
       "You don’t have any recent calls. Try calling someone to get started!",
     emptyInboxMessage:
@@ -77,6 +81,11 @@ export const translations = {
     updateContactAction: "Update Contact",
     deleteContactAction: "Delete ",
     lastBackgroundedAt: "Last backgrounded at:",
+
+    sent: "✓ Sent",
+    sending: "⏳ Sending...",
+    messageFailedRetry: "❌ Failed • Tap to retry",
+    newMessageFrom: "You have a new message from",
   },
 
   fr: {
@@ -92,8 +101,11 @@ export const translations = {
     greenTint: "Teinte verte",
     orangeTint: "Teinte orange",
     pinkTint: "Teinte rose",
+    contactAlreadyExistError:
+  "Un contact avec ce numéro de téléphone existe déjà.",
     en: "Anglais",
     fr: "Français",
+    errorSendingMessage: "Erreur lors de l’envoi du message. Veuillez réessayer.",
     settings: "Paramètres",
     photoPermission:
       "Malheureusement, nous n’avons pas accès à vos photos. Pour télécharger une image, veuillez aller dans les paramètres et autoriser l’accès.",
@@ -116,6 +128,8 @@ export const translations = {
     inputPlaceHolder: "Entrez votre ",
     lastName: "Nom",
     email: "Email",
+    editContact: "Modifier le contact",
+
     postalCode: "Code postal",
     photo: "Photo",
     photoUpload: "Télécharger une photo",
@@ -129,7 +143,10 @@ export const translations = {
     language: "Langue",
     headerColor: "Couleur de l'en-tête",
     // errors
-
+    sent: "✓ Envoyé",
+    sending: "⏳ Envoi...",
+    messageFailedRetry: "❌ Échec • Appuyez pour réessayer",
+    
     emptyContactsMessage:
       "Malheureusement, votre liste de contacts est vide. Ajoutez un nouveau contact pour commencer !",
     emptyCallsMessage:
@@ -156,7 +173,7 @@ export const translations = {
 
     callPhonePermission:
       "Hangouts a besoin de l'autorisation d'effectuer des appels téléphoniques afin de vous permettre d'initier des appels directement depuis l'application.",
-
+newMessageFrom: "Vous avez un nouveau message de",
     smsReceivePermission:
       "Hangouts nécessite l'autorisation de recevoir des SMS afin de rester informé des conversations entrantes.",
   },

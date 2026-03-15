@@ -1,72 +1,104 @@
-// useIncomingSms.ts
-import { useEffect } from "react";
-import { useDataBaseContext } from "@/context/DatabaseContext";
-import { initSmsModule, onIncomingSms } from "@/nativeModule/sms/smsService";
 import { MessageType } from "@/types/MessageTYpe";
+import { useEffect } from "react";
+import {
+  EmitterSubscription,
+  PermissionsAndroid,
+  Platform,
+  ToastAndroid,
+} from "react-native";
+import { useDataBaseContext } from "@/context/DatabaseContext";
 import { useAppSettings } from "@/context/AppSettingsContext";
-import { PermissionsAndroid } from "react-native";
+import { initSmsModule } from "@/nativeModule/sms/smsService";
 import { PermissionType } from "@/types/Permissions";
+import { Message } from "@/types/Message";
+
+type IncomingSms = {
+  address: string;
+  body: string;
+  date: number;
+};
 
 export const useIncomingSms = () => {
-  const { contacts, addMessage, createContact, getConatctsList } =
+  const { contacts, addMessage, convMessages, setConvMessages } =
     useDataBaseContext();
-  const { handleSetPermissionPrompt } = useAppSettings();
+  const { handleSetPermissionPrompt, t } = useAppSettings();
+
   useEffect(() => {
-    let unsubscribe: (() => void) | null = null;
+    if (Platform.OS !== "android") return;
+
+    let subscription: EmitterSubscription;
 
     const setup = async () => {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.CALL_PHONE,
-      );
-      if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-        handleSetPermissionPrompt(PermissionType.SMS_RECEIVE);
-        return null;
-    }
-    await initSmsModule();
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.RECEIVE_SMS,
+        );
 
-      unsubscribe = onIncomingSms(
-        async (sms: { address: string; body: string; date: number }) => {
-          try {
-            console.log("Incoming SMS in hook:", sms);
+        if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+          handleSetPermissionPrompt(PermissionType.SMS_RECEIVE);
+          return;
+        }
 
-            let contact = contacts.find((c) => c.address === sms.address);
+        const smsEventEmitter = initSmsModule();
 
-            if (!contact) {
-              const newContact = {
-                id: "",
-                firstName: sms.address,
-                lastName: null,
-                address: null,
-                postalCode: null,
-                email: null,
-                image: null,
+        if (!smsEventEmitter) {
+          console.error("Sms event emitter is not initialized");
+          return;
+        }
+
+        subscription = smsEventEmitter.addListener(
+          "IncomingSms",
+          async (sms: IncomingSms) => {
+            try {
+              let contact = contacts.find((c) => c.address === sms.address);
+              if (!contact) return; // TODO: may be later i will add the feature to create contact if not exists
+              const message: Message = {
+                contactId: contact.id,
+
+                address: sms.address,
+                body: sms.body,
+                date: sms.date,
+                type: MessageType.RECIEVED,
+                deleviryState: 1,
               };
-              const result = await createContact(newContact);
-              newContact.id = result.id.toString();
-              contact = newContact;
+              const result = await addMessage(message);
+              if (result.success === false) {
+                ToastAndroid.showWithGravityAndOffset(
+                  `${t("errorSendingMessage")}`,
+                  ToastAndroid.LONG,
+                  ToastAndroid.CENTER,
+                  ToastAndroid.TOP,
+                  290,
+                );
+              } else {
+                convMessages.address === sms.address
+                  ? setConvMessages((prev) => ({
+                      ...prev,
+                      messages: [
+                        ...prev.messages,
+                        { ...message, id: result.id },
+                      ],
+                    }))
+                  : ToastAndroid.showWithGravityAndOffset(
+                      `${t("newMessageFrom")} ${sms.address}`,
+                      ToastAndroid.LONG,
+                      ToastAndroid.CENTER,
+                      ToastAndroid.BOTTOM,
+                      0,
+                    );
+              }
+            } catch (error) {
+              console.error("Error handling incoming SMS:", error);
             }
-
-            await addMessage({
-              contactId: parseInt(contact.id, 10),
-              address: sms.address,
-              body: sms.body,
-              date: sms.date,
-              type: MessageType.RECIEVED,
-              deleviryState: 1,
-            });
-
-            await getConatctsList();
-          } catch (err) {
-            console.error("Error handling incoming SMS in hook:", err);
-          }
-        },
-      );
+          },
+        );
+      } catch (error) {
+        console.error("Error setting up incoming SMS listener:", error);
+      }
     };
-
     setup();
-
     return () => {
-      unsubscribe?.();
+      subscription?.remove();
     };
-  }, []);
+  }, [addMessage, setConvMessages, handleSetPermissionPrompt]);
 };

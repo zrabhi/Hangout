@@ -6,11 +6,13 @@ import { type CrudOperationRetun } from "@/utils/TableCreationReturn";
 import { PermissionsAndroid, ToastAndroid } from "react-native";
 
 export const useCallContact = () => {
+
   const { handleAddCall } = useDataBaseContext();
   const { handleSetPermissionPrompt } = useAppSettings();
+
+
   const handleCallContact = async (
     address: string,
-    contactName: string,
     contactId: number,
   ): Promise<CrudOperationRetun> => {
     const granted = await PermissionsAndroid.request(
@@ -26,15 +28,14 @@ export const useCallContact = () => {
 
     const callAction = await callContact(address);
     if (!callAction.success) {
-      ToastAndroid.show(`Error while calling ${contactName}`, ToastAndroid.TOP);
+      ToastAndroid.show(`Error while calling ${address}`, ToastAndroid.TOP);
       return { success: false, id: 0 };
     }
 
     const result = await handleAddCall({
       address,
       contactId,
-      contactName,
-      timestamp: Date.now().toString(),
+      timestamp: Date.now(),
     });
     return result;
   };
