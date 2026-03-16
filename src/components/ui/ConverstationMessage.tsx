@@ -60,7 +60,7 @@ export const ConversationMessage = ({
           isSent ? styles.senderBubble : styles.recieverBubble,
         ]}
       >
-        <Text style={[isSent && { color: Colors.white }, styles.messageText]}>
+        <Text selectable style={[isSent && { color: Colors.white }, styles.messageText]}>
           {message}
         </Text>
       </View>
