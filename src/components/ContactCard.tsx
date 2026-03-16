@@ -40,8 +40,8 @@ export const ContactCard = ({ contact, onPressCall }: ContactCardProps) => {
             avatarColor={avatarColor}
           />
           <View style={{ flexDirection: "column", flex: 1 }}>
-            <Text style={styles.contactName}>{fullName}</Text>
-            <Text style={styles.phoneNumber}>{contact.address}</Text>
+            <Text numberOfLines={2} lineBreakMode="tail" style={styles.contactName}>{fullName}</Text>
+            <Text  numberOfLines={2} lineBreakMode="tail" style={styles.phoneNumber}>{contact.address}</Text>
           </View>
 
           <View style={{ flexDirection: "row", gap: 16 }}>

@@ -30,7 +30,7 @@ export const CallCard = memo(({ call, onPressCall }: CallCardProps) => {
           image={call.image}
           avatarColor={avatarColor}
         />
-        <View style={{ flexDirection: "row", flex: 1 }}>
+        <View style={{ flexDirection: "row", flex: 1 ,alignItems: "center" }}>
           <View style={{flexDirection:'column', flex:1 }}>
             <View
               style={{ flexDirection: "row", gap: 10, alignItems: "center" }}
@@ -41,7 +41,7 @@ export const CallCard = memo(({ call, onPressCall }: CallCardProps) => {
                 width={16}
                 color={Colors.primary.green[100]}
               />
-              <Text style={styles.contactName}>{fullName}</Text>
+              <Text numberOfLines={2} lineBreakMode="tail" style={styles.contactName}>{fullName}</Text>
             </View>
             <Text style={styles.message}>{formatTime(call.timestamp)}</Text>
           </View>
@@ -75,6 +75,7 @@ const styles = StyleSheet.create({
   contactName: {
     fontFamily: "Baloo2-Bold",
     fontSize: 18,
+    paddingRight:30,
     color: Colors.black,
   },
   message: {

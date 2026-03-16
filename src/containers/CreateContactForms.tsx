@@ -117,24 +117,28 @@ export const ContactForm = ({
             dialog={t("requiredDetailsDialog")}
           >
             <Input
+              maxLength={20}
+              selectTextOnFocus
               label={t("firstName")}
               placeHolder={
                 t("inputPlaceHolder") + " " + t("firstName").toLowerCase()
               }
               value={contact.firstName ?? ""}
               error={errors["firstName"]}
-              onChange={(text: string) =>
+              onChangeText={(text: string) =>
                 onChange({ ...contact, firstName: text })
               }
             />
             <Input
+              maxLength={20}
+              selectTextOnFocus
               label={t("lastName")}
               error={errors["lastName"]}
               placeHolder={
                 t("inputPlaceHolder") + " " + t("lastName").toLowerCase()
               }
               value={contact.lastName ?? ""}
-              onChange={(text: string) =>
+              onChangeText={(text: string) =>
                 onChange({ ...contact, lastName: text })
               }
             />
@@ -146,23 +150,25 @@ export const ContactForm = ({
             dialog={t("requiredDetailsDialog")}
           >
             <Input
+              maxLength={30}
               label={t("email")}
               placeHolder={
                 t("inputPlaceHolder") + " " + t("email").toLowerCase()
               }
               value={contact.email ?? ""}
               error={errors["email"]}
-              onChange={(text: string) => onChange({ ...contact, email: text })}
+              onChangeText={(text: string) => onChange({ ...contact, email: text })}
             />
 
             <Input
+              maxLength={14}
               error={errors["phoneNumber"]}
               label={t("phoneNumber")}
               placeHolder={
                 t("inputPlaceHolder") + " " + t("phoneNumber").toLowerCase()
               }
               value={contact.address ?? ""}
-              onChange={(text: string) =>
+              onChangeText={(text: string) =>
                 onChange({ ...contact, address: text })
               }
             />
@@ -174,24 +180,26 @@ export const ContactForm = ({
             dialog="Optional Details"
           >
             <Input
+              maxLength={8}
               label={t("postalCode")}
               error={errors["address"]}
               value={contact.postalCode ?? ""}
               placeHolder={
                 t("inputPlaceHolder") + " " + t("postalCode").toLowerCase()
               }
-              onChange={(text: string) =>
+              onChangeText={(text: string) =>
                 onChange({ ...contact, postalCode: text })
               }
             />
             <Input
+              maxLength={40}
               label={t("address")}
               error={errors["homeAddress"]}
               value={contact.homeAddress ?? ""}
               placeHolder={
                 t("inputPlaceHolder") + " " + t("address").toLowerCase()
               }
-              onChange={(text: string) =>
+              onChangeText={(text: string) =>
                 onChange({ ...contact, homeAddress: text })
               }
             />

@@ -1,18 +1,14 @@
+import { type Inbox } from "@/types/Message";
+import { avatarColors } from "@/utils/AvatarColors";
+import Colors from "@/utils/Colors";
+import { memo } from "react";
 import {
-  Pressable,
   type PressableProps,
   StyleSheet,
   Text,
-  View,
+  View
 } from "react-native";
-import { Image } from "expo-image";
-import Colors from "@/utils/Colors";
-import { memo } from "react";
-import { DeleviryStateType, type Inbox } from "@/types/Message";
-import { formatTime } from "@/utils/Helpers";
 import { AnimatedCard } from "./ui/AnimatedCard";
-import { avatarColors } from "@/utils/AvatarColors";
-import { router } from "expo-router";
 import { ContactAvatar } from "./ui/ContactAvatar";
 
 interface LastMessageCardProps extends PressableProps, Omit<Inbox, "type"> {
@@ -20,7 +16,7 @@ interface LastMessageCardProps extends PressableProps, Omit<Inbox, "type"> {
   onPress: VoidFunction;
 }
 
-export const LastMessageCard = memo(
+export const InboxCard = memo(
   ({
     body,
     onPress,
@@ -45,8 +41,8 @@ export const LastMessageCard = memo(
             avatarColor={avatarColor}
           />
           <View style={{ flexDirection: "column", flex: 1 }}>
-            <Text style={styles.contactName}>{fullName}</Text>
-            <Text style={styles.message}>{body}</Text>
+            <Text  numberOfLines={2} lineBreakMode="tail" style={styles.contactName}>{fullName}</Text>
+            <Text numberOfLines={2} lineBreakMode="tail" style={styles.message}>{body}</Text>
           </View>
         </View>
       </AnimatedCard>
