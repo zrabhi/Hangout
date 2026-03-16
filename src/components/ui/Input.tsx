@@ -1,22 +1,24 @@
 import Colors from "@/utils/Colors";
-import { Text, View, StyleSheet, TextInput } from "react-native";
+import { Text, View, StyleSheet, TextInput, TextInputProps } from "react-native";
 
-interface InputProps {
-  value: string | null;
+interface InputProps extends TextInputProps {
+  value: string | undefined;
   label: string;
   placeHolder?: string;
   error?: string | undefined;
-  onChange: (input: string) => void;
+  onChangeText: (input: string) => void;
   isEditable?: boolean;
 }
 export const Input = ({
   value,
   label,
-  onChange,
+  onChangeText,
   error,
   placeHolder = "Enter your value",
   isEditable = true,
+  ...rest
 }: InputProps) => {
+
   return (
     <View style={styles.container}>
       <View style={styles.labelConatiner}>
@@ -26,10 +28,11 @@ export const Input = ({
         editable={isEditable}
         placeholder={placeHolder}
         value={value ?? ""}
-        onChangeText={onChange}
+        onChangeText={onChangeText}
         selectionColor={Colors.primary.orange[100]}
         placeholderTextColor={"#c2c2c2"}
         style={styles.input}
+        {...rest}
       />
       {error && <Text style={styles.errorText}>{error}</Text>}
     </View>

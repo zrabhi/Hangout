@@ -1,4 +1,4 @@
-import { LastMessageCard } from "@/components/LastMessageCard";
+import { InboxCard } from "@/components/InboxCard";
 import { EmptyListMessage } from "@/components/ui/EmptyList";
 import { Loader } from "@/components/ui/Loader";
 import { useAppSettings } from "@/context/AppSettingsContext";
@@ -54,7 +54,7 @@ export default function InboxScreen() {
           margin: conversations.length === 0 ? "auto" : undefined,
         }}
         renderItem={({ item }) => (
-          <LastMessageCard
+          <InboxCard
             onPress={() => handleOnPress(item.contactId)}
             {...item}
           />

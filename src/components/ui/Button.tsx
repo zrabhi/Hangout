@@ -31,7 +31,7 @@ export const Button = ({
       onPress={onClick}
       {...rest}
     >
-      <Text style={[styles.buttonText, styles[`${variant}Text`]]}>{title}</Text>
+      <Text lineBreakMode="tail" numberOfLines={1} style={[styles.buttonText, styles[`${variant}Text`]]}>{title}</Text>
     </Pressable>
   );
 };
