@@ -49,6 +49,10 @@ export const useIncomingSms = () => {
         subscription = smsEventEmitter.addListener(
           "IncomingSms",
           async (sms: IncomingSms) => {
+            console.log(
+              convMessages.address === sms.address,
+              convMessages.address,
+            );
             try {
               let contact = contacts.find((c) => c.address === sms.address);
               if (!contact) return; // TODO: may be later i will add the feature to create contact if not exists
