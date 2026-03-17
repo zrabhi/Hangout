@@ -60,7 +60,7 @@ export const translations = {
     appHeaderColorTitle: "App Header Color",
     appHeaderColorDialog: "Choose your preferred theme",
     contactAlreadyExistError:
-  "A contact with this phone number already exists.",
+      "A contact with this phone number already exists.",
     emptyCallsMessage:
       "You don’t have any recent calls. Try calling someone to get started!",
     emptyInboxMessage:
@@ -86,6 +86,18 @@ export const translations = {
     sending: "⏳ Sending...",
     messageFailedRetry: "❌ Failed • Tap to retry",
     newMessageFrom: "You have a new message from",
+
+    manageContactsTitle: "Manage Your Contacts.",
+    manageContactsDescription:
+      "Keep all your important contacts organized in one beautiful, easy-to-use interface.",
+
+    stayConnectedTitle: "Stay Connected.",
+    stayConnectedDescription:
+      "Send messages and stay in touch with your friends, family, and colleagues seamlessly.",
+
+    makeCallsTitle: "Make Calls Easily.",
+    makeCallsDescription:
+      "Quick access to call history and one-tap calling for all your favorite contacts.",
   },
 
   fr: {
@@ -102,10 +114,11 @@ export const translations = {
     orangeTint: "Teinte orange",
     pinkTint: "Teinte rose",
     contactAlreadyExistError:
-  "Un contact avec ce numéro de téléphone existe déjà.",
+      "Un contact avec ce numéro de téléphone existe déjà.",
     en: "Anglais",
     fr: "Français",
-    errorSendingMessage: "Erreur lors de l’envoi du message. Veuillez réessayer.",
+    errorSendingMessage:
+      "Erreur lors de l’envoi du message. Veuillez réessayer.",
     settings: "Paramètres",
     photoPermission:
       "Malheureusement, nous n’avons pas accès à vos photos. Pour télécharger une image, veuillez aller dans les paramètres et autoriser l’accès.",
@@ -146,7 +159,7 @@ export const translations = {
     sent: "✓ Envoyé",
     sending: "⏳ Envoi...",
     messageFailedRetry: "❌ Échec • Appuyez pour réessayer",
-    
+
     emptyContactsMessage:
       "Malheureusement, votre liste de contacts est vide. Ajoutez un nouveau contact pour commencer !",
     emptyCallsMessage:
@@ -164,6 +177,17 @@ export const translations = {
     inbox: "Boîte de réception",
     calls: "Appels",
 
+    manageContactsTitle: "Gérez vos contacts.",
+    manageContactsDescription:
+      "Gardez tous vos contacts importants organisés dans une interface belle et facile à utiliser.",
+
+    stayConnectedTitle: "Restez connecté.",
+    stayConnectedDescription:
+      "Envoyez des messages et restez en contact avec vos amis, votre famille et vos collègues facilement.",
+
+    makeCallsTitle: "Passez des appels facilement.",
+    makeCallsDescription:
+      "Accédez rapidement à l’historique des appels et appelez vos contacts favoris en un seul geste.",
     typeMessage: "Écrivez un message...",
     smsReadPermission:
       "Hangouts a besoin de l'autorisation de lire vos SMS afin de détecter et traiter les conversations pertinentes dans l'application.",
@@ -173,7 +197,7 @@ export const translations = {
 
     callPhonePermission:
       "Hangouts a besoin de l'autorisation d'effectuer des appels téléphoniques afin de vous permettre d'initier des appels directement depuis l'application.",
-newMessageFrom: "Vous avez un nouveau message de",
+    newMessageFrom: "Vous avez un nouveau message de",
     smsReceivePermission:
       "Hangouts nécessite l'autorisation de recevoir des SMS afin de rester informé des conversations entrantes.",
   },

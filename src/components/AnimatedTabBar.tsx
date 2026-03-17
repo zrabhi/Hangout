@@ -1,65 +1,84 @@
 import { memo } from "react";
 import type { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import Animated, { useSharedValue, useAnimatedStyle, withSpring } from "react-native-reanimated";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+} from "react-native-reanimated";
 import Colors from "@/utils/Colors";
 import { AddIcon } from "@/icons/Add";
 import { router } from "expo-router";
+import { AnimatedIcon } from "./ui/AnimatedIcon";
 
+export const tabBarScreens: Record<number, string> = {
+  [0]: "Contacts",
+};
+export const AnimatedTabBar = memo(
+  ({ state, descriptors, navigation }: BottomTabBarProps) => {
+    return (
+      <View style={tabBarStyle.container}>
+        <View style={tabBarStyle.tabBarContainer}>
+          {state.routes.map((route, index) => {
+            const { options } = descriptors[route.key];
+            const isFocused = state.index === index;
 
-export const tabBarScreens : Record<number, string> = {
-  [0]: 'Contacts'
-}
-export const AnimatedTabBar = memo(({ state, descriptors, navigation }: BottomTabBarProps) => {
-  return (
-    <View style={tabBarStyle.container}>
-      <View style={tabBarStyle.tabBarContainer}>
-        {state.routes.map((route, index) => {
-          const { options } = descriptors[route.key];
-          const isFocused = state.index === index;
+            // Shared value for spring scale
+            const scale = useSharedValue(isFocused ? 1.1 : 1);
 
-          // Shared value for spring scale
-          const scale = useSharedValue(isFocused ? 1.1 : 1);
+            const animatedStyle = useAnimatedStyle(() => ({
+              transform: [
+                {
+                  scale: withSpring(scale.value, {
+                    damping: 12,
+                    stiffness: 150,
+                  }),
+                },
+              ],
+            }));
 
-          const animatedStyle = useAnimatedStyle(() => ({
-            transform: [{ scale: withSpring(scale.value, { damping: 12, stiffness: 150 }) }],
-          }));
+            return (
+              <Animated.View key={route.key} style={animatedStyle}>
+                <Pressable
+                  style={tabBarStyle.tab}
+                  onPress={() => {
+                    navigation.navigate(route.name);
+                    scale.value = 1.1;
+                    setTimeout(() => {
+                      scale.value = 1;
+                    }, 200);
+                  }}
+                >
+                  {options.tabBarIcon &&
+                    options.tabBarIcon({
+                      focused: isFocused,
+                      size: 16,
+                      color: isFocused ? Colors.black : Colors.white,
+                    })}
 
-          return (
-            <Animated.View key={route.key} style={animatedStyle}>
-              <Pressable
-                style={tabBarStyle.tab}
-                onPress={() => {
-                  navigation.navigate(route.name);
-                  scale.value = 1.1;
-                  setTimeout(() => {
-                    scale.value = 1; // bounce back
-                  }, 200);
-                }}
-              >
-                {options.tabBarIcon &&
-                  options.tabBarIcon({
-                    focused: isFocused,
-                    size: 16,
-                    color: isFocused ? Colors.black : Colors.white,
-                  })}
-
-                {isFocused && <Text style={tabBarStyle.tabName}>{options.title}</Text>}
-              </Pressable>
-            </Animated.View>
-          );
-        })}
-      </View>
-
-      <Pressable
+                  {isFocused && (
+                    <Text style={tabBarStyle.tabName}>{options.title}</Text>
+                  )}
+                </Pressable>
+              </Animated.View>
+            );
+          })}
+        </View>
+        <AnimatedIcon
+          style={tabBarStyle.addContactButton}
+          icon={AddIcon}
+          onPress={() => router.navigate("/contact")}
+        />
+        {/* <Pressable
         style={tabBarStyle.addContactButton}
         onPress={() => router.navigate("/contact")}
       >
         <AddIcon fill={Colors.white} color={Colors.white} height={24} width={24} />
-      </Pressable>
-    </View>
-  );
-});
+      </Pressable> */}
+      </View>
+    );
+  },
+);
 
 const tabBarStyle = StyleSheet.create({
   container: {
@@ -80,7 +99,7 @@ const tabBarStyle = StyleSheet.create({
     width: "70%",
     borderRadius: 16,
     borderWidth: 1.5,
-    backgroundColor:Colors.background.screen,
+    backgroundColor: Colors.background.screen,
     borderColor: Colors.black,
   },
   tab: {

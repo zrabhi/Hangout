@@ -20,9 +20,9 @@ import { ReactNode, useEffect, useState } from "react";
 import { StyleSheet } from "react-native";
 import { useIncomingSms } from "@/hooks/UseIncomingSms";
 
-export const unstable_settings = {
-  anchor: "(tabs)",
-};
+// export const unstable_settings = {
+//   anchor: "onBoarding",
+// };
 
 export const AppProviders = ({ children }: { children: ReactNode }) => {
   const colorScheme = useColorScheme();
@@ -73,8 +73,9 @@ export const AppLayout = () => {
         orientation: "all",
       }}
     >
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name="contact" />
+      {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen name="contact" /> */}
+      <Stack.Screen name="onBoarding" />
     </Stack>
   );
 };
@@ -90,5 +91,6 @@ export default function App() {
 const styles = StyleSheet.create({
   gestureContainer: {
     flex: 1,
+ 
   },
 });
