@@ -294,6 +294,7 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
       return result;
     } catch (err) {
       // toast need to appear here
+      return [];
       throw new Error(`ERROR occured while fetching calls table${err}`);
     } finally {
       setIsloading(false);
@@ -338,7 +339,6 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
         [address],
       );
       if (isExisting) {
-        console.log("existes");
         return {
           success: false,
           message: "contactAlreadyExistError",
