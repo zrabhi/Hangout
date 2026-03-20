@@ -148,6 +148,7 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const addMessage = async (message: Message): Promise<CrudOperationRetun> => {
+    console.log("im here !!!!!!!!")
     setIsAddingMessage(true);
     try {
       const { address, type, date, body, deleviryState, contactId } = message;
@@ -224,7 +225,8 @@ export const DataBaseProvider = ({ children }: { children: ReactNode }) => {
       setContacts(result);
       return result;
     } catch (err) {
-      throw new Error(`ERROR occured while fetching contacts table${err}`);
+      return [];
+     // throw new Error(`ERROR occured while fetching contacts table${err}`);
     } finally {
       setIsloading(false);
     }

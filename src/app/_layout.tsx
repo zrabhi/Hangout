@@ -18,7 +18,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { LoadingIndicator } from "@/components/LoadingSplashScreen";
 import { ReactNode, useEffect, useState } from "react";
 import { StyleSheet } from "react-native";
-import { useIncomingSms } from "@/hooks/UseIncomingSms";
+import { useIncomingSms } from "@/hooks/useIncomingSms";
 
 export const unstable_settings = {
   anchor: "(tabs)",

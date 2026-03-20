@@ -23,12 +23,16 @@ export const initSmsModule = () => {
   return smsEventEmitter;
 };
 
-export const onIncomingSms = (callback: (sms: { address: string; body: string; date: number }) => void) => {
-  if (!smsEventEmitter) return () => {};
-  const subscription = smsEventEmitter.addListener("IncomingSms", callback);
+export const subscribeSmsListener = (
+  callback: (sms: { address: string; body: string; date: number }) => void,
+) => {
+  const emitter = initSmsModule();
+  if (!emitter) return () => {};
+
+  const subscription = emitter.addListener("IncomingSms", callback);
+
   return () => subscription.remove();
 };
-
 
 export const getConversation = async (
   phoneNumber: string,
