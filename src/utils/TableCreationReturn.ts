@@ -1,4 +1,4 @@
-import { tranlsationKeyType } from "@/context/AppSettingsContext";
+import { type tranlsationKeyType } from "@/context/AppSettingsContext";
 
 export interface CrudOperationRetun {
   success: boolean;

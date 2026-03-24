@@ -2,7 +2,6 @@ import { MessageType } from "@/types/MessageTYpe";
 import { useEffect, useRef, useState } from "react";
 import {
   AppState,
-  EmitterSubscription,
   PermissionsAndroid,
   Platform,
   ToastAndroid,
@@ -11,7 +10,7 @@ import { useDataBaseContext } from "@/context/DatabaseContext";
 import { useAppSettings } from "@/context/AppSettingsContext";
 import { initSmsModule } from "@/nativeModule/sms/smsService";
 import { PermissionType } from "@/types/Permissions";
-import { Message } from "@/types/Message";
+import { type Message } from "@/types/Message";
 
 type IncomingSms = {
   address: string;

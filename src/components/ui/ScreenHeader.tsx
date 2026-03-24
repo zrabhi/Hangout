@@ -9,7 +9,6 @@ import { type ReactNode } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { AnimatedIcon } from "./AnimatedIcon";
 import { LeftArrownIcon } from "@/icons/LeftArrow";
-import { AnimatedLogoApp } from "./AnimatedLogoApp";
 
 interface ScreenHeaderProps {
   options: BottomTabHeaderProps | NativeStackHeaderProps;

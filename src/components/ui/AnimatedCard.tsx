@@ -1,13 +1,11 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet } from "react-native";
 import Colors from "@/utils/Colors";
-import { useFocusEffect } from "expo-router";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSpring,
-  interpolateColor,
 } from "react-native-reanimated";
-import React, { memo, ReactNode, useCallback } from "react";
+import React, { memo, type ReactNode } from "react";
 
 interface AnimatedCardProps {
   children: ReactNode;

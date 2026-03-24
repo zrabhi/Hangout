@@ -3,12 +3,10 @@ import { type PermissionType } from "@/types/Permissions";
 import { AppColorName, AppColors } from "@/utils/AppColors";
 import { AppLanguageCode } from "@/utils/AppLanguages";
 import { getItem, setItem } from "@/utils/Storage";
-import { type Language, translations } from "@/utils/Translation";
+import { translations } from "@/utils/Translation";
 import {
   createContext,
-  type Dispatch,
   type ReactNode,
-  type SetStateAction,
   useContext,
   useEffect,
   useState,

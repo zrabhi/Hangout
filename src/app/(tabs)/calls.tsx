@@ -5,9 +5,9 @@ import { useAppSettings } from "@/context/AppSettingsContext";
 import { useDataBaseContext } from "@/context/DatabaseContext";
 import { useCallContact } from "@/hooks/usecCallContact";
 import { AquaticRetroIllustration } from "@/icons/RetroAquatic";
-import { CallsSummary, type Calls } from "@/types/Calls";
+import { type CallsSummary } from "@/types/Calls";
 import { useFocusEffect } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
 
 export default function CallsScreen() {
@@ -32,7 +32,7 @@ export default function CallsScreen() {
   useFocusEffect(
     useCallback(() => {
       handleGetCallsList();
-    }, []),
+    }, [handleGetCallsList]),
   );
 
   if (isLoading)

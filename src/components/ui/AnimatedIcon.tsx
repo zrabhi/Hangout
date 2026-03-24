@@ -1,7 +1,5 @@
-import { colorsMap } from "@/utils/ClorsMap";
-import { ColorVariants } from "@/utils/ColorVarianrts";
-import React, { ElementType, memo, ReactNode } from "react";
-import { StyleSheet, ViewProps } from "react-native";
+import React, { type ElementType, memo, type ReactNode } from "react";
+import { StyleSheet, type ViewProps } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,

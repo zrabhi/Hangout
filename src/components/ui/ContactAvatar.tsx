@@ -1,7 +1,6 @@
 import React, { memo } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Image } from "expo-image";
-import Colors from "@/utils/Colors";
 
 interface ContactAvatarProps {
   firstName: string;

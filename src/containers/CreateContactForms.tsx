@@ -1,6 +1,5 @@
 import { Input } from "@/components/ui/Input";
-import { SquarePenIcon } from "@/icons/SquarePen";
-import { ContactCreation, type Contact } from "@/types/Contacts";
+import { type ContactCreation } from "@/types/Contacts";
 import { useState, type Dispatch, type SetStateAction } from "react";
 import * as ImagePicker from "expo-image-picker";
 import {

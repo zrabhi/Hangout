@@ -16,7 +16,7 @@ import { SQLiteProvider } from "expo-sqlite";
 import { useAppBackgroundToast } from "@/hooks/UseLastBackground";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { LoadingIndicator } from "@/components/LoadingSplashScreen";
-import { ReactNode, useEffect, useState } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 import { StyleSheet } from "react-native";
 import { useIncomingSms } from "@/hooks/useIncomingSms";
 

@@ -4,7 +4,7 @@ import { ScreenHeader } from "@/components/ui/ScreenHeader";
 import { ContactForm } from "@/containers/CreateContactForms";
 import { useAppSettings } from "@/context/AppSettingsContext";
 import { useDataBaseContext } from "@/context/DatabaseContext";
-import { ContactCreation, contactCreationInit } from "@/types/Contacts";
+import { type ContactCreation, contactCreationInit } from "@/types/Contacts";
 import { type Errors } from "@/types/ContactsError";
 import Colors from "@/utils/Colors";
 import { router, Stack, useLocalSearchParams } from "expo-router";

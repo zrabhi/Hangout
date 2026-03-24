@@ -26,13 +26,11 @@ export const SearchInput = ({
   );
   return (
     <View
-      style={[
-        {
+      style={{
           width: "100%",
           alignItems: "center",
           paddingVertical: 16,
-        },
-      ]}
+        }}
     >
       <View
         style={[styles.searchInput, isFocused && styles.focusedSearchInput]}

@@ -1,6 +1,6 @@
 import { CallIcon } from "@/icons/Call"; // outgoing call icon
 import { OutgoingCall } from "@/icons/OutgoingCall";
-import { CallsSummary, type Calls } from "@/types/Calls";
+import { type CallsSummary } from "@/types/Calls";
 import { avatarColors } from "@/utils/AvatarColors";
 import Colors from "@/utils/Colors";
 import { memo } from "react";

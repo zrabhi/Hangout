@@ -1,5 +1,5 @@
 import Colors from "./Colors";
-import { ColorVariants } from "./ColorVarianrts";
+import { type ColorVariants } from "./ColorVarianrts";
 
 export const colorsMap: Record<ColorVariants, string> = {
   blue: Colors.primary.blue[100],   // Tailwind blue-500

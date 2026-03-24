@@ -1,6 +1,6 @@
 import Colors from "@/utils/Colors";
-import { ElementType, memo, ReactNode } from "react";
-import { StyleSheet, Text, View, ViewProps, ViewStyle } from "react-native";
+import { type ElementType, memo, type ReactNode } from "react";
+import { StyleSheet, Text, View } from "react-native";
 
 type ItemVariant = "blue" | "green" | "orange";
 interface SettingItemCardProps  {
@@ -70,7 +70,7 @@ export const ItemCard = memo(
           </View>
         </View>
         <View
-          style={[{
+          style={{
             flex:1,
             paddingVertical: 16,
             alignItems: "center",
@@ -82,7 +82,7 @@ export const ItemCard = memo(
             borderBottomLeftRadius: 22,
             borderBottomRightRadius: 22,
             backgroundColor: Colors.background.card,
-          }]}
+          }}
         >
           {children}
         </View>

@@ -1,6 +1,5 @@
 import { AquaticRetroIllustration } from "@/icons/RetroAquatic";
 import {
-  View,
   StyleSheet,
   Text,
   Modal,
