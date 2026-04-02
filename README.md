@@ -5,6 +5,9 @@ The application uses a **local NoSQL database** to store messages, contacts, and
 
 
 https://github.com/user-attachments/assets/8a098ce3-ef05-4db3-a157-94409bfcab73
+
+
+
 <img width="1080" height="2400" alt="Screenshot_1773687559" src="https://github.com/user-attachments/assets/f85497a9-45ee-4afe-aa72-11336ac9b2a4" />
 <img width="1080" height="2400" alt="Screenshot_1773687566" src="https://github.com/user-attachments/assets/63f39c83-a89f-4e61-86bd-5671db7719f9" />
 
